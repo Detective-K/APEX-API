@@ -14,7 +14,7 @@ namespace APEX_API.Controllers
     {
         // GET: api/<OrderController>
         [Route("")]
-        [Route("Home")]
+        [Route("Home/[action]")]
         [Route("[controller]/[action]")]
         public string Index()
         {
