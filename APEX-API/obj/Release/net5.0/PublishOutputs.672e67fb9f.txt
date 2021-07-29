@@ -5,3 +5,10 @@ D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.deps.json
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.runtimeconfig.json
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.pdb
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Logging.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll

@@ -21,3 +21,11 @@ D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\APEX-API.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\ref\APEX-API.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\APEX-API.pdb
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\APEX-API.genruntimeconfig.cache
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.IdentityModel.Logging.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.IdentityModel.Protocols.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Microsoft.IdentityModel.Tokens.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\System.IdentityModel.Tokens.Jwt.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\APEX-API.csproj.CopyComplete
