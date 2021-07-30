@@ -12,7 +12,7 @@ namespace APEX_API.Models
         public string Pwd { get; set; }
         public string Email { get; set; }
         public string Receiver { get; set; }
-        public int ClaimLevel { get; set; }
-        public string ExceptionLoginIp { get; set; }
+        public int? ClaimLevel { get; set; }
+        public string ExceptionLoginTp { get; set; }
     }
 }

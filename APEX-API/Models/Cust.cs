@@ -31,6 +31,6 @@ namespace APEX_API.Models
         public string Memo { get; set; }
         public string Pwd { get; set; }
         public string Email { get; set; }
-        public int ClaimLevel { get; set; }
+        public int? ClaimLevel { get; set; }
     }
 }

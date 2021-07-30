@@ -37,5 +37,6 @@ namespace APEX_API.Models
         public string MemoM1 { get; set; }
         public int? Bas0011 { get; set; }
         public string Bas0012 { get; set; }
+        public double? Surcharge { get; set; }
     }
 }

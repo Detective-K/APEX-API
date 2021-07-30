@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using APEX_API.Models;
 
 namespace APEX_API
 {
@@ -29,6 +31,8 @@ namespace APEX_API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDbContext<web2Context>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("Web2Pro")));
             services.AddControllers();
             services.AddAuthentication(options =>
             {
@@ -48,6 +52,9 @@ namespace APEX_API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(confSection["SecurityKey"]))
                 };
             });
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

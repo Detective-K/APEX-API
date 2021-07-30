@@ -14,7 +14,6 @@ namespace APEX_API.Models
         public string SnNum { get; set; }
         public string ModeNo { get; set; }
         public string Description { get; set; }
-        public string Application { get; set; }
         public string Machinery { get; set; }
         public string T2n { get; set; }
         public string DriveType { get; set; }
@@ -34,23 +33,5 @@ namespace APEX_API.Models
         public string AcCode { get; set; }
         public string AcCodeBig { get; set; }
         public DateTime? ShippingDate { get; set; }
-        public string Reply { get; set; }
-        public string ReturnFlg { get; set; }
-        public DateTime? ReturnDate { get; set; }
-        public DateTime? CloseDate { get; set; }
-        public string Conclusion { get; set; }
-        public string NewsFlg { get; set; }
-        public DateTime? ReciveDate { get; set; }
-        public string SalesProgress { get; set; }
-        public string ProblemAnalysis { get; set; }
-        public string Correction { get; set; }
-        public string CorrectionPreventive { get; set; }
-        public string ConclusionConfirm { get; set; }
-        public string Responsibility { get; set; }
-        public string Defect { get; set; }
-        public string EfgpprocessNo { get; set; }
-        public int NewsCustomerFlg { get; set; }
-        public string Reason2 { get; set; }
-        public string ApexCodeSn { get; set; }
     }
 }

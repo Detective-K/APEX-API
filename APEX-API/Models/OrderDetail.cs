@@ -43,5 +43,8 @@ namespace APEX_API.Models
         public string InertiaApp { get; set; }
         public string InertiaAppWarranty { get; set; }
         public DateTime? DeliveDate { get; set; }
+        public string DesginTool { get; set; }
+        public string AdapterCus2 { get; set; }
+        public double? Surcharge { get; set; }
     }
 }

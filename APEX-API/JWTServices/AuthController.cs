@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using APEX_API.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -18,16 +19,20 @@ namespace APEX_API.JWTServices
     public class AuthController : Controller
     {
         private IConfiguration _configuration { get; set; }
+        private readonly web2Context _web2Context;
 
-        public AuthController(IConfiguration config)
+        public AuthController(IConfiguration config , web2Context context)
         {
             _configuration = config;
+            _web2Context = context;
         }
 
         [HttpGet("login")]
         public ActionResult Login(string username, string password)
         {
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+
+            int memberCount = _web2Context.Sales.Where(x => x.SalesId == username && x.Pwd == password && x.ClaimLevel != 0).Count();
+            if (memberCount > 0)
             {
                 var claims = new[]
                 {
@@ -35,12 +40,12 @@ namespace APEX_API.JWTServices
                 };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Authentication")["SecurityKey"]));
                 var token = new JwtSecurityToken(
-                    issuer: _configuration.GetSection("Authentication")["Issure"],           
-                    audience: _configuration.GetSection("Authentication")["Audience"],              
-                    notBefore: DateTime.Now,                                                        
-                    expires: DateTime.Now.AddMinutes(30),                                        
-                    claims: claims,                                                                 
-                    signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)    
+                    issuer: _configuration.GetSection("Authentication")["Issure"],
+                    audience: _configuration.GetSection("Authentication")["Audience"],
+                    notBefore: DateTime.Now,
+                    expires: DateTime.Now.AddMinutes(30),
+                    claims: claims,
+                    signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
                 return Ok(new { code = 200, message = "登入成功", data = new JwtSecurityTokenHandler().WriteToken(token) });
             }

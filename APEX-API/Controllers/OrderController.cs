@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using APEX_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,64 +15,72 @@ namespace APEX_API.Controllers
     [Authorize]
     public class OrderController : ControllerBase
     {
-        //// GET: api/<OrderController>
-        //[Route("")]
-        //[Route("Home")]
-        //[Route("[controller]/[action]")]
-        //public string Index()
-        //{
-        //    return Convert.ToString("yes");
-        //}
+        private readonly web2Context _web2Context;
 
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        public OrderController(web2Context context)
+        {
+            _web2Context = context;
+        }
 
-        //// GET api/<OrderController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return Convert.ToString(id);
-        //}
+        // GET: api/<OrderController>
+        [Route("")]
+        [Route("Home")]
+        [Route("[controller]/[action]")]
+        public string Index()
+        {
+            return Convert.ToString("yes");
+        }
 
-        //// GET api/<OrderController>/5
-        //[HttpGet ("[action]")]
-        //public string Get2()
-        //{
-        //    return Convert.ToString("get2");
-        //}
+        [HttpGet]
+        public string Get()
+        {
+            var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
+            return cd;
+        }
 
-        //// POST api/<OrderController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        // GET api/<OrderController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return Convert.ToString(id);
+        }
 
-        //// PUT api/<OrderController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // GET api/<OrderController>/5
+        [HttpGet("[action]")]
+        public string Get2()
+        {
+            return Convert.ToString("get2");
+        }
 
-        //// DELETE api/<OrderController>/5
-        //[HttpDelete("{id}")]
-        //public string Delete(int id)
-        //{
-        //    return Convert.ToString(id);
-        //}
+        // POST api/<OrderController>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
+
+        // PUT api/<OrderController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE api/<OrderController>/5
+        [HttpDelete("{id}")]
+        public string Delete(int id)
+        {
+            return Convert.ToString(id);
+        }
 
 
         [HttpGet("noauth")]
         [AllowAnonymous]
-        public string Get()
+        public string noauth()
         {
             return "这个方法不需要权限校验";
         }
 
         [HttpGet("auth")]
-        public string Get2()
+        public string auth()
         {
             return "这个方法需要权限校验";
         }
