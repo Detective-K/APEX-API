@@ -112,3 +112,6 @@ C:\gitSource\APEX-API\APEX-API\obj\Debug\net5.0\APEX-API.dll
 C:\gitSource\APEX-API\APEX-API\obj\Debug\net5.0\ref\APEX-API.dll
 C:\gitSource\APEX-API\APEX-API\obj\Debug\net5.0\APEX-API.pdb
 C:\gitSource\APEX-API\APEX-API\obj\Debug\net5.0\APEX-API.genruntimeconfig.cache
+C:\gitSource\APEX-API\APEX-API\bin\Debug\net5.0\Jil.dll
+C:\gitSource\APEX-API\APEX-API\bin\Debug\net5.0\Sigil.dll
+C:\gitSource\APEX-API\APEX-API\bin\Debug\net5.0\Utf8Json.dll

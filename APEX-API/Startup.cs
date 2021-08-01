@@ -31,8 +31,14 @@ namespace APEX_API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddMvc()
+                 .AddJsonOptions(options =>
+                 {
+                     options.JsonSerializerOptions.WriteIndented = true;
+                 });
+
             services.AddDbContext<web2Context>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Web2Pro")));
+                options.UseSqlServer(Configuration.GetConnectionString("Web2Home")));
             services.AddControllers();
             services.AddAuthentication(options =>
             {

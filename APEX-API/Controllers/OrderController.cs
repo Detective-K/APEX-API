@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utf8Json;
+using Jil;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,7 +14,7 @@ namespace APEX_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class OrderController : ControllerBase
     {
         private readonly web2Context _web2Context;
@@ -34,8 +36,11 @@ namespace APEX_API.Controllers
         [HttpGet]
         public string Get()
         {
-            var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
-            return cd;
+            //var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
+            var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Count();
+            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
+            var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
+            return Utf8Json.JsonSerializer.ToJsonString(ks);
         }
 
         // GET api/<OrderController>/5
@@ -73,7 +78,7 @@ namespace APEX_API.Controllers
 
 
         [HttpGet("noauth")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public string noauth()
         {
             return "这个方法不需要权限校验";
