@@ -81,7 +81,8 @@ namespace APEX_API.Controllers
         //[AllowAnonymous]
         public string noauth()
         {
-            return "这个方法不需要权限校验";
+            return [{"Mes":"这个方法不需要权限校验" }]
+            ;
         }
 
         [HttpGet("auth")]
