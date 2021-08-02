@@ -34,13 +34,20 @@ namespace APEX_API.Controllers
         }
 
         [HttpGet]
-        public string Get()
+        public ActionResult Get(string jsonStr )
         {
             //var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
-            var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Count();
-            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
-            var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
-            return Utf8Json.JsonSerializer.ToJsonString(ks);
+            var jsonObject = JSON.DeserializeDynamic(jsonStr);
+            string username = jsonObject.username;
+            string password = jsonObject.password;
+            int MemberCount  = _web2Context.Sales.Where(x => x.SalesId == username && x.Pwd == password && x.ClaimLevel !=0).Count();
+            //var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
+            //var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
+            if (MemberCount > 0)
+            {
+                return Ok(new { code = 200, message = "登入成功"});
+            }
+            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
         }
 
         // GET api/<OrderController>/5
@@ -59,8 +66,26 @@ namespace APEX_API.Controllers
 
         // POST api/<OrderController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] MemberInfo Info)
         {
+            //var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
+            //var jsonObject = JSON.DeserializeDynamic(jsonStr);
+            //string username = jsonObject.username;
+            //string password = jsonObject.password;
+            int MemberCount = _web2Context.Sales.Where(x => x.SalesId == Info.username && x.Pwd == Info.password && x.ClaimLevel != 0).Count();
+            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
+            //var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
+            if (MemberCount > 0)
+            {
+                return Ok(new { code = 200, message = "登入成功" });
+            }
+            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+        }
+
+        public class MemberInfo
+        {
+            public string username { set; get; }
+            public string password { set; get; }
         }
 
         // PUT api/<OrderController>/5
@@ -68,6 +93,8 @@ namespace APEX_API.Controllers
         public void Put(int id, [FromBody] string value)
         {
         }
+
+
 
         // DELETE api/<OrderController>/5
         [HttpDelete("{id}")]
@@ -81,8 +108,7 @@ namespace APEX_API.Controllers
         //[AllowAnonymous]
         public string noauth()
         {
-            return [{"Mes":"这个方法不需要权限校验" }]
-            ;
+            return "这个方法不需要权限校验"  ;
         }
 
         [HttpGet("auth")]

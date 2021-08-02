@@ -5,6 +5,7 @@ D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\libman.json
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.runtimeconfig.json
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\APEX-API.pdb
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Jil.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.Data.SqlClient.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.EntityFrameworkCore.dll
@@ -18,11 +19,13 @@ D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.Ident
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Sigil.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.Diagnostics.DiagnosticSource.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.Runtime.Caching.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
+D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\Utf8Json.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 D:\gitSource\API\APEX-API\APEX-API\obj\Release\net5.0\PubTmp\Out\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll

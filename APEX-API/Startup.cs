@@ -38,7 +38,7 @@ namespace APEX_API
                  });
 
             services.AddDbContext<web2Context>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Web2Home")));
+                options.UseSqlServer(Configuration.GetConnectionString("Web2Pro")));
             services.AddControllers();
             services.AddAuthentication(options =>
             {

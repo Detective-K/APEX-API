@@ -115,3 +115,6 @@ C:\gitSource\APEX-API\APEX-API\obj\Release\net5.0\APEX-API.genruntimeconfig.cach
 C:\gitSource\APEX-API\APEX-API\bin\Release\net5.0\Jil.dll
 C:\gitSource\APEX-API\APEX-API\bin\Release\net5.0\Sigil.dll
 C:\gitSource\APEX-API\APEX-API\bin\Release\net5.0\Utf8Json.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Jil.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Sigil.dll
+D:\gitSource\API\APEX-API\APEX-API\bin\Release\net5.0\Utf8Json.dll
