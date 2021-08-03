@@ -66,23 +66,23 @@ namespace APEX_API.Controllers
 
         // POST api/<OrderController>
         [HttpPost]
-        public ActionResult Post([FromBody] MemberInfo Info)
+        //public ActionResult Post([FromBody] MemberInfo Info)
+        public ActionResult Post(string feStr)
         {
             //var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
-            //var jsonObject = JSON.DeserializeDynamic(jsonStr);
-            //string username = jsonObject.username;
-            //string password = jsonObject.password;
-            int MemberCount = _web2Context.Sales.Where(x => x.SalesId == Info.username && x.Pwd == Info.password && x.ClaimLevel != 0).Count();
+            var feObject = JSON.DeserializeDynamic(feStr);
+            int MemberCount = _web2Context.Sales.Where(x => x.SalesId == feObject.username && x.Pwd == feObject.password && x.ClaimLevel != 0).Count();
             var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
-            //var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
-            if (MemberCount > 0)
-            {
-                return Ok(new { code = 200, message = "登入成功" });
-            }
-            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+            ////var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
+            //if (MemberCount > 0)
+            //{
+            //    return Ok(new { code = 200, message = "登入成功" });
+            //}
+
+            return Content(Utf8Json.JsonSerializer.ToJsonString(ks));
         }
 
-        public class MemberInfo
+          interface MemberInfo
         {
             public string username { set; get; }
             public string password { set; get; }
