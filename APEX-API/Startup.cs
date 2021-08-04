@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APEX_API.Models;
+using APEX_API.Services;
 
 namespace APEX_API
 {
@@ -59,7 +60,15 @@ namespace APEX_API
                 };
             });
 
-
+            services.AddScoped<OrderService>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyMethod();
+                    });
+            });
 
         }
 
@@ -74,6 +83,8 @@ namespace APEX_API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 
