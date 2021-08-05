@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using APEX_API.Services;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -71,14 +72,15 @@ namespace APEX_API.Controllers
 
         // POST api/<OrderController>
         [HttpPost ("Login")]
-        public void Post([FromBody] SaveReportDetailInput inputdata)
+        [EnableCors("CorsPolicy")]
+        public ActionResult Post([FromBody] JsonElement feStr)
         {
-            //int MemberCount =_orderService.CheckMember(feStr);
-            //if (MemberCount > 0)
-            //{
-            //    return Ok(new { code = 200, message = "登入成功" });
-            //}
-            //return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+            int MemberCount = _orderService.CheckMember(feStr.ToString());
+            if (MemberCount > 0)
+            {
+                return Ok(new { code = 200, message = "登入成功" });
+            }
+            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
         }
 
          public class SaveReportDetailInput

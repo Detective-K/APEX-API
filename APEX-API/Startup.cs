@@ -28,10 +28,11 @@ namespace APEX_API
 
         public IConfiguration Configuration { get; }
 
+        private readonly string _policyName = "CorsPolicy";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddMvc()
                  .AddJsonOptions(options =>
                  {
@@ -61,14 +62,27 @@ namespace APEX_API
             });
 
             services.AddScoped<OrderService>();
-            services.AddCors(options =>
+            //services.AddCors(options =>
+            //{
+            //    options.AddDefaultPolicy(
+            //        builder =>
+            //        {
+            //            builder.AllowAnyMethod()
+            //                   .AllowAnyHeader()
+            //                   .AllowAnyOrigin();
+            //        });
+            //});
+            services.AddCors(opt =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyMethod();
-                    });
+                opt.AddPolicy(name: _policyName, builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
+
+
 
         }
 
@@ -84,7 +98,8 @@ namespace APEX_API
 
             app.UseRouting();
 
-            app.UseCors();
+            //app.UseCors();
+            app.UseCors(_policyName);
 
             app.UseAuthentication();
 
