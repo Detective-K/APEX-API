@@ -56,6 +56,15 @@ namespace APEX_API.Controllers
             return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
         }
 
+
+        [HttpGet ("[action]") ]
+        [EnableCors("CorsPolicy")]
+        public string OrderList(string feStr)
+        {
+            var joinList = _orderService.OrderList(feStr);
+            return JsonSerializer.Serialize(joinList);
+        }
+
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
         public string Get(int id)
