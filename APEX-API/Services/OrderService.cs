@@ -1,5 +1,6 @@
 ﻿using APEX_API.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -25,42 +26,80 @@ namespace APEX_API.Services
         {
             var feObject = JsonSerializer.Deserialize<Cust>(feStr);
             var feOrder = JsonSerializer.Deserialize<Order>(feStr);
-            var joinOrder = _web2Context.Orders.Join(_web2Context.Custs,
-                o => o.CustId,
-                c => c.CustId,
-                (o, c) => new
-                {
-                    o.OrderId,
-                    o.CustId,
-                    o.OrderDate,
-                    o.DelivWay,
-                    o.DelivAddr,
-                    o.DelivTel,
-                    o.Attn,
-                    o.Ostatus,
-                    o.Pono,
-                    o.Memo,
-                    c.Name
-                })
-                .Join(_web2Context.OrderDetails,
-                o=>o.OrderId,
-                od=>od.OrderId,
-                (o,od)=> new 
-                {
-                    od.Spec
-                }
-                )
-                .OrderByDescending(oc => oc.OrderDate).Select(oc => oc);
-            if (!string.IsNullOrEmpty(feObject.CustId))
-            {
-                joinOrder = joinOrder.Where(oc => oc.CustId == feObject.CustId);
-            }
-            if (!string.IsNullOrEmpty(feOrder.Ostatus))
-            {
-                joinOrder = joinOrder.Where(oc => oc.Ostatus == feOrder.Ostatus);
-            }
-            return joinOrder.ToList();
+            //var joinOrder = _web2Context.Orders.Join(_web2Context.Custs,
+            //    o => o.CustId,
+            //    c => c.CustId,
+            //    (o, c) => new
+            //    {
+            //        o.OrderId,
+            //        o.CustId,
+            //        o.OrderDate,
+            //        o.DelivWay,
+            //        o.DelivAddr,
+            //        o.DelivTel,
+            //        o.Attn,
+            //        o.Ostatus,
+            //        o.Pono,
+            //        o.Memo,
+            //        c.Name
+            //    })
+            //    .GroupJoin(_web2Context.OrderDetails,
+            //    oc => oc.OrderId,
+            //    od => od.OrderId,
+            //    (oc, od) => new
+            //    {
+            //        oc = oc,
+            //        od = od.DefaultIfEmpty()
+            //    })
+            //    .SelectMany(ocd => ocd.od.Select( ocd => ocd))
+            //    ;
+
+            //var joinOrder = _web2Context.Orders.GroupJoin(_web2Context.Custs,
+            //    o => o.CustId,
+            //    c => c.CustId,
+            //    (o, c) => new
+            //    {
+            //        o.OrderId,
+            //        o.CustId,
+            //        o.OrderDate,
+            //        o.DelivWay,
+            //        o.DelivAddr,
+            //        o.DelivTel,
+            //        o.Attn,
+            //        o.Ostatus,
+            //        o.Pono,
+            //        o.Memo,
+            //        c.Name
+            //    });
+
+            var result = from person in _web2Context.Orders
+                         join detail in _web2Context.OrderDetails on person.OrderId equals detail.OrderId into Details
+                         from m in Details.DefaultIfEmpty()
+                         select new
+                         {
+                             id = person.OrderId,
+                             firstname = person.OrderNo,
+                             lastname = person.OrderDate,
+                                  m
+                         };
+
+
+            //if (!string.IsNullOrEmpty(feObject.CustId))
+            //{
+            //    joinOrder = joinOrder.Where(ocd => ocd.oc.CustId == feObject.CustId);
+            //}
+            //if (!string.IsNullOrEmpty(feOrder.Ostatus))
+            //{
+            //    joinOrder = joinOrder.Where(ocd => ocd.oc.Ostatus == feOrder.Ostatus);
+            //}
+
+            //joinOrder = joinOrder.OrderByDescending(ocd => ocd.oc.OrderDate);
+
+
+            return result.ToList();
         }
+
+
 
     }
 }
