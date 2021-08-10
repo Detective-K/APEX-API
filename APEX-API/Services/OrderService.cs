@@ -26,80 +26,102 @@ namespace APEX_API.Services
         {
             var feObject = JsonSerializer.Deserialize<Cust>(feStr);
             var feOrder = JsonSerializer.Deserialize<Order>(feStr);
-            //var joinOrder = _web2Context.Orders.Join(_web2Context.Custs,
-            //    o => o.CustId,
-            //    c => c.CustId,
-            //    (o, c) => new
-            //    {
-            //        o.OrderId,
-            //        o.CustId,
-            //        o.OrderDate,
-            //        o.DelivWay,
-            //        o.DelivAddr,
-            //        o.DelivTel,
-            //        o.Attn,
-            //        o.Ostatus,
-            //        o.Pono,
-            //        o.Memo,
-            //        c.Name
-            //    })
-            //    .GroupJoin(_web2Context.OrderDetails,
-            //    oc => oc.OrderId,
-            //    od => od.OrderId,
-            //    (oc, od) => new
-            //    {
-            //        oc = oc,
-            //        od = od.DefaultIfEmpty()
-            //    })
-            //    .SelectMany(ocd => ocd.od.Select( ocd => ocd))
-            //    ;
+            List<Datas> myLists = new List<Datas>();
+            var joinOrder2 = _web2Context.Orders.Join(_web2Context.Custs,
+                o => o.CustId,
+                c => c.CustId,
+                (o, c) => new
+                {
+                    o.OrderId,
+                    o.CustId,
+                    o.OrderDate,
+                    o.DelivWay,
+                    o.DelivAddr,
+                    o.DelivTel,
+                    o.Attn,
+                    o.Ostatus,
+                    o.Pono,
+                    o.Memo,
+                    c.Name
+                })
+                .GroupJoin(_web2Context.OrderDetails,
+                oc => oc.OrderId,
+                od => od.OrderId,
+                (oc, od) => new
+                {
+                    ocs = oc,
+                    ods = od
+                })
+               .SelectMany(
+                     ocd => ocd.ods.DefaultIfEmpty(),
+                    (x, y) => new { ocs = x.ocs, ods = y });
+            var joinOrder = _web2Context.Orders.Join(_web2Context.Custs,
+            o => o.CustId,
+            c => c.CustId,
+            (o, c) => new
+            {
+                o.OrderId,
+                o.CustId,
+                o.OrderDate,
+                o.DelivWay,
+                o.DelivAddr,
+                o.DelivTel,
+                o.Attn,
+                o.Ostatus,
+                o.Pono,
+                o.Memo,
+                c.Name
+            })
+           ;
 
-            //var joinOrder = _web2Context.Orders.GroupJoin(_web2Context.Custs,
-            //    o => o.CustId,
-            //    c => c.CustId,
-            //    (o, c) => new
-            //    {
-            //        o.OrderId,
-            //        o.CustId,
-            //        o.OrderDate,
-            //        o.DelivWay,
-            //        o.DelivAddr,
-            //        o.DelivTel,
-            //        o.Attn,
-            //        o.Ostatus,
-            //        o.Pono,
-            //        o.Memo,
-            //        c.Name
-            //    });
+            if (!string.IsNullOrEmpty(feObject.CustId))
+            {
+                joinOrder2 = joinOrder2.Where(ocd => ocd.ocs.CustId == feObject.CustId);
+                joinOrder = joinOrder.Where(oc => oc.CustId == feObject.CustId);
+            }
+            if (!string.IsNullOrEmpty(feOrder.Ostatus))
+            {
+                joinOrder2 = joinOrder2.Where(ocd => ocd.ocs.Ostatus == feOrder.Ostatus);
+                joinOrder = joinOrder.Where(oc => oc.Ostatus == feOrder.Ostatus);
+            }
 
-            var result = from person in _web2Context.Orders
-                         join detail in _web2Context.OrderDetails on person.OrderId equals detail.OrderId into Details
-                         from m in Details.DefaultIfEmpty()
-                         select new
-                         {
-                             id = person.OrderId,
-                             firstname = person.OrderNo,
-                             lastname = person.OrderDate,
-                                  m
-                         };
+            joinOrder2 = joinOrder2.Where(ocd => ocd.ocs.OrderId == "BAJ0030301003");
+            joinOrder2 = joinOrder2.OrderByDescending(ocd => ocd.ocs.OrderDate);
 
+            joinOrder = joinOrder.Where(oc => oc.OrderId == "BAJ0030301003");
+            joinOrder = joinOrder.OrderByDescending(oc => oc.OrderDate);
 
-            //if (!string.IsNullOrEmpty(feObject.CustId))
-            //{
-            //    joinOrder = joinOrder.Where(ocd => ocd.oc.CustId == feObject.CustId);
-            //}
-            //if (!string.IsNullOrEmpty(feOrder.Ostatus))
-            //{
-            //    joinOrder = joinOrder.Where(ocd => ocd.oc.Ostatus == feOrder.Ostatus);
-            //}
-
-            //joinOrder = joinOrder.OrderByDescending(ocd => ocd.oc.OrderDate);
+            // GroupJoin Lambda
+            //   var tt = _web2Context.Orders.GroupJoin(
+            //      _web2Context.OrderDetails,
+            //      customer => customer.OrderId,
+            //      detail => detail.OrderId,
+            //      (x, y) => new { Customer = x, Details = y })
+            //.SelectMany(
+            //      x => x.Details.DefaultIfEmpty(),
+            //      (x, y) => new { customer = x.Customer, Details = y });
+            // GroupJoin Linq
+            //   var result = from person in _web2Context.Orders
+            //                join detail in _web2Context.OrderDetails on person.OrderId equals detail.OrderId into Details
+            //                from m in Details.DefaultIfEmpty()
+            //                select new
+            //                {
+            //                    id = person.OrderId,
+            //                    firstname = person.OrderNo,
+            //                    lastname = person.OrderDate,
+            //                    m
+            //                };
 
 
-            return result.ToList();
+
+            myLists.Add(new Datas { Data = joinOrder.ToList() , Data2 = joinOrder2.ToList() });
+            return myLists;
         }
 
-
+        private class Datas { 
+            public object Data { get; set; }
+            public object Data2 { get; set; }
+        }
 
     }
 }
