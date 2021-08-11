@@ -16,11 +16,18 @@ namespace APEX_API.Services
             _web2Context = context;
         }
 
-        public int CheckMember(string feStr)
+        public List<Sale> CheckSalesMember(string feStr)
         {
             var feObject = JsonSerializer.Deserialize<Sale>(feStr);
-            int MemberCount = _web2Context.Sales.Where(x => x.SalesId == feObject.SalesId && x.Pwd == feObject.Pwd && x.ClaimLevel != 0).Count();
-            return MemberCount;
+            var MemberInfo = _web2Context.Sales.Where(x => x.SalesId == feObject.SalesId && x.Pwd == feObject.Pwd && x.ClaimLevel != 0);
+            return MemberInfo.ToList();
+        }
+
+        public List<Cust> CheckCustsMember(string feStr)
+        {
+            var feObject = JsonSerializer.Deserialize<Cust>(feStr);
+            var MemberInfo = _web2Context.Custs.Where(x => x.CustId == feObject.CustId && x.Pwd == feObject.Pwd );
+            return MemberInfo.ToList();
         }
         public object OrderList(string feStr)
         {
@@ -42,6 +49,7 @@ namespace APEX_API.Services
                     o.Ostatus,
                     o.Pono,
                     o.Memo,
+                    o.Currency,
                     c.Name
                 })
                 .GroupJoin(_web2Context.OrderDetails,
@@ -70,6 +78,7 @@ namespace APEX_API.Services
                 o.Ostatus,
                 o.Pono,
                 o.Memo,
+                o.Currency,
                 c.Name
             })
            ;
@@ -85,10 +94,8 @@ namespace APEX_API.Services
                 joinOrder = joinOrder.Where(oc => oc.Ostatus == feOrder.Ostatus);
             }
 
-            joinOrder2 = joinOrder2.Where(ocd => ocd.ocs.OrderId == "BAJ0030301003");
             joinOrder2 = joinOrder2.OrderByDescending(ocd => ocd.ocs.OrderDate);
 
-            joinOrder = joinOrder.Where(oc => oc.OrderId == "BAJ0030301003");
             joinOrder = joinOrder.OrderByDescending(oc => oc.OrderDate);
 
             // GroupJoin Lambda

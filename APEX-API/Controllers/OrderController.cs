@@ -24,7 +24,7 @@ namespace APEX_API.Controllers
         private readonly web2Context _web2Context;
         private readonly OrderService _orderService;
 
-        public OrderController(web2Context context , OrderService orderService)
+        public OrderController(web2Context context, OrderService orderService)
         {
             _web2Context = context;
             _orderService = orderService;
@@ -40,7 +40,7 @@ namespace APEX_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get(string jsonStr )
+        public ActionResult Get(string jsonStr)
         {
             //var cd = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => x.Pwd).FirstOrDefault();
             //var jsonObject = JSON.DeserializeDynamic(jsonStr);
@@ -57,7 +57,7 @@ namespace APEX_API.Controllers
         }
 
 
-        [HttpGet ("[action]") ]
+        [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
         public string OrderList(string feStr)
         {
@@ -80,19 +80,20 @@ namespace APEX_API.Controllers
         }
 
         // POST api/<OrderController>
-        [HttpPost ("Login")]
+        [HttpPost("Login")]
         [EnableCors("CorsPolicy")]
         public ActionResult Post([FromBody] JsonElement feStr)
         {
-            int MemberCount = _orderService.CheckMember(feStr.ToString());
-            if (MemberCount > 0)
+            List<Cust> CustInfo = _orderService.CheckCustsMember(feStr.ToString());
+            List<Sale> SaleInfo = _orderService.CheckSalesMember(feStr.ToString());
+            if ((CustInfo.Count > 0) || (SaleInfo.Count > 0))
             {
-                return Ok(new { code = 200, message = "登入成功" });
+                return Ok(new { code = 200, message = "登入成功", CustInfo = CustInfo, SaleInfo = SaleInfo });
             }
             return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
         }
 
-         public class SaveReportDetailInput
+        public class SaveReportDetailInput
         {
             public string Username { set; get; }
         }
