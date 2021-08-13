@@ -65,6 +65,15 @@ namespace APEX_API.Controllers
             return JsonSerializer.Serialize(joinList);
         }
 
+        // POST api/<OrderController>
+        [HttpPost("[action]")]
+        [EnableCors("CorsPolicy")]
+        public ActionResult OrderList([FromBody] JsonElement feStr)
+        {
+            string TempOD = _orderService.GetOrderID(feStr.ToString());
+            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+        }
+
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
         public string Get(int id)

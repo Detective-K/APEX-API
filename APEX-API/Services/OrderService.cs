@@ -125,6 +125,13 @@ namespace APEX_API.Services
             return myLists;
         }
 
+        public string GetOrderID(string feStr)
+        {
+            string TempOD = string.Empty;
+
+            return TempOD;
+        }
+
         private class Datas { 
             public object Data { get; set; }
             public object Data2 { get; set; }
