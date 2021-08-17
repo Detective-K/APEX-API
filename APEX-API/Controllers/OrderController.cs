@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-//using Utf8Json;
+using Utf8Json;
 //using Jil;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -47,8 +47,8 @@ namespace APEX_API.Controllers
             //string username = jsonObject.username;
             //string password = jsonObject.password;
             //int MemberCount  = _web2Context.Sales.Where(x => x.SalesId == username && x.Pwd == password && x.ClaimLevel !=0).Count();
-            ////var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
-            ////var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
+            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
+            var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
             //if (MemberCount > 0)
             //{
             //    return Ok(new { code = 200, message = "登入成功"});
@@ -62,7 +62,8 @@ namespace APEX_API.Controllers
         public string OrderList(string feStr)
         {
             var joinList = _orderService.OrderList(feStr);
-            return JsonSerializer.Serialize(joinList);
+            return System.Text.Json.JsonSerializer.Serialize(joinList);
+            //return JsonSerializer.Serialize(joinList);
         }
 
         // POST api/<OrderController>
@@ -70,8 +71,13 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult OrderList([FromBody] JsonElement feStr)
         {
+            //Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() == "[]"
+            if(Convert.ToString(System.Text.Json.JsonSerializer.Deserialize<Cust>(feStr.ToString()).CustId) == "BAI060")
+            {
+                return BadRequest(new { code = 400, message = "Add Error" });
+            }
             string TempOD = _orderService.GetOrderID(feStr.ToString());
-            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+            return BadRequest(new { code = 400, message = TempOD });
         }
 
         // GET api/<OrderController>/5
@@ -95,11 +101,14 @@ namespace APEX_API.Controllers
         {
             List<Cust> CustInfo = _orderService.CheckCustsMember(feStr.ToString());
             List<Sale> SaleInfo = _orderService.CheckSalesMember(feStr.ToString());
+            if (CustInfo.Count == 0) CustInfo.Add( new Cust { CustId = ""   });
+            if (SaleInfo.Count == 0) SaleInfo.Add(new Sale { SalesId = "" });
+
             if ((CustInfo.Count > 0) || (SaleInfo.Count > 0))
             {
-                return Ok(new { code = 200, message = "登入成功", CustInfo = CustInfo, SaleInfo = SaleInfo });
+                return Ok(new { code = 200, message = "Login successful", CustInfo = CustInfo, SaleInfo = SaleInfo });
             }
-            return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
+            return BadRequest(new { code = 400, message = "Unable to login" });
         }
 
         public class SaveReportDetailInput

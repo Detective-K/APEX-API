@@ -26,7 +26,7 @@ namespace APEX_API.Services
         public List<Cust> CheckCustsMember(string feStr)
         {
             var feObject = JsonSerializer.Deserialize<Cust>(feStr);
-            var MemberInfo = _web2Context.Custs.Where(x => x.CustId == feObject.CustId && x.Pwd == feObject.Pwd );
+            var MemberInfo = _web2Context.Custs.Where(x => x.CustId == feObject.CustId && x.Pwd == feObject.Pwd);
             return MemberInfo.ToList();
         }
         public object OrderList(string feStr)
@@ -121,18 +121,26 @@ namespace APEX_API.Services
 
 
 
-            myLists.Add(new Datas { Data = joinOrder.ToList() , Data2 = joinOrder2.ToList() });
+            myLists.Add(new Datas { Data = joinOrder.ToList(), Data2 = joinOrder2.ToList() });
             return myLists;
         }
 
         public string GetOrderID(string feStr)
         {
-            string TempOD = string.Empty;
+            string TempOD = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() != "[]" ? "APEX" : Utf8Json.JsonSerializer.Deserialize<dynamic>(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["CustInfo"])[0]["custId"];
+            int TempCount = _web2Context.Orders.Where(
+                x => x.OrderId.Contains(TempOD + Convert.ToString(Convert.ToInt32(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToInt32(DateTime.Now.Month) + 100).Substring(1, 2))
+                )
+                .ToList()
+                .Count()
+                ;
+               TempOD += Convert.ToString(Convert.ToSingle(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToSingle(DateTime.Now.Month) + 100).Substring(1, 2) + Convert.ToString(TempCount + 1001).Substring(1, 3);
 
             return TempOD;
         }
 
-        private class Datas { 
+        private class Datas
+        {
             public object Data { get; set; }
             public object Data2 { get; set; }
         }
