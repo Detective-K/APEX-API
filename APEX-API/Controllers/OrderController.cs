@@ -66,6 +66,14 @@ namespace APEX_API.Controllers
             //return JsonSerializer.Serialize(joinList);
         }
 
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
+        public string CustAllInfo ()
+        {
+            var joinList = _orderService.GetCustInfo();
+            return System.Text.Json.JsonSerializer.Serialize(joinList);
+        }
+
         // POST api/<OrderController>
         [HttpPost("[action]")]
         [EnableCors("CorsPolicy")]

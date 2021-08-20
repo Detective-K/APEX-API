@@ -29,6 +29,13 @@ namespace APEX_API.Services
             var MemberInfo = _web2Context.Custs.Where(x => x.CustId == feObject.CustId && x.Pwd == feObject.Pwd);
             return MemberInfo.ToList();
         }
+
+        public List<Cust> GetCustInfo()
+        {
+            var MemberInfo = _web2Context.Custs;
+            return MemberInfo.ToList();
+        }
+
         public object OrderList(string feStr)
         {
             var feObject = JsonSerializer.Deserialize<Cust>(feStr);
