@@ -30,9 +30,9 @@ namespace APEX_API.Services
             return MemberInfo.ToList();
         }
 
-        public List<Cust> GetCustInfo()
+        public List<Cust> GetCustInfo(string CustId)
         {
-            var MemberInfo = _web2Context.Custs;
+            var MemberInfo = _web2Context.Custs.Where(C=> C.CustId.Contains(CustId)  );
             return MemberInfo.ToList();
         }
 

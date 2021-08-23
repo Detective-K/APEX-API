@@ -68,9 +68,9 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public string CustAllInfo ()
+        public string CustSearchInfo (string CustId)
         {
-            var joinList = _orderService.GetCustInfo();
+            var joinList = _orderService.GetCustInfo(CustId);
             return System.Text.Json.JsonSerializer.Serialize(joinList);
         }
 
