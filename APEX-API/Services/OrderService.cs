@@ -132,9 +132,10 @@ namespace APEX_API.Services
             return myLists;
         }
 
-        public string GetOrderID(string feStr)
+        public string GetOrderID(Order Value)
         {
-            string TempOD = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() != "[]" ? "APEX" : Utf8Json.JsonSerializer.Deserialize<dynamic>(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["CustInfo"])[0]["custId"];
+            //string TempOD = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() != "[]" ? "APEX" : Utf8Json.JsonSerializer.Deserialize<dynamic>(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["CustInfo"])[0]["custId"];
+            string TempOD = !string.IsNullOrEmpty(Value.EmployId) ? "APEX" : Value.CustId;
             int TempCount = _web2Context.Orders.Where(
                 x => x.OrderId.Contains(TempOD + Convert.ToString(Convert.ToInt32(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToInt32(DateTime.Now.Month) + 100).Substring(1, 2))
                 )
@@ -144,6 +145,29 @@ namespace APEX_API.Services
                TempOD += Convert.ToString(Convert.ToSingle(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToSingle(DateTime.Now.Month) + 100).Substring(1, 2) + Convert.ToString(TempCount + 1001).Substring(1, 3);
 
             return TempOD;
+        }
+
+        public void InsertOrder(Order Value , string TempOD)
+        {
+            Order Insert = new Order
+            {
+                OrderId = TempOD,
+                CustId = Value.CustId,
+                Deliver = Value.Deliver,
+                Pono = Value.Pono,
+                DelivAddr = Value.DelivAddr,
+                Currency = Value.Currency,
+                DelivAddr2 = Value.DelivAddr2,
+                DelivWay = Value.DelivWay,
+                Attn = Value.Attn,
+                DelivTel = Value.DelivTel,
+                OrderDate = Convert.ToDateTime(Value.OrderDate),
+                DelivDate = Convert.ToDateTime(Value.DelivDate),
+                Ostatus = Value.Ostatus,
+                Remail = Value.Remail
+            };
+            _web2Context.Orders.Add(Insert);
+            _web2Context.SaveChanges();
         }
 
         private class Datas

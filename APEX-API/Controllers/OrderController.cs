@@ -68,10 +68,11 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public string CustSearchInfo (string CustId)
+        public ActionResult CustSearchInfo (string CustId)
         {
             var joinList = _orderService.GetCustInfo(CustId);
-            return System.Text.Json.JsonSerializer.Serialize(joinList);
+            return Ok(new { code = 200, CustInfo = joinList });
+            //return System.Text.Json.JsonSerializer.Serialize(joinList);
         }
 
         // POST api/<OrderController>
@@ -80,12 +81,15 @@ namespace APEX_API.Controllers
         public ActionResult OrderList([FromBody] JsonElement feStr)
         {
             //Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() == "[]"
-            if(Convert.ToString(System.Text.Json.JsonSerializer.Deserialize<Cust>(feStr.ToString()).CustId) == "BAI060")
+            Order Value = Utf8Json.JsonSerializer.Deserialize<Order>(feStr.ToString());
+            if ( Value.CustId == "BAI060")
             {
                 return BadRequest(new { code = 400, message = "Add Error" });
             }
-            string TempOD = _orderService.GetOrderID(feStr.ToString());
-            return BadRequest(new { code = 400, message = TempOD });
+            string TempOD = _orderService.GetOrderID(Value);
+            _orderService.InsertOrder(Value , TempOD);
+
+            return Ok(new { code = 200, message = "Save Success" });
         }
 
         // GET api/<OrderController>/5
