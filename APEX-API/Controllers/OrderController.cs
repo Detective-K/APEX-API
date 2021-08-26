@@ -92,6 +92,15 @@ namespace APEX_API.Controllers
             return Ok(new { code = 200, message = "Save Success" });
         }
 
+        // PUT api/<OrderController>/5
+        [HttpPut("[action]")]
+        [EnableCors("CorsPolicy")]
+        public ActionResult OrderList([FromBody] JsonElement feStr)
+        {
+
+            return Ok(new { code = 200, message = "Save Success" });
+        }
+
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
         public string Get(int id)
