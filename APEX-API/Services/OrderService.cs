@@ -32,7 +32,7 @@ namespace APEX_API.Services
 
         public List<Cust> GetCustInfo(string CustId)
         {
-            var MemberInfo = _web2Context.Custs.Where(C=> C.CustId.Contains(CustId)  );
+            var MemberInfo = _web2Context.Custs.Where(C => C.CustId.Contains(CustId));
             return MemberInfo.ToList();
         }
 
@@ -142,12 +142,12 @@ namespace APEX_API.Services
                 .ToList()
                 .Count()
                 ;
-               TempOD += Convert.ToString(Convert.ToSingle(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToSingle(DateTime.Now.Month) + 100).Substring(1, 2) + Convert.ToString(TempCount + 1001).Substring(1, 3);
+            TempOD += Convert.ToString(Convert.ToSingle(DateTime.Now.Year) - 1911).Substring(1, 2) + Convert.ToString(Convert.ToSingle(DateTime.Now.Month) + 100).Substring(1, 2) + Convert.ToString(TempCount + 1001).Substring(1, 3);
 
             return TempOD;
         }
 
-        public void InsertOrder(Order Value , string TempOD)
+        public void InsertOrder(Order Value, string TempOD)
         {
             Order Insert = new Order
             {
@@ -170,6 +170,47 @@ namespace APEX_API.Services
             _web2Context.SaveChanges();
         }
 
+        public void UpdateOrderList(dynamic tempOrder, dynamic tempOrderDetail)
+        {
+            if (tempOrder.Count > 0)
+            {
+                Order _order = new Order
+                {
+                    OrderId = Convert.ToString(tempOrder["OrderId"]),
+                    Pono = Convert.ToString(tempOrder["Pono"])
+                };
+                var update = _web2Context.Orders.Where(x => x.OrderId == _order.OrderId);
+            }
+
+            if (tempOrderDetail.Count > 0)
+            {
+                OrderDetail _orderDetail = new OrderDetail
+                {
+                    OrderId = Convert.ToString(tempOrderDetail["OrderId"]),
+                    OrderDetailId = Convert.ToInt32 (tempOrderDetail["OrderDetailId"]),
+                    Qty = Convert.ToInt32(tempOrderDetail["Qty"]),
+                    Memo = Convert.ToString(tempOrderDetail["Memo"]),
+                    SubTot = Convert.ToDouble(tempOrderDetail["SubTot"])
+                };
+                var update = _web2Context.OrderDetails.Where(x => x.OrderId == _orderDetail.OrderId && x.OrderDetailId == _orderDetail.OrderDetailId);
+                if (update.Count() > 0)
+                {                   
+                    update.SingleOrDefault().Qty = _orderDetail.Qty;
+                    update.SingleOrDefault().Memo = _orderDetail.Memo;
+                    update.SingleOrDefault().SubTot = _orderDetail.SubTot;
+                    _web2Context.SaveChanges();
+                }
+            }
+
+        }
+        public OrderDetail ProductInformation(dynamic Orderdetail)
+        {
+
+
+            OrderDetail _orderdetail = new OrderDetail();
+
+            return _orderdetail;
+        }
         private class Datas
         {
             public object Data { get; set; }

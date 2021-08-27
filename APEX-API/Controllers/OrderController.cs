@@ -93,11 +93,12 @@ namespace APEX_API.Controllers
         }
 
         // PUT api/<OrderController>/5
-        [HttpPut("[action]")]
+        [HttpPut("OrderList")]
         [EnableCors("CorsPolicy")]
-        public ActionResult OrderList([FromBody] JsonElement feStr)
+        public ActionResult OrderListPut([FromBody] JsonElement feStr)
         {
 
+            _orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
             return Ok(new { code = 200, message = "Save Success" });
         }
 
