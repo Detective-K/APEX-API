@@ -75,6 +75,19 @@ namespace APEX_API.Controllers
             //return System.Text.Json.JsonSerializer.Serialize(joinList);
         }
 
+
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
+        public ActionResult GetProductPrice(string feStr)
+        {
+            dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
+            dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
+            double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OdData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OdData["Qty"]));
+
+            return Ok(new { code = 200, BasePrice = BasePrice });
+            //return System.Text.Json.JsonSerializer.Serialize(joinList);
+        }
+
         // POST api/<OrderController>
         [HttpPost("[action]")]
         [EnableCors("CorsPolicy")]
@@ -99,7 +112,7 @@ namespace APEX_API.Controllers
         {
             dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
             dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-            double BasePrice = _orderService.BasePrice(Convert.ToString(OData["CustId"]),Convert.ToString(OdData["PartNo"]),Convert.ToString(OData["Currency"]),Convert.ToInt32(OdData["Qty"]));
+            double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]),Convert.ToString(OdData["PartNo"]),Convert.ToString(OData["Currency"]),Convert.ToInt32(OdData["Qty"]));
             //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
             return Ok(new { code = 200, message = "Save Success" });
         }
