@@ -1,0 +1,123 @@
+﻿using System;
+using System.Collections.Generic;
+
+#nullable disable
+
+namespace APEX_API.TopprodModels
+{
+    public partial class AmaFile
+    {
+        public string Ama01 { get; set; }
+        public string Ama02 { get; set; }
+        public string Ama03 { get; set; }
+        public string Ama04 { get; set; }
+        public string Ama05 { get; set; }
+        public string Ama06 { get; set; }
+        public string Ama07 { get; set; }
+        public short? Ama08 { get; set; }
+        public short? Ama09 { get; set; }
+        public short? Ama10 { get; set; }
+        public string Ama11 { get; set; }
+        public string Ama12 { get; set; }
+        public string Amaacti { get; set; }
+        public string Amauser { get; set; }
+        public string Amagrup { get; set; }
+        public string Amamodu { get; set; }
+        public DateTime? Amadate { get; set; }
+        public string Ama13 { get; set; }
+        public string Ama14 { get; set; }
+        public string Ama15 { get; set; }
+        public string Ama16 { get; set; }
+        public string Ama17 { get; set; }
+        public string Ama18 { get; set; }
+        public string Ama19 { get; set; }
+        public string Ama20 { get; set; }
+        public string Ama21 { get; set; }
+        public string Ama22 { get; set; }
+        public string Ama23 { get; set; }
+        public string Ama24 { get; set; }
+        public string Amaorig { get; set; }
+        public string Amaoriu { get; set; }
+        public decimal Ama100 { get; set; }
+        public decimal Ama101 { get; set; }
+        public decimal Ama102 { get; set; }
+        public decimal Ama103 { get; set; }
+        public decimal Ama104 { get; set; }
+        public decimal Ama105 { get; set; }
+        public decimal Ama25 { get; set; }
+        public decimal Ama26 { get; set; }
+        public decimal Ama27 { get; set; }
+        public decimal Ama28 { get; set; }
+        public decimal Ama29 { get; set; }
+        public decimal Ama30 { get; set; }
+        public decimal Ama31 { get; set; }
+        public decimal Ama32 { get; set; }
+        public decimal Ama33 { get; set; }
+        public decimal Ama34 { get; set; }
+        public decimal Ama35 { get; set; }
+        public decimal Ama36 { get; set; }
+        public decimal Ama37 { get; set; }
+        public decimal Ama38 { get; set; }
+        public decimal Ama39 { get; set; }
+        public decimal Ama40 { get; set; }
+        public decimal Ama41 { get; set; }
+        public decimal Ama42 { get; set; }
+        public decimal Ama43 { get; set; }
+        public decimal Ama44 { get; set; }
+        public decimal Ama45 { get; set; }
+        public decimal Ama46 { get; set; }
+        public decimal Ama47 { get; set; }
+        public decimal Ama48 { get; set; }
+        public decimal Ama49 { get; set; }
+        public decimal Ama50 { get; set; }
+        public decimal Ama51 { get; set; }
+        public decimal Ama52 { get; set; }
+        public decimal Ama53 { get; set; }
+        public decimal Ama54 { get; set; }
+        public decimal Ama55 { get; set; }
+        public decimal Ama56 { get; set; }
+        public decimal Ama57 { get; set; }
+        public decimal Ama58 { get; set; }
+        public decimal Ama59 { get; set; }
+        public decimal Ama60 { get; set; }
+        public decimal Ama61 { get; set; }
+        public decimal Ama62 { get; set; }
+        public decimal Ama63 { get; set; }
+        public decimal Ama64 { get; set; }
+        public decimal Ama65 { get; set; }
+        public decimal Ama66 { get; set; }
+        public decimal Ama67 { get; set; }
+        public decimal Ama68 { get; set; }
+        public decimal Ama69 { get; set; }
+        public decimal Ama70 { get; set; }
+        public decimal Ama71 { get; set; }
+        public decimal Ama72 { get; set; }
+        public decimal Ama73 { get; set; }
+        public decimal Ama74 { get; set; }
+        public decimal Ama75 { get; set; }
+        public decimal Ama76 { get; set; }
+        public decimal Ama77 { get; set; }
+        public decimal Ama78 { get; set; }
+        public decimal Ama79 { get; set; }
+        public decimal Ama80 { get; set; }
+        public decimal Ama81 { get; set; }
+        public decimal Ama82 { get; set; }
+        public decimal Ama83 { get; set; }
+        public decimal Ama84 { get; set; }
+        public decimal Ama85 { get; set; }
+        public decimal Ama86 { get; set; }
+        public decimal Ama87 { get; set; }
+        public decimal Ama88 { get; set; }
+        public decimal Ama89 { get; set; }
+        public decimal Ama90 { get; set; }
+        public decimal Ama91 { get; set; }
+        public decimal Ama92 { get; set; }
+        public decimal Ama93 { get; set; }
+        public decimal Ama94 { get; set; }
+        public decimal Ama95 { get; set; }
+        public decimal Ama96 { get; set; }
+        public decimal Ama97 { get; set; }
+        public decimal Ama98 { get; set; }
+        public decimal Ama99 { get; set; }
+    }
+}

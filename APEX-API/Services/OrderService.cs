@@ -1,4 +1,5 @@
 ﻿using APEX_API.Models;
+using APEX_API.TopprodModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace APEX_API.Services
     public class OrderService
     {
         private readonly web2Context _web2Context;
+        private readonly DataContext _DataContext;
 
-        public OrderService(web2Context context)
+        public OrderService(web2Context context , DataContext oracontext )
         {
             _web2Context = context;
+            _DataContext = oracontext;
         }
 
         public List<Sale> CheckSalesMember(string feStr)
@@ -130,6 +133,72 @@ namespace APEX_API.Services
 
             myLists.Add(new Datas { Data = joinOrder.ToList(), Data2 = joinOrder2.ToList() });
             return myLists;
+        }
+
+        /// <summary>取基礎單價,get_base_price(客戶編號,料號ID,幣別 ,數量) , 用於判斷大訂單折扣
+        ///    <para>20200303 C品號用A來找價格</para>
+        /// </summary>
+        /// <param name="Number">客戶編號</param>
+        /// <param name="Number">料號</param>
+        /// <param name="Number">幣別</param>
+        /// <param name="Number">數量</param>
+        /// <returns>基礎單價</returns>
+        public  Double BasePrice(string MB001, string MB002, string MB004, int MB003)
+        {
+
+            String temp_1 = "0";
+
+            Double temp_2 = 0;
+
+            Double temp_5 = 0;
+
+            //P2代 和P1
+            string[] P2_List = new string[] { "69", "D4", "66", "D2", "67", "D3", "65", "D1", "86", "D5", "E1", "E2", "D9", "E9", "21", "22", "23", "24", "64" };
+
+            //P1代 不給折扣
+            string[] P1_List = new string[] { "21", "22", "23", "24", "64" };
+
+            List<ObkFile> obkData = _DataContext.ObkFiles.Where(obk => obk.Obk02 == MB001 && obk.Obk01 == MB002 && obk.Obk05 == MB004 && obk.Obkacti == "Y").ToList();
+            List<ObkFile> obkData2 = _DataContext.ObkFiles.Where(obk => obk.Obk02 == "AE0002" && obk.Obk01 == MB002 && obk.Obk05 == MB004 && obk.Obkacti == "Y").ToList();
+
+
+            if (MB002.Substring(0, 1) == "A" || MB002.Substring(0, 1) == "C")  //減速機
+            {
+                if (MB002.Substring(0, 1) == "C")
+                {
+                    MB002 = "A" + MB002.Substring(1, 10);
+                }
+                if (Array.IndexOf(P2_List, MB002.Substring(1, 2)) == -1) //P2代的價格已經包含大訂單折扣 , 所以不另外加
+                {
+                    //先判斷有無客戶的特別價
+                    string tmpObk08 = obkData.Count > 0 ? obkData.SingleOrDefault().Obk08.ToString() : obkData2.SingleOrDefault().Obk08.ToString();
+
+                    temp_1 = tmpObk08;
+
+                    temp_2 = Convert.ToDouble(temp_1);
+
+                    temp_5 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);                 
+
+                }
+                else
+                {
+                    temp_5 = 0;
+                }
+            }
+            else
+            {  //非減速機
+
+                if (obkData2.Count() >0)
+                {
+                    temp_1 = obkData2.SingleOrDefault().Obk08.ToString();
+
+                    temp_2 = Convert.ToDouble(temp_1);
+
+                    temp_5 = temp_2;
+                }
+            }
+
+            return temp_5;
         }
 
         public string GetOrderID(Order Value)

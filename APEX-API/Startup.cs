@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using APEX_API.Models;
 using APEX_API.Services;
+using APEX_API.TopprodModels;
 
 namespace APEX_API
 {
@@ -41,7 +42,10 @@ namespace APEX_API
 
             services.AddDbContext<web2Context>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Web2Pro")));
+            services.AddDbContext<DataContext>(options =>
+                options.UseOracle(Configuration.GetConnectionString("OraTop")));
             services.AddControllers();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

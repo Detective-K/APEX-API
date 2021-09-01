@@ -1,0 +1,121 @@
+﻿using System;
+using System.Collections.Generic;
+
+#nullable disable
+
+namespace APEX_API.TopprodModels
+{
+    public partial class TlfFile
+    {
+        public string Tlf01 { get; set; }
+        public short? Tlf02 { get; set; }
+        public string Tlf020 { get; set; }
+        public string Tlf021 { get; set; }
+        public string Tlf022 { get; set; }
+        public string Tlf023 { get; set; }
+        public decimal? Tlf024 { get; set; }
+        public string Tlf025 { get; set; }
+        public string Tlf026 { get; set; }
+        public short? Tlf027 { get; set; }
+        public short? Tlf03 { get; set; }
+        public string Tlf030 { get; set; }
+        public string Tlf031 { get; set; }
+        public string Tlf032 { get; set; }
+        public string Tlf033 { get; set; }
+        public decimal? Tlf034 { get; set; }
+        public string Tlf035 { get; set; }
+        public string Tlf036 { get; set; }
+        public short? Tlf037 { get; set; }
+        public string Tlf04 { get; set; }
+        public string Tlf05 { get; set; }
+        public DateTime? Tlf06 { get; set; }
+        public DateTime? Tlf07 { get; set; }
+        public string Tlf08 { get; set; }
+        public string Tlf09 { get; set; }
+        public decimal? Tlf10 { get; set; }
+        public string Tlf11 { get; set; }
+        public decimal? Tlf12 { get; set; }
+        public string Tlf13 { get; set; }
+        public string Tlf14 { get; set; }
+        public string Tlf15 { get; set; }
+        public string Tlf16 { get; set; }
+        public string Tlf17 { get; set; }
+        public decimal? Tlf18 { get; set; }
+        public string Tlf19 { get; set; }
+        public string Tlf20 { get; set; }
+        public decimal? Tlf21 { get; set; }
+        public DateTime? Tlf211 { get; set; }
+        public string Tlf212 { get; set; }
+        public short? Tlf2131 { get; set; }
+        public short? Tlf2132 { get; set; }
+        public short? Tlf214 { get; set; }
+        public short? Tlf215 { get; set; }
+        public short? Tlf2151 { get; set; }
+        public short? Tlf216 { get; set; }
+        public short? Tlf2171 { get; set; }
+        public short? Tlf2172 { get; set; }
+        public short? Tlf219 { get; set; }
+        public string Tlf218 { get; set; }
+        public string Tlf220 { get; set; }
+        public decimal? Tlf221 { get; set; }
+        public decimal? Tlf222 { get; set; }
+        public decimal? Tlf2231 { get; set; }
+        public decimal? Tlf2232 { get; set; }
+        public decimal? Tlf224 { get; set; }
+        public short? Tlf225 { get; set; }
+        public short? Tlf2251 { get; set; }
+        public short? Tlf226 { get; set; }
+        public short? Tlf2271 { get; set; }
+        public short? Tlf2272 { get; set; }
+        public short? Tlf229 { get; set; }
+        public short? Tlf230 { get; set; }
+        public short? Tlf231 { get; set; }
+        public decimal? Tlf60 { get; set; }
+        public string Tlf61 { get; set; }
+        public string Tlf62 { get; set; }
+        public int? Tlf63 { get; set; }
+        public string Tlf64 { get; set; }
+        public string Tlf65 { get; set; }
+        public string Tlf66 { get; set; }
+        public string Tlf901 { get; set; }
+        public string Tlf902 { get; set; }
+        public string Tlf903 { get; set; }
+        public string Tlf904 { get; set; }
+        public string Tlf905 { get; set; }
+        public short? Tlf906 { get; set; }
+        public short? Tlf907 { get; set; }
+        public string Tlf908 { get; set; }
+        public string Tlf909 { get; set; }
+        public string Tlf910 { get; set; }
+        public string Tlf99 { get; set; }
+        public string Tlf930 { get; set; }
+        public decimal? Tlf931 { get; set; }
+        public string Tlf151 { get; set; }
+        public string Tlf161 { get; set; }
+        public decimal? Tlf2241 { get; set; }
+        public decimal? Tlf2242 { get; set; }
+        public decimal? Tlf2243 { get; set; }
+        public string Tlfcost { get; set; }
+        public string Tlf41 { get; set; }
+        public string Tlf42 { get; set; }
+        public string Tlf43 { get; set; }
+        public DateTime? Tlf211x { get; set; }
+        public string Tlf212x { get; set; }
+        public decimal? Tlf21x { get; set; }
+        public decimal? Tlf221x { get; set; }
+        public decimal? Tlf222x { get; set; }
+        public decimal? Tlf2231x { get; set; }
+        public decimal? Tlf2232x { get; set; }
+        public decimal? Tlf2241x { get; set; }
+        public decimal? Tlf2242x { get; set; }
+        public decimal? Tlf2243x { get; set; }
+        public decimal? Tlf224x { get; set; }
+        public string Tlf65x { get; set; }
+        public string Tlfplant { get; set; }
+        public string Tlflegal { get; set; }
+        public string Tlf27 { get; set; }
+        public string Tlf28 { get; set; }
+        public string Tlf012 { get; set; }
+        public short? Tlf013 { get; set; }
+    }
+}

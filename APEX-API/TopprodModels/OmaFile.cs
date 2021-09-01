@@ -1,0 +1,127 @@
+﻿using System;
+using System.Collections.Generic;
+
+#nullable disable
+
+namespace APEX_API.TopprodModels
+{
+    public partial class OmaFile
+    {
+        public string Oma00 { get; set; }
+        public string Oma01 { get; set; }
+        public DateTime? Oma02 { get; set; }
+        public string Oma03 { get; set; }
+        public string Oma032 { get; set; }
+        public string Oma04 { get; set; }
+        public string Oma042 { get; set; }
+        public string Oma043 { get; set; }
+        public string Oma044 { get; set; }
+        public string Oma05 { get; set; }
+        public string Oma06 { get; set; }
+        public string Oma07 { get; set; }
+        public string Oma08 { get; set; }
+        public DateTime? Oma09 { get; set; }
+        public string Oma10 { get; set; }
+        public DateTime? Oma11 { get; set; }
+        public DateTime? Oma12 { get; set; }
+        public string Oma13 { get; set; }
+        public string Oma14 { get; set; }
+        public string Oma15 { get; set; }
+        public string Oma16 { get; set; }
+        public short? Oma161 { get; set; }
+        public short? Oma162 { get; set; }
+        public short? Oma163 { get; set; }
+        public string Oma17 { get; set; }
+        public string Oma171 { get; set; }
+        public string Oma172 { get; set; }
+        public short? Oma173 { get; set; }
+        public short? Oma174 { get; set; }
+        public int? Oma175 { get; set; }
+        public string Oma18 { get; set; }
+        public string Oma19 { get; set; }
+        public string Oma20 { get; set; }
+        public string Oma21 { get; set; }
+        public decimal? Oma211 { get; set; }
+        public string Oma212 { get; set; }
+        public string Oma213 { get; set; }
+        public string Oma23 { get; set; }
+        public decimal? Oma24 { get; set; }
+        public string Oma25 { get; set; }
+        public string Oma26 { get; set; }
+        public string Oma32 { get; set; }
+        public string Oma33 { get; set; }
+        public string Oma34 { get; set; }
+        public string Oma35 { get; set; }
+        public string Oma36 { get; set; }
+        public string Oma37 { get; set; }
+        public string Oma38 { get; set; }
+        public string Oma39 { get; set; }
+        public string Oma40 { get; set; }
+        public decimal Oma50 { get; set; }
+        public decimal Oma50t { get; set; }
+        public decimal Oma52 { get; set; }
+        public decimal Oma53 { get; set; }
+        public decimal Oma54 { get; set; }
+        public decimal Oma54x { get; set; }
+        public decimal Oma54t { get; set; }
+        public decimal Oma55 { get; set; }
+        public decimal Oma56 { get; set; }
+        public decimal Oma56x { get; set; }
+        public decimal Oma56t { get; set; }
+        public decimal Oma57 { get; set; }
+        public decimal? Oma58 { get; set; }
+        public decimal? Oma59 { get; set; }
+        public decimal? Oma59x { get; set; }
+        public decimal? Oma59t { get; set; }
+        public decimal? Oma60 { get; set; }
+        public decimal? Oma61 { get; set; }
+        public string Oma62 { get; set; }
+        public string Oma63 { get; set; }
+        public string Oma99 { get; set; }
+        public string Omaconf { get; set; }
+        public string Omavoid { get; set; }
+        public string Omavoid2 { get; set; }
+        public short? Omaprsw { get; set; }
+        public string Omauser { get; set; }
+        public string Omagrup { get; set; }
+        public string Omamodu { get; set; }
+        public DateTime? Omadate { get; set; }
+        public string Oma64 { get; set; }
+        public string Omamksg { get; set; }
+        public string Oma65 { get; set; }
+        public decimal? Oma51f { get; set; }
+        public decimal? Oma51 { get; set; }
+        public string Oma66 { get; set; }
+        public string Oma67 { get; set; }
+        public string Oma930 { get; set; }
+        public string Oma181 { get; set; }
+        public string Oma68 { get; set; }
+        public string Oma69 { get; set; }
+        public string Oma992 { get; set; }
+        public string Omaud01 { get; set; }
+        public string Omaud02 { get; set; }
+        public string Omaud03 { get; set; }
+        public string Omaud04 { get; set; }
+        public string Omaud05 { get; set; }
+        public string Omaud06 { get; set; }
+        public decimal? Omaud07 { get; set; }
+        public decimal? Omaud08 { get; set; }
+        public decimal? Omaud09 { get; set; }
+        public int? Omaud10 { get; set; }
+        public int? Omaud11 { get; set; }
+        public int? Omaud12 { get; set; }
+        public DateTime? Omaud13 { get; set; }
+        public DateTime? Omaud14 { get; set; }
+        public DateTime? Omaud15 { get; set; }
+        public string Oma70 { get; set; }
+        public string Omalegal { get; set; }
+        public string Oma71 { get; set; }
+        public string Omaoriu { get; set; }
+        public string Omaorig { get; set; }
+        public string Oma72 { get; set; }
+        public short? Oma165 { get; set; }
+        public decimal Oma73 { get; set; }
+        public decimal Oma73f { get; set; }
+        public string Oma74 { get; set; }
+    }
+}

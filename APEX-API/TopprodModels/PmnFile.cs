@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+
+#nullable disable
+
+namespace APEX_API.TopprodModels
+{
+    public partial class PmnFile
+    {
+        public string Pmn01 { get; set; }
+        public string Pmn011 { get; set; }
+        public short Pmn02 { get; set; }
+        public string Pmn03 { get; set; }
+        public string Pmn04 { get; set; }
+        public string Pmn041 { get; set; }
+        public string Pmn05 { get; set; }
+        public string Pmn06 { get; set; }
+        public string Pmn07 { get; set; }
+        public string Pmn08 { get; set; }
+        public decimal? Pmn09 { get; set; }
+        public string Pmn10 { get; set; }
+        public string Pmn11 { get; set; }
+        public decimal? Pmn121 { get; set; }
+        public string Pmn122 { get; set; }
+        public string Pmn123 { get; set; }
+        public decimal? Pmn13 { get; set; }
+        public string Pmn14 { get; set; }
+        public string Pmn15 { get; set; }
+        public string Pmn16 { get; set; }
+        public string Pmn18 { get; set; }
+        public decimal Pmn20 { get; set; }
+        public string Pmn23 { get; set; }
+        public string Pmn24 { get; set; }
+        public short? Pmn25 { get; set; }
+        public decimal? Pmn30 { get; set; }
+        public decimal Pmn31 { get; set; }
+        public decimal? Pmn31t { get; set; }
+        public short? Pmn32 { get; set; }
+        public DateTime? Pmn33 { get; set; }
+        public DateTime? Pmn34 { get; set; }
+        public DateTime? Pmn35 { get; set; }
+        public DateTime? Pmn36 { get; set; }
+        public DateTime? Pmn37 { get; set; }
+        public string Pmn38 { get; set; }
+        public string Pmn40 { get; set; }
+        public string Pmn41 { get; set; }
+        public string Pmn42 { get; set; }
+        public short? Pmn43 { get; set; }
+        public short? Pmn431 { get; set; }
+        public decimal? Pmn44 { get; set; }
+        public short? Pmn45 { get; set; }
+        public short? Pmn46 { get; set; }
+        public decimal Pmn50 { get; set; }
+        public decimal Pmn51 { get; set; }
+        public string Pmn52 { get; set; }
+        public decimal Pmn53 { get; set; }
+        public string Pmn54 { get; set; }
+        public decimal Pmn55 { get; set; }
+        public string Pmn56 { get; set; }
+        public decimal Pmn57 { get; set; }
+        public decimal Pmn58 { get; set; }
+        public string Pmn59 { get; set; }
+        public short? Pmn60 { get; set; }
+        public string Pmn61 { get; set; }
+        public decimal Pmn62 { get; set; }
+        public string Pmn63 { get; set; }
+        public string Pmn64 { get; set; }
+        public string Pmn65 { get; set; }
+        public string Pmn66 { get; set; }
+        public string Pmn67 { get; set; }
+        public string Pmn68 { get; set; }
+        public short? Pmn69 { get; set; }
+        public decimal? Pmn70 { get; set; }
+        public string Pmn71 { get; set; }
+        public string Pmn80 { get; set; }
+        public decimal? Pmn81 { get; set; }
+        public decimal? Pmn82 { get; set; }
+        public string Pmn83 { get; set; }
+        public decimal? Pmn84 { get; set; }
+        public decimal? Pmn85 { get; set; }
+        public string Pmn86 { get; set; }
+        public decimal? Pmn87 { get; set; }
+        public decimal? Pmn88 { get; set; }
+        public decimal? Pmn88t { get; set; }
+        public string Pmn930 { get; set; }
+        public string Pmn401 { get; set; }
+        public decimal? Pmn90 { get; set; }
+        public string Pmn94 { get; set; }
+        public short? Pmn95 { get; set; }
+        public string Pmn96 { get; set; }
+        public string Pmn97 { get; set; }
+        public string Pmn98 { get; set; }
+        public string Pmn91 { get; set; }
+        public string Pmnud01 { get; set; }
+        public string Pmnud02 { get; set; }
+        public string Pmnud03 { get; set; }
+        public string Pmnud04 { get; set; }
+        public string Pmnud05 { get; set; }
+        public string Pmnud06 { get; set; }
+        public short? Pmnud07 { get; set; }
+        public decimal? Pmnud08 { get; set; }
+        public decimal? Pmnud09 { get; set; }
+        public int? Pmnud10 { get; set; }
+        public int? Pmnud11 { get; set; }
+        public int? Pmnud12 { get; set; }
+        public DateTime? Pmnud13 { get; set; }
+        public DateTime? Pmnud14 { get; set; }
+        public DateTime? Pmnud15 { get; set; }
+        public string Pmn89 { get; set; }
+        public string Pmn72 { get; set; }
+        public string Pmn73 { get; set; }
+        public string Pmn74 { get; set; }
+        public string Pmn75 { get; set; }
+        public short? Pmn76 { get; set; }
+        public string Pmn77 { get; set; }
+        public string Pmnplant { get; set; }
+        public string Pmnlegal { get; set; }
+        public string Pmn012 { get; set; }
+        public string Pmn919 { get; set; }
+        public string Pmn99 { get; set; }
+        public string TaPmn01 { get; set; }
+        public string TaPmn02 { get; set; }
+    }
+}

@@ -97,8 +97,10 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult OrderListPut([FromBody] JsonElement feStr)
         {
-
-            _orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
+            dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
+            dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
+            double BasePrice = _orderService.BasePrice(Convert.ToString(OData["CustId"]),Convert.ToString(OdData["PartNo"]),Convert.ToString(OData["Currency"]),Convert.ToInt32(OdData["Qty"]));
+            //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
             return Ok(new { code = 200, message = "Save Success" });
         }
 
