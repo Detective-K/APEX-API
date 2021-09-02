@@ -72,20 +72,34 @@ namespace APEX_API.Controllers
         {
             var joinList = _orderService.GetCustInfo(CustId);
             return Ok(new { code = 200, CustInfo = joinList });
-            //return System.Text.Json.JsonSerializer.Serialize(joinList);
         }
 
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public ActionResult GetProductPrice(string feStr)
+        public ActionResult ProductPrice(string feStr)
         {
-            dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
-            dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-            double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OdData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OdData["Qty"]));
+            if (!string.IsNullOrEmpty(feStr))
+            {
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
 
-            return Ok(new { code = 200, BasePrice = BasePrice });
-            //return System.Text.Json.JsonSerializer.Serialize(joinList);
+                return Ok(new { code = 200, BasePrice = BasePrice });
+            }
+            return BadRequest(new { code = 400  , message = "Error Request"});
+        }
+
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
+        public ActionResult ApexDiscount(string feStr)
+        {
+            if (!string.IsNullOrEmpty(feStr))
+            {
+
+
+                return Ok(new { code = 200, Discount = "" });
+            }
+            return BadRequest(new { code = 400, message = "Error Request" });
         }
 
         // POST api/<OrderController>
@@ -94,15 +108,19 @@ namespace APEX_API.Controllers
         public ActionResult OrderList([FromBody] JsonElement feStr)
         {
             //Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["SaleInfo"].ToString() == "[]"
-            Order Value = Utf8Json.JsonSerializer.Deserialize<Order>(feStr.ToString());
-            if ( Value.CustId == "BAI060")
+            if (!string.IsNullOrEmpty(feStr.ToString()))
             {
-                return BadRequest(new { code = 400, message = "Add Error" });
-            }
-            string TempOD = _orderService.GetOrderID(Value);
-            _orderService.InsertOrder(Value , TempOD);
+                Order Value = Utf8Json.JsonSerializer.Deserialize<Order>(feStr.ToString());
+                if (Value.CustId == "BAI060")
+                {
+                    return BadRequest(new { code = 400, message = "Add Error" });
+                }
+                string TempOD = _orderService.GetOrderID(Value);
+                _orderService.InsertOrder(Value, TempOD);
 
-            return Ok(new { code = 200, message = "Save Success" });
+                return Ok(new { code = 200, message = "Save Success" });
+            }
+            return BadRequest(new { code = 400, message = "Error Request" });
         }
 
         // PUT api/<OrderController>/5
@@ -110,11 +128,15 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult OrderListPut([FromBody] JsonElement feStr)
         {
-            dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
-            dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-            double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]),Convert.ToString(OdData["PartNo"]),Convert.ToString(OData["Currency"]),Convert.ToInt32(OdData["Qty"]));
-            //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
-            return Ok(new { code = 200, message = "Save Success" });
+            if (!string.IsNullOrEmpty(feStr.ToString()))
+            {
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
+                dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
+                double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OdData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OdData["Qty"]));
+                //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
+                return Ok(new { code = 200, message = "Save Success" });
+            }
+            return BadRequest(new { code = 400, message = "Error Request" });
         }
 
         // GET api/<OrderController>/5
@@ -136,14 +158,17 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult Post([FromBody] JsonElement feStr)
         {
-            List<Cust> CustInfo = _orderService.CheckCustsMember(feStr.ToString());
-            List<Sale> SaleInfo = _orderService.CheckSalesMember(feStr.ToString());
-            if (CustInfo.Count == 0) CustInfo.Add( new Cust { CustId = ""   });
-            if (SaleInfo.Count == 0) SaleInfo.Add(new Sale { SalesId = "" });
-
-            if ((CustInfo.Count > 0) || (SaleInfo.Count > 0))
+            if (!string.IsNullOrEmpty(feStr.ToString()))
             {
-                return Ok(new { code = 200, message = "Login successful", CustInfo = CustInfo, SaleInfo = SaleInfo });
+                List<Cust> CustInfo = _orderService.CheckCustsMember(feStr.ToString());
+                List<Sale> SaleInfo = _orderService.CheckSalesMember(feStr.ToString());
+                if (CustInfo.Count == 0) CustInfo.Add(new Cust { CustId = "" });
+                if (SaleInfo.Count == 0) SaleInfo.Add(new Sale { SalesId = "" });
+
+                if ((CustInfo.Count > 0) || (SaleInfo.Count > 0))
+                {
+                    return Ok(new { code = 200, message = "Login successful", CustInfo = CustInfo, SaleInfo = SaleInfo });
+                }
             }
             return BadRequest(new { code = 400, message = "Unable to login" });
         }
