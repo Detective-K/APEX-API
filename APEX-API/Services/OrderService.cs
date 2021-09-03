@@ -13,7 +13,7 @@ namespace APEX_API.Services
         private readonly web2Context _web2Context;
         private readonly DataContext _DataContext;
 
-        public OrderService(web2Context context , DataContext oracontext )
+        public OrderService(web2Context context, DataContext oracontext)
         {
             _web2Context = context;
             _DataContext = oracontext;
@@ -170,7 +170,7 @@ namespace APEX_API.Services
 
                     temp_2 = Convert.ToDouble(temp_1);
 
-                    temp_5 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);                 
+                    temp_5 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);
 
                 }
                 else
@@ -181,7 +181,7 @@ namespace APEX_API.Services
             else
             {  //非減速機
 
-                if (obkData2.Count() >0)
+                if (obkData2.Count() > 0)
                 {
                     temp_1 = obkData2.SingleOrDefault().Obk08.ToString();
 
@@ -192,6 +192,347 @@ namespace APEX_API.Services
             }
 
             return temp_5;
+        }
+
+        //取單價,針對客戶的每個產品 getMB008(客戶ID,商品ID,幣別,數量)
+        public Double GetSellingPrice(string MB001, string MB002, string MB004, int MB003)
+        {
+            String temp_1 = "0";
+
+            Double temp_2 = 0;
+
+            String temp_3 = "0";
+
+            Double temp_4 = 0;
+
+            Double temp_5 = 0;
+
+            Boolean tmp_IsAgent = false;
+
+            //先確定是代理商還是散客
+            var Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == MB001);
+
+            temp_3 = GetDiscountRate(MB001);
+            if (Occ_FileData.Count() > 0)
+            {
+                if (("A0001,D0001").ToString().IndexOf(Occ_FileData.SingleOrDefault().Occ03) != -1)
+                {
+                    tmp_IsAgent = true;
+                }
+            }
+
+            //先找是否在obk_file有資料,代表特殊價
+            var Obk_FileData = _DataContext.ObkFiles.Where(Obk => Obk.Obk02 == MB001 && Obk.Obk01 == MB002 && Obk.Obk05 == MB004 && Obk.Obkacti == "Y");
+
+            if (Obk_FileData.Count() > 0)
+            {
+                temp_1 = Obk_FileData.SingleOrDefault().Obk08.ToString();
+
+                temp_2 = Convert.ToDouble(temp_1);
+
+                temp_5 = temp_2;
+            }
+            else
+            {
+                //AT,ATB,AM 系列 不乘上商品價格
+                string[] AT_AM_List = new string[] { "25", "26", "27", "28", "29", "30", "31", "32", "33", "57", "58", "59", "60", "61", "B6", "B7", "B8", "B9", "C1", "C2", "C3", "C4", "C5", "C7", "C8", "C8" };
+
+                //P2代 找tc_pmr_file , PD PDR PL PLR 不打折
+                //20190101 R40,RB3 不是找tc_pmr_file
+                //string[] P2_List = new string[] { "69", "D4", "66", "D2", "67", "D3", "65", "D1", "86", "D5", "40", "B3", "E1", "E2", "D9", "E9" };
+                string[] P2_List = new string[] { "69", "D4", "66", "D2", "67", "D3", "65", "D1", "86", "D5", "E1", "E2", "D9", "E9" };
+
+                var ObkAE_FileData = _DataContext.ObkFiles.Where(Obk => Obk.Obk02 == "AE0002" && Obk.Obk01 == MB002 && Obk.Obk05 == MB004 && Obk.Obkacti == "Y");
+
+
+                if (("A,C").ToString().Contains(MB002.Substring(0, 1)))  //減速機
+                {
+                    //AT,ATB,AM 系列 代理商不乘上商品價格,散客要.
+                    if (Array.IndexOf(AT_AM_List, MB002.Substring(1, 2)) != -1)
+                    {
+
+                        if (ObkAE_FileData.Count() > 0)
+                        {
+                            temp_1 = ObkAE_FileData.SingleOrDefault().Obk08.ToString();
+
+                            temp_2 = Convert.ToDouble(temp_1);
+
+                            if (tmp_IsAgent)
+                            {
+                                temp_4 = 1;
+                            }
+                            else
+                            {
+                                temp_4 = Convert.ToDouble(temp_3) / 100;
+                            }
+
+                            temp_5 = (temp_2 * temp_4);
+
+                            temp_5 = System.Math.Round(temp_5, 0, MidpointRounding.AwayFromZero);
+                        }
+                    }//P2代 找tc_pmr_file
+                    else if (Array.IndexOf(P2_List, MB002.Substring(1, 2)) != -1)
+                    {
+                        string tmp_ima75 = "", tmp_ima76 = "", tmp_imabacklash = "";
+                        //先找出料號(ima_file)的Model(ima75),stage(ima76),backlash(ima01最後1碼 0,1,X)
+                        var Ima_FileData = _DataContext.ImaFiles.Where(Ima => Ima.Ima01 == MB002 && Ima.Imaacti == "Y");
+
+                        if (Ima_FileData.Count() > 0)
+                        {
+                            tmp_ima75 = Ima_FileData.SingleOrDefault().Ima75.ToString();
+                            tmp_ima76 = Ima_FileData.SingleOrDefault().Ima76.ToString();
+                            tmp_imabacklash = Ima_FileData.SingleOrDefault().Ima01.ToString().Substring(11, 1);
+
+                            //先找是否有在tc_pmr_file 有客戶的標價  //20181003
+                            var TcPmr_FileData = _DataContext.TcPmrFiles.Where(TP => TP.TcPmr08 == MB001 && TP.TcPmr01 == tmp_ima75 && TP.TcPmr02 == Convert.ToInt32(tmp_ima76) && TP.TcPmr021 == MB004 && TP.TcPmr022 == tmp_imabacklash && TP.TcPmr03 <= MB003 && TP.TcPmr04 >= MB003);
+
+                            if (TcPmr_FileData.Count() > 0)
+                            {
+                                temp_1 = TcPmr_FileData.SingleOrDefault().TcPmr05.ToString();
+
+                                temp_2 = Convert.ToDouble(temp_1);
+
+                                temp_5 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);
+                            }
+                            else
+                            {
+
+                                var TcPmrAny_FileData = _DataContext.TcPmrFiles.Where(TP => TP.TcPmr08 == "any" && TP.TcPmr01 == tmp_ima75 && TP.TcPmr02 == Convert.ToInt32(tmp_ima76) && TP.TcPmr021 == MB004 && TP.TcPmr022 == tmp_imabacklash && TP.TcPmr03 <= MB003 && TP.TcPmr04 >= MB003);
+
+
+                                if (TcPmrAny_FileData.Count() > 0)
+                                {
+                                    temp_1 = TcPmrAny_FileData.SingleOrDefault().TcPmr05.ToString();
+
+                                    temp_2 = Convert.ToDouble(temp_1);
+
+                                    //BAK001 APEX KOREA
+                                    //BAJ002 APEX JAPAN
+                                    //BAC001 上海
+                                    //BAC015 深圳
+                                    //BAC016 重慶
+                                    //BAC017 北京
+                                    //BAC019 廈門
+                                    //PII價格代降20% ， 2016/3/17起生效
+                                    //69,D4,66,D2,67,D3,65,D1,86,D5
+                                    //PD PDR PL PLR不包含在降價系列
+                                    //2019/1/1 有新價取消折扣
+                                    string[] P001_List = new string[] { "E1", "E2", "D9", "E9" };
+
+                                    if (Array.IndexOf(P001_List, MB002.Substring(1, 2)) == -1)
+                                    {
+                                        string[] MB001_List = new string[] { "BAK001", "BAJ002", "BAC001", "BAC001-1", "BAC015", "BAC016", "BAC017", "BAC019", "BAC019-1" };
+
+                                        if (Array.IndexOf(MB001_List, MB001) != -1)
+                                        {
+                                            //temp_2 = temp_2 * 0.8;
+                                            temp_2 = temp_2 * 1;
+                                        }
+
+                                        //大匠AA0003 大研AA0003-1  明震AA0005  降10%  3/18
+                                        //2019/1/1 有新價取消折扣
+                                        string[] MB001_List2 = new string[] { "AA0003", "AA0003-1", "AA0005" };
+
+                                        if (Array.IndexOf(MB001_List2, MB001) != -1)
+                                        {
+                                            //temp_2 = temp_2 * 0.9;
+                                            temp_2 = temp_2 * 1;
+                                        }
+                                    }
+
+                                    temp_2 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);
+
+                                    if (tmp_IsAgent)
+                                    {
+                                        temp_4 = 1;
+                                    }
+                                    else
+                                    {
+                                        temp_4 = Convert.ToDouble(temp_3) / 100;
+                                    }
+
+                                    temp_5 = (temp_2 * temp_4);
+
+                                    temp_5 = System.Math.Round(temp_5, 0, MidpointRounding.AwayFromZero);
+
+                                }
+                                else
+                                {
+                                    temp_5 = 0; //20190122 防止連線未關,在最後在return
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (Obk_FileData.Count() > 0)
+                        {
+
+                            temp_1 = Obk_FileData.SingleOrDefault().Obk08.ToString();
+
+                            temp_2 = Convert.ToDouble(temp_1);
+
+                            temp_2 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);
+
+                            temp_4 = Convert.ToDouble(temp_3) / 100;
+
+                            temp_5 = (temp_2 * temp_4);
+
+                            temp_5 = System.Math.Round(temp_5, 0, MidpointRounding.AwayFromZero);
+                        }
+                    }
+
+                }
+                else
+                {  //非減速機
+
+                    if (Obk_FileData.Count() > 0)
+                    {
+
+                        temp_1 = Obk_FileData.SingleOrDefault().Obk08.ToString();
+
+                        temp_2 = Convert.ToDouble(temp_1);
+
+                        if (tmp_IsAgent)
+                        {
+                            temp_4 = 1;
+                        }
+                        else
+                        {
+                            temp_4 = Convert.ToDouble(temp_3) / 100;
+                        }
+
+                        temp_5 = (temp_2 * temp_4);
+
+                        temp_5 = System.Math.Round(temp_5, 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+
+            }
+
+            return temp_5;
+        }
+
+
+        /// <summary>取客戶的折扣率</summary>
+        /// <param name="occ01">客戶編號</param>
+        /// <returns></returns>
+        public String GetDiscountRate(string occ01)
+        {
+
+            String temp_1 = "";
+
+            var Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == occ01);
+
+            if (Occ_FileData.Count() > 0)
+            {
+                if (string.IsNullOrEmpty(Convert.ToString(Occ_FileData.SingleOrDefault().Occud07)) || Convert.ToString(Occ_FileData.SingleOrDefault().Occud07) == "0")
+                {
+                    temp_1 = "200";
+                }
+                else
+                {
+                    temp_1 = Occ_FileData.SingleOrDefault().Occud07.ToString();
+                }
+            }
+
+            return temp_1;
+        }
+
+        public double GetChangeOilPrice(string PartNo, double DiscountPrice, string LubData, string CustId, string Currency, string Spec)
+        {
+            //LubData 需確認提供資料格式
+            string CheckPartNo = "65,66,67,69,86,D1,D2,D3,D4,D5,E1,D9,E2,E9";
+            Double tmp_chang_lub_price;
+            Double FinalCharge = 0;
+
+
+            if (CustId != "BAJ003")
+            {
+                if (CheckPartNo.Contains(PartNo.Substring(1, 2)))
+                {
+                    if (LubData == "1" || LubData == "2")
+                    {
+                        tmp_chang_lub_price = System.Math.Round((DiscountPrice * 0.15), 0, MidpointRounding.AwayFromZero);
+                        if (Currency == "EUR")
+                        {
+                            if (tmp_chang_lub_price < 18)
+                            {
+                                tmp_chang_lub_price = 18;
+                            }
+                        }
+                        else if (Currency == "USD")
+                        {
+                            if (tmp_chang_lub_price < 20)
+                            {
+                                tmp_chang_lub_price = 20;
+                            }
+                        }
+                        else if (Currency == "TWD")
+                        {
+                            if (tmp_chang_lub_price < 600)
+                            {
+                                tmp_chang_lub_price = 600;
+                            }
+                        }
+                        else if (Currency == "CNY")
+                        {
+                            if (tmp_chang_lub_price < 130)
+                            {
+                                tmp_chang_lub_price = 130;
+                            }
+                        }
+
+                        FinalCharge = System.Math.Round((DiscountPrice + tmp_chang_lub_price), 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+                else if (Spec.Substring(0, 2) == "AT")
+                {
+                    if (LubData == "1" || LubData == "2")
+                    {
+                        //加收10%並且4捨五入
+                        FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+                else if (PartNo.Substring(1, 2) == "G4" || PartNo.Substring(1, 2) == "G5")
+                {
+                    if (LubData != "Food Grade Grease")
+                    {
+                        //加收10%並且4捨五入
+                        //tmp_price2 = System.Math.Round((tmp_price2 * 1.1), 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+                else if (PartNo.Substring(1, 2) == "42")
+                {
+                    if (LubData != "Grease")
+                    {
+                        //加收10%並且4捨五入
+                        FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+                else
+                {
+                    if (LubData == "1")
+                    {
+                        FinalCharge = System.Math.Round((DiscountPrice * 1.05), 0, MidpointRounding.AwayFromZero);
+                    }
+                    else if (LubData == "2" || LubData == "3")
+                    {
+                        //加收10%並且4捨五入
+                        FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
+                    }
+                }
+            }
+            else
+            {
+                if (LubData == "0")
+                {
+                    //加收10%並且4捨五入
+                    FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
+                }
+            }
+
+            return FinalCharge;
         }
 
         // <summary>取大訂單折扣，GetDiscount(i=幣別,j=金額,k=數量,ima01=料號)     
@@ -1068,14 +1409,14 @@ namespace APEX_API.Services
                 OrderDetail _orderDetail = new OrderDetail
                 {
                     OrderId = Convert.ToString(tempOrderDetail["OrderId"]),
-                    OrderDetailId = Convert.ToInt32 (tempOrderDetail["OrderDetailId"]),
+                    OrderDetailId = Convert.ToInt32(tempOrderDetail["OrderDetailId"]),
                     Qty = Convert.ToInt32(tempOrderDetail["Qty"]),
                     Memo = Convert.ToString(tempOrderDetail["Memo"]),
                     SubTot = Convert.ToDouble(tempOrderDetail["SubTot"])
                 };
                 var update = _web2Context.OrderDetails.Where(x => x.OrderId == _orderDetail.OrderId && x.OrderDetailId == _orderDetail.OrderDetailId);
                 if (update.Count() > 0)
-                {                   
+                {
                     update.SingleOrDefault().Qty = _orderDetail.Qty;
                     update.SingleOrDefault().Memo = _orderDetail.Memo;
                     update.SingleOrDefault().SubTot = _orderDetail.SubTot;

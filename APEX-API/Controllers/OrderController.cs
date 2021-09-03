@@ -47,7 +47,7 @@ namespace APEX_API.Controllers
             //string username = jsonObject.username;
             //string password = jsonObject.password;
             //int MemberCount  = _web2Context.Sales.Where(x => x.SalesId == username && x.Pwd == password && x.ClaimLevel !=0).Count();
-            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new {x.ClaimLevel, x.Pwd , x.SalesId}).ToList();
+            var ks = _web2Context.Sales.Where(x => x.SalesId == "D00482").Select(x => new { x.ClaimLevel, x.Pwd, x.SalesId }).ToList();
             var ls = Jil.JSON.Deserialize<dynamic>(Utf8Json.JsonSerializer.ToJsonString(ks));
             //if (MemberCount > 0)
             //{
@@ -68,7 +68,7 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public ActionResult CustSearchInfo (string CustId)
+        public ActionResult CustSearchInfo(string CustId)
         {
             var joinList = _orderService.GetCustInfo(CustId);
             return Ok(new { code = 200, CustInfo = joinList });
@@ -79,14 +79,45 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult ProductPrice(string feStr)
         {
+            Double BasePrice =0;
+            Double SellingPrice = 0;
+            Double Discount =0;
+            Double DiscountPrice = 0;
+            Double FinalCharge = 0;
             if (!string.IsNullOrEmpty(feStr))
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
-                double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
+                switch (Convert.ToString(OData["OrderType "]))
+                {
+                    case "Rack":
 
-                return Ok(new { code = 200, BasePrice = BasePrice });
+                        break;
+
+                    default:
+                        BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
+                        Discount = _orderService.GetDiscount(Convert.ToString(OData["Currency"]), BasePrice, Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
+                        SellingPrice = _orderService.GetSellingPrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
+                        DiscountPrice = System.Math.Round(SellingPrice * (1 - Discount), 0, MidpointRounding.AwayFromZero);
+                        FinalCharge = DiscountPrice;
+                        if (("A,C").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) != -1)
+                        {
+                            FinalCharge = _orderService.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
+                        }
+                        if (Convert.ToString(OData["adapter_cus"]).Length > 0)
+                        {
+                            if (("G4,G5").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) == -1)
+                            {
+                                if (Convert.ToString(OData["adapter_cus"]).Substring(0, 1) == "O")
+                                {
+                                    FinalCharge = 0;//20190214 O品號要另外報價
+                                }
+                            }
+                        }
+                        break;
+                }             
+                return Ok(new { code = 200, Discount = Discount, FinalCharge = FinalCharge });
             }
-            return BadRequest(new { code = 400  , message = "Error Request"});
+            return BadRequest(new { code = 400, message = "Error Request" });
         }
 
         [HttpGet("[action]")]
@@ -95,9 +126,9 @@ namespace APEX_API.Controllers
         {
             if (!string.IsNullOrEmpty(feStr))
             {
-
-
-                return Ok(new { code = 200, Discount = "" });
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                double Discount = _orderService.GetDiscount(Convert.ToString(OData["Currency"]), Convert.ToString(OData["UnitPrice"]), Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
+                return Ok(new { code = 200, Discount = Discount });
             }
             return BadRequest(new { code = 400, message = "Error Request" });
         }
