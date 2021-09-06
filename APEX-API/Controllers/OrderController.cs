@@ -79,20 +79,28 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public ActionResult ProductPrice(string feStr)
         {
-            Double BasePrice =0;
+            Double BasePrice = 0;
             Double SellingPrice = 0;
-            Double Discount =0;
+            Double Discount = 0;
             Double DiscountPrice = 0;
             Double FinalCharge = 0;
             if (!string.IsNullOrEmpty(feStr))
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
-                switch (Convert.ToString(OData["OrderType "]))
+                switch (Convert.ToString(OData["OrderType"]))
                 {
                     case "Rack":
-
+                        BasePrice = _orderService.GetRackBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
+                        Discount = _orderService.GetRackLargeDiscount(Convert.ToString(OData["Spec"]), Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["CustId"]));
+                        DiscountPrice = System.Math.Round(BasePrice * (1 - Discount), 0, MidpointRounding.AwayFromZero);
+                        FinalCharge = DiscountPrice;
                         break;
-
+                    case "Pinion":
+                        BasePrice = _orderService.GetRackBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
+                        Discount = _orderService.GetPinionLargeDiscount(Convert.ToString(OData["Spec"]), Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["CustId"]));
+                        DiscountPrice = System.Math.Round(BasePrice * (1 - Discount), 0, MidpointRounding.AwayFromZero);
+                        FinalCharge = DiscountPrice;
+                        break;
                     default:
                         BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
                         Discount = _orderService.GetDiscount(Convert.ToString(OData["Currency"]), BasePrice, Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
@@ -102,19 +110,24 @@ namespace APEX_API.Controllers
                         if (("A,C").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) != -1)
                         {
                             FinalCharge = _orderService.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
-                        }
-                        if (Convert.ToString(OData["adapter_cus"]).Length > 0)
-                        {
-                            if (("G4,G5").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) == -1)
+                            if (!string.IsNullOrEmpty(Convert.ToString(OData["AdapterCus"])))
                             {
-                                if (Convert.ToString(OData["adapter_cus"]).Substring(0, 1) == "O")
+                                if (("G4,G5").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) == -1)
                                 {
-                                    FinalCharge = 0;//20190214 O品號要另外報價
+                                    if (Convert.ToString(OData["AdapterCus"]).Substring(0, 1) == "O")
+                                    {
+                                        FinalCharge = 0;//20190214 O品號要另外報價
+                                    }
                                 }
                             }
                         }
+                        else
+                        {
+                            DiscountPrice = 0;
+                        }
+            
                         break;
-                }             
+                }
                 return Ok(new { code = 200, Discount = Discount, FinalCharge = FinalCharge });
             }
             return BadRequest(new { code = 400, message = "Error Request" });

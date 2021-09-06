@@ -135,6 +135,2168 @@ namespace APEX_API.Services
             return myLists;
         }
 
+        //取基礎單價,get_Rack_base_price(客戶編號,料號ID,幣別 ,數量) , 用於判斷大訂單折扣
+        //依客戶的幣別判斷USD NTD RMB EURO > AE0002  , 除了以下兩個特別
+        //Iran > BAI006
+        //Turkey > BAT002
+        public Double GetRackBasePrice(string MB001, string MB002, string MB004, int MB003)
+        {
+            String temp_1 = "0";
+
+            String temp_occud07 = "0";
+
+            Double temp_2 = 0;
+
+            Double temp_5 = 0;
+
+            List<string> ProjectPrice = new List<string> { "BAC001", "BAC001-1", "BAC015", "BAC016", "BAC017", "BAC019", "BAC019-1" };
+
+            //特別的客戶
+            string[] MB001_List = new string[] { "BAI006", "BAT002" };
+
+            //除了特別客戶其它用AE0002
+            if (Array.IndexOf(MB001_List, MB001) != -1)
+            {
+                List<ObkFile> Obk_FileData = _DataContext.ObkFiles.Where(obk => obk.Obk01 == MB002 && obk.Obk02 == MB001 && obk.Obk05 == MB004).ToList();
+                temp_1 = Obk_FileData.Count() > 0 ? Obk_FileData.SingleOrDefault().Obk08.ToString() : "0";
+            }
+            else
+            {
+                List<ObkFile> Obk_FileData = _DataContext.ObkFiles.Where(obk => obk.Obk01 == MB002 && obk.Obk02 == "AE0002" && obk.Obk05 == MB004).ToList();
+                temp_1 = Obk_FileData.Count() > 0 ? Obk_FileData.SingleOrDefault().Obk08.ToString() : "0";
+            }
+
+
+            List<OccFile> Occ_FileData = _DataContext.OccFiles.Where(occ => occ.Occ01 == MB001).ToList();
+
+            if (Occ_FileData.Count() > 0)
+            {
+                if (("A0001,D0001").ToString().Contains(Occ_FileData.SingleOrDefault().Occ03.ToString()))
+                {
+                    temp_occud07 = "100";
+                }
+                else
+                {
+                    temp_occud07 = Occ_FileData.SingleOrDefault().Occud07.ToString();
+                }
+            }
+            else
+            {
+                temp_occud07 = "0";
+            }
+
+
+            temp_2 = Convert.ToDouble(temp_1) * (Convert.ToDouble(temp_occud07) / 100);
+
+            temp_5 = System.Math.Round(temp_2, 0, MidpointRounding.AwayFromZero);
+
+            //專案價
+            if (ProjectPrice.Contains(MB001))
+            {
+                List<TcShfFile> Tcsh_FileData = _DataContext.TcShfFiles.Where(tc => tc.TcShf01 == MB002).ToList();
+
+                if (Tcsh_FileData.Count() > 0)
+                {
+                    switch (Tcsh_FileData.SingleOrDefault().TcShf02.ToString())
+                    {
+                        case "0206R100C10":
+                            temp_5 = 320;
+                            break;
+                        case "026MR100C10":
+                            temp_5 = 285;
+                            break;
+                        case "036MR100C10":
+                            temp_5 = 420;
+                            break;
+                        case "026CR100C10":
+                            temp_5 = 225;
+                            break;
+                        case "0208R100C10":
+                            temp_5 = 150;
+                            break;
+                        case "0210R100C10":
+                            temp_5 = 220;
+                            break;
+                        default:
+                            break;
+                    };
+                }
+            }
+            return temp_5;
+        }
+        /// <summary>20200708 R&P 大訂單折扣,get_Rack_Large_Order_Discount_20200708(OrderCode,數量,客戶)
+        public Double GetRackLargeDiscount(string p_Ordercode, Int16 p_Qty, string p_Cust_No)
+        {
+            double l_Discount = 0;
+            double l_Rack_Length = 0;
+            string l_Rack_Quality = "";
+            double l_Rack_Mn = 0;
+
+            List<TcShgFile> TcShg_FileData = _DataContext.TcShgFiles.Where(tcShg => tcShg.TcShg10 == "APEX" && tcShg.TcShg01 == p_Ordercode ).ToList();
+
+            if (TcShg_FileData.Count()>0)
+            {
+                l_Rack_Length = Convert.ToDouble(TcShg_FileData.SingleOrDefault().TcShg11);
+                l_Rack_Quality = Convert.ToString(TcShg_FileData.SingleOrDefault().TcShg02);
+                l_Rack_Mn = Convert.ToDouble(TcShg_FileData.SingleOrDefault().TcShg03);
+
+                //Q6,Q6M,Q6C,Mn=1====================Begin
+                if (l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 1)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 108 && p_Qty < 208)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 208 && p_Qty < 390)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 390 && p_Qty < 780)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 780 && p_Qty < 1560)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 1560)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 54 && p_Qty < 104)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 104 && p_Qty < 195)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 195 && p_Qty < 390)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 390 && p_Qty < 780)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 780)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 54 && p_Qty < 96)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 96 && p_Qty < 195)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 195 && p_Qty < 390)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 390 && p_Qty < 585)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 585)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q6,Q6M,Q6C,Mn=1====================End
+
+                //Q8,Q10,Mn=1.5====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 1.5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 96 && p_Qty < 154)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 154 && p_Qty < 312)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 312 && p_Qty < 648)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 648 && p_Qty < 1296)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 1296)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 48 && p_Qty < 77)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 77 && p_Qty < 156)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 156 && p_Qty < 324)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 324 && p_Qty < 648)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 648)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 48 && p_Qty < 88)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 88 && p_Qty < 156)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 156 && p_Qty < 312)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 312 && p_Qty < 468)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 468)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=1.5====================End
+
+                //Q6,Q6M,Q6C,Mn=1.5====================Begin 
+                if (l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 1.5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 70 && p_Qty < 140)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 140 && p_Qty < 264)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 264 && p_Qty < 528)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 528 && p_Qty < 1056)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 1056)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 35 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 132)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 132 && p_Qty < 264)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 264 && p_Qty < 528)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 528)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 35 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 132)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 132 && p_Qty < 264)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 264 && p_Qty < 396)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 396)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q6,Q6M,Q6C,Mn=1.5====================End
+
+                //Q8H,Mn=2====================Begin            
+                if (l_Rack_Quality == "8H")
+                {
+                    if (l_Rack_Mn == 2)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 48 && p_Qty < 96)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 96 && p_Qty < 180)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 360)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 360 && p_Qty < 720)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 720)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 48)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 90)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 180)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 360)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 360)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 48)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 90)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 180)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 270)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 270)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8H,Mn=2====================End
+
+                //Q5H,Q5,Q6,Q6M,Q6C,Mn=2====================Begin            
+                if (l_Rack_Quality == "5H" || l_Rack_Quality == "5" || l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 2)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 60 && p_Qty < 96)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 96 && p_Qty < 200)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 400)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 400 && p_Qty < 800)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 800)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 48)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 100)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 200)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 400)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 400)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 48)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 100)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 200)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 300)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 300)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5H,Q5,Q6,Q6M,Q6C,Mn=2====================End
+
+
+                //Q8,Q10,Mn=2====================Begin            
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 2)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 48 && p_Qty < 80)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 80 && p_Qty < 180)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 360)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 360 && p_Qty < 720)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 720)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 40)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 40 && p_Qty < 90)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 180)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 360)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 360)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 48)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 90)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 180)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 180 && p_Qty < 270)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 270)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=2====================End
+
+                //Q5,Q6,Q6M,Q6C,Mn=2.5====================Begin            
+                if (l_Rack_Quality == "5" || l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 2.5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 128)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 256 && p_Qty < 512)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 512)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 256)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 192)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 192)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5,Q6,Q6M,Q6C,Mn=2.5====================End
+
+                //Q8,Q10,Mn=2.5====================Begin            
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 2.5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 128)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 256 && p_Qty < 512)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 512)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 256)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 192)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 192)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=2.5====================End
+
+                //Q8H,Mn=3====================Begin            
+                if (l_Rack_Quality == "8H")
+                {
+                    if (l_Rack_Mn == 3)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 128)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 256 && p_Qty < 512)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 512)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 256)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 192)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 192)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8H,Mn=3====================End
+
+                //Q5H,Q5,Q5+,Q6,Q6M,Q6C,Mn=3====================Begin            
+                if (l_Rack_Quality == "5H" || l_Rack_Quality == "5" || l_Rack_Quality == "5+" || l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 3)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 128)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 256 && p_Qty < 512)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 512)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 256)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 192)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 192)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5H,Q5,Q5+,Q6,Q6M,Q6C,Mn=3====================End
+
+                //Q8,Q10,Mn=3====================Begin            
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 3)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 70)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 70 && p_Qty < 128)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 256 && p_Qty < 512)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 512)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 256)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 256)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 35)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 35 && p_Qty < 64)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 64 && p_Qty < 128)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 128 && p_Qty < 192)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 192)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=3====================End
+
+                //Q8H,Mn=4====================Begin
+                if (l_Rack_Quality == "8H")
+                {
+                    if (l_Rack_Mn == 4)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 168)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 168 && p_Qty < 336)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 336 && p_Qty < 504)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 504)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 42)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 42 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 168)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 168 && p_Qty < 252)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 252)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 42)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 42 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 126)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 126 && p_Qty < 168)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 168)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8H,Mn=4====================End
+
+                //Q5H,Q5,Q5+,Q6,Q6M,Q6C,Mn=4====================Begin
+                if (l_Rack_Quality == "5H" || l_Rack_Quality == "5" || l_Rack_Quality == "5+" || l_Rack_Quality == "6" || l_Rack_Quality == "6M" || l_Rack_Quality == "6C")
+                {
+                    if (l_Rack_Mn == 4)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 168)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 168 && p_Qty < 336)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 336 && p_Qty < 504)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 504)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 42)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 42 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 168)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 168 && p_Qty < 252)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 252)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 42)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 42 && p_Qty < 84)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 84 && p_Qty < 126)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 126 && p_Qty < 168)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 168)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5H,Q5,Q5+,Q6,Q6M,Q6C,Mn=4====================End
+
+                //Q8,Q10,Mn=4====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 4)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 40 && p_Qty < 72)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 72 && p_Qty < 144)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 144 && p_Qty < 288)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 288 && p_Qty < 432)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 432)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 36)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 36 && p_Qty < 72)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 72 && p_Qty < 144)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 144 && p_Qty < 216)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 216)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 20 && p_Qty < 36)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 36 && p_Qty < 72)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 72 && p_Qty < 108)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 108 && p_Qty < 144)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 144)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=4====================End
+
+                //Q4,Q5,Q5+,Q6,Q6M,Mn=5====================Begin
+                if (l_Rack_Quality == "4" || l_Rack_Quality == "5" || l_Rack_Quality == "5+" || l_Rack_Quality == "6" || l_Rack_Quality == "6M")
+                {
+                    if (l_Rack_Mn == 5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 120)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 120 && p_Qty < 240)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 240 && p_Qty < 360)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 360)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 120)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 120 && p_Qty < 180)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 180)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 90)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 120)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 120)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q4,Q5,Q5+,Q6,Q6M,Mn=5====================End
+
+                //Q5H,Mn=5====================Begin
+                if (l_Rack_Quality == "5H")
+                {
+                    if (l_Rack_Mn == 5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 200)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 300)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 300)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 150)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 150)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 75)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 75 && p_Qty < 100)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 100)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5H,Mn=5====================End
+
+                //Q8,Q10,Mn=5====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 5)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 120)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 120 && p_Qty < 240)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 240 && p_Qty < 360)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 360)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 120)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 120 && p_Qty < 180)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 180)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 90)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 120)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 120)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=5====================End
+
+                //Q5H,Mn=6====================Begin
+                if (l_Rack_Quality == "5H")
+                {
+                    if (l_Rack_Mn == 6)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 18 && p_Qty < 40)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 40 && p_Qty < 80)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 80 && p_Qty < 160)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 160 && p_Qty < 240)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 240)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 9 && p_Qty < 20)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 20 && p_Qty < 40)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 40 && p_Qty < 80)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 80 && p_Qty < 120)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 120)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 9 && p_Qty < 20)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 20 && p_Qty < 40)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 40 && p_Qty < 60)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 80)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 80)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q5H,Mn=6====================End
+
+                //Q4,Q5,Q5+,Q6,Q6M,Mn=6====================Begin
+                if (l_Rack_Quality == "4" || l_Rack_Quality == "5" || l_Rack_Quality == "5+" || l_Rack_Quality == "6" || l_Rack_Quality == "6M")
+                {
+                    if (l_Rack_Mn == 6)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 200)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 300)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 300)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 150)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 150)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 75)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 75 && p_Qty < 100)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 100)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q4,Q5,Q5+,Q6,Q6M,Mn=6====================End
+
+                //Q8,Q10,Mn=6====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 6)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 24 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 200)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 200 && p_Qty < 300)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 300)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 100)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 100 && p_Qty < 150)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 150)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 25)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 25 && p_Qty < 50)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 50 && p_Qty < 75)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 75 && p_Qty < 100)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 100)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=6====================End
+
+                //Q4,Q5H,Q5,Q6,Q6M,Mn=8====================Begin
+                if (l_Rack_Quality == "4" || l_Rack_Quality == "5H" || l_Rack_Quality == "5" || l_Rack_Quality == "6" || l_Rack_Quality == "6M")
+                {
+                    if (l_Rack_Mn == 8)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 36 && p_Qty < 72)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 72 && p_Qty < 108)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 108 && p_Qty < 144)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 144)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 18 && p_Qty < 36)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 36 && p_Qty < 54)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 54 && p_Qty < 72)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 72)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 18 && p_Qty < 27)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 27 && p_Qty < 36)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 36)
+                            {
+                                l_Discount = 0.07;
+                            }
+                        }
+                    }
+                }
+                //Q4,Q5H,Q5,Q6,Q6M,Mn=8====================End
+
+                //Q8,Q10,Mn=8====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 8)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 36 && p_Qty < 72)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 72 && p_Qty < 108)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 108 && p_Qty < 144)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 144)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 18 && p_Qty < 36)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 36 && p_Qty < 54)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 54 && p_Qty < 72)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 72)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 18 && p_Qty < 27)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 27 && p_Qty < 36)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 36)
+                            {
+                                l_Discount = 0.07;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=8====================End
+
+
+                //Q4,Q5H,Q5,Q6,Q6M,Mn=10====================Begin
+                if (l_Rack_Quality == "4" || l_Rack_Quality == "5H" || l_Rack_Quality == "5" || l_Rack_Quality == "6" || l_Rack_Quality == "6M")
+                {
+                    if (l_Rack_Mn == 10)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 90)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 120)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 120)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 45)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 45 && p_Qty < 60)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 60)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 18)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 18 && p_Qty < 24)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 24)
+                            {
+                                l_Discount = 0.07;
+                            }
+                        }
+                    }
+                }
+                //Q4,Q5H,Q5,Q6,Q6M,Mn=10====================End
+
+                //Q8,Q10,Mn=10====================Begin
+                if (l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 10)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 30 && p_Qty < 60)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 60 && p_Qty < 90)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 90 && p_Qty < 120)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 120)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 15 && p_Qty < 30)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 30 && p_Qty < 45)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 45 && p_Qty < 60)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 60)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 12 && p_Qty < 18)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 18 && p_Qty < 24)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 24)
+                            {
+                                l_Discount = 0.07;
+                            }
+                        }
+                    }
+                }
+                //Q8,Q10,Mn=10====================End
+
+                //Q4,Q5,Q6,Q8,Q10,Mn=12====================Begin
+                if (l_Rack_Quality == "4" || l_Rack_Quality == "5" || l_Rack_Quality == "6" || l_Rack_Quality == "8" || l_Rack_Quality == "10")
+                {
+                    if (l_Rack_Mn == 12)
+                    {
+                        if (l_Rack_Length == 500)
+                        {
+                            if (p_Qty >= 16 && p_Qty < 32)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 32 && p_Qty < 48)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 48 && p_Qty < 64)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 64)
+                            {
+                                l_Discount = 0.1;
+                            }
+
+                        }
+                        else if (l_Rack_Length == 1000)
+                        {
+                            if (p_Qty >= 8 && p_Qty < 16)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 16 && p_Qty < 24)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 24 && p_Qty < 32)
+                            {
+                                l_Discount = 0.07;
+                            }
+                            else if (p_Qty >= 32)
+                            {
+                                l_Discount = 0.1;
+                            }
+                        }
+                        else if (l_Rack_Length > 1000)
+                        {
+                            if (p_Qty >= 8 && p_Qty < 12)
+                            {
+                                l_Discount = 0.03;
+                            }
+                            else if (p_Qty >= 12 && p_Qty < 16)
+                            {
+                                l_Discount = 0.05;
+                            }
+                            else if (p_Qty >= 16)
+                            {
+                                l_Discount = 0.07;
+                            }
+                        }
+                    }
+                }
+                //Q4,Q5,Q6,Q8,Q10,Mn=12====================End
+
+            }
+            else
+            {
+                l_Discount = 0;
+            }
+
+            //特別的客戶
+            string[] No_Discount_List = new string[] { "0206R100C10", "026MR100C10", "036MR100C10", "026CR100C10", "0208R100C10", "0210R100C10" };
+
+            string[] No_Discount_Cust_List = new string[] { "BAC001", "BAC001-1", "BAC015", "BAC016", "BAC017", "BAC019", "BAC019-1" };
+            //除了特別客戶其它用AE0002
+            if ((Array.IndexOf(No_Discount_List, p_Ordercode) != -1) && (Array.IndexOf(No_Discount_Cust_List, p_Cust_No) != -1))
+            {
+                l_Discount = 0;
+            }
+
+            return l_Discount;
+        }
+
+        /// <summary>20200708 R&P 大訂單折扣,get_Pinion_Large_Order_Discount_20200708(OrderCode,數量,客戶)
+        public Double GetPinionLargeDiscount(string p_Ordercode, Int16 p_Qty, string p_Cust_No)
+        {
+            double l_Discount = 0;
+            string l_Pinion_Type = "";
+            double l_Pinion_Mn = 0;
+
+            List<TcShhFile> TcShh_FileData = _DataContext.TcShhFiles.Where(tcShh => tcShh.TcShh08 == "APEX" && tcShh.TcShh01 == p_Ordercode).ToList();
+
+            if (TcShh_FileData.Count()>0)
+            {
+                l_Pinion_Type = Convert.ToString(TcShh_FileData.SingleOrDefault().TcShh02);
+                l_Pinion_Mn = Convert.ToDouble(TcShh_FileData.SingleOrDefault().TcShh05);
+            }
+
+            if (l_Pinion_Type == "A" || l_Pinion_Type == "B" || l_Pinion_Type == "C" || l_Pinion_Type == "D")
+            {
+                if (l_Pinion_Mn == 1 || l_Pinion_Mn == 1.5 || l_Pinion_Mn == 2 || l_Pinion_Mn == 2.5 || l_Pinion_Mn == 3)
+                {
+                    if (p_Qty >= 11 && p_Qty <= 30)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 31 && p_Qty <= 40)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 41 && p_Qty <= 50)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 51)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+                else if (l_Pinion_Mn == 4 || l_Pinion_Mn == 5 || l_Pinion_Mn == 6)
+                {
+                    if (p_Qty >= 11 && p_Qty <= 20)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 21 && p_Qty <= 30)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 31 && p_Qty <= 40)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 41)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+                else if (l_Pinion_Mn == 8 || l_Pinion_Mn == 10 || l_Pinion_Mn == 12)
+                {
+                    if (p_Qty >= 5 && p_Qty <= 10)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 11 && p_Qty <= 20)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 21 && p_Qty <= 30)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 31)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+            }
+
+
+            if (l_Pinion_Type == "E" || l_Pinion_Type == "F" || l_Pinion_Type == "G" || l_Pinion_Type == "H")
+            {
+                if (l_Pinion_Mn == 1 || l_Pinion_Mn == 1.5 || l_Pinion_Mn == 2 || l_Pinion_Mn == 2.5 || l_Pinion_Mn == 3)
+                {
+                    if (p_Qty >= 31 && p_Qty <= 50)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 51 && p_Qty <= 70)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 71 && p_Qty <= 100)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 101)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+                else if (l_Pinion_Mn == 4 || l_Pinion_Mn == 5 || l_Pinion_Mn == 6)
+                {
+                    if (p_Qty >= 21 && p_Qty <= 40)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 41 && p_Qty <= 60)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 61 && p_Qty <= 70)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 71)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+                else if (l_Pinion_Mn == 8 || l_Pinion_Mn == 10 || l_Pinion_Mn == 12)
+                {
+                    if (p_Qty >= 21 && p_Qty <= 30)
+                    {
+                        l_Discount = 0.03;
+                    }
+                    else if (p_Qty >= 31 && p_Qty <= 40)
+                    {
+                        l_Discount = 0.05;
+                    }
+                    else if (p_Qty >= 41 && p_Qty <= 50)
+                    {
+                        l_Discount = 0.07;
+                    }
+                    else if (p_Qty >= 51)
+                    {
+                        l_Discount = 0.1;
+                    }
+                }
+            }
+
+            return l_Discount;
+        }
+
         // <summary>取基礎單價,GetBasePrice(客戶編號,料號ID,幣別 ,數量) 
         public Double GetBasePrice(string MB001, string MB002, string MB004, int MB003)
         {
@@ -210,7 +2372,7 @@ namespace APEX_API.Services
             Boolean tmp_IsAgent = false;
 
             //先確定是代理商還是散客
-            var Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == MB001);
+            List<OccFile> Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == MB001).ToList();
 
             temp_3 = GetDiscountRate(MB001);
             if (Occ_FileData.Count() > 0)
@@ -222,7 +2384,7 @@ namespace APEX_API.Services
             }
 
             //先找是否在obk_file有資料,代表特殊價
-            var Obk_FileData = _DataContext.ObkFiles.Where(Obk => Obk.Obk02 == MB001 && Obk.Obk01 == MB002 && Obk.Obk05 == MB004 && Obk.Obkacti == "Y");
+            List<ObkFile> Obk_FileData = _DataContext.ObkFiles.Where(Obk => Obk.Obk02 == MB001 && Obk.Obk01 == MB002 && Obk.Obk05 == MB004 && Obk.Obkacti == "Y").ToList();
 
             if (Obk_FileData.Count() > 0)
             {
@@ -422,7 +2584,7 @@ namespace APEX_API.Services
 
             String temp_1 = "";
 
-            var Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == occ01);
+            List<OccFile> Occ_FileData = _DataContext.OccFiles.Where(oc => oc.Occ01 == occ01).ToList();
 
             if (Occ_FileData.Count() > 0)
             {
