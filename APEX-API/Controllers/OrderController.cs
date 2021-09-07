@@ -109,7 +109,11 @@ namespace APEX_API.Controllers
                         FinalCharge = DiscountPrice;
                         if (("A,C").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) != -1)
                         {
-                            FinalCharge = _orderService.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
+                            double ChangeOilPrice = _orderService.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
+                            if (ChangeOilPrice != 0)
+                            {
+                                FinalCharge = ChangeOilPrice;
+                            }
                             if (!string.IsNullOrEmpty(Convert.ToString(OData["AdapterCus"])))
                             {
                                 if (("G4,G5").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) == -1)
@@ -125,7 +129,7 @@ namespace APEX_API.Controllers
                         {
                             DiscountPrice = 0;
                         }
-            
+
                         break;
                 }
                 return Ok(new { code = 200, Discount = Discount, FinalCharge = FinalCharge });
@@ -176,12 +180,27 @@ namespace APEX_API.Controllers
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
                 dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-                double BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OdData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OdData["Qty"]));
-                //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
+                _orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
                 return Ok(new { code = 200, message = "Save Success" });
             }
             return BadRequest(new { code = 400, message = "Error Request" });
         }
+
+
+        // DELETE api/<OrderController>/5
+        [HttpDelete("OrderList")]
+        public ActionResult OrderListDelete([FromBody] JsonElement feStr)
+        {
+
+            if (!string.IsNullOrEmpty(feStr.ToString()))
+            {
+                dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
+                //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
+                return Ok(new { code = 200, message = "Delete Success" });
+            }
+            return BadRequest(new { code = 400, message = "Error Request" });
+        }
+
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]

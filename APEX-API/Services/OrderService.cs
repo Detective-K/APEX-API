@@ -2613,7 +2613,7 @@ namespace APEX_API.Services
             {
                 if (CheckPartNo.Contains(PartNo.Substring(1, 2)))
                 {
-                    if (LubData == "1" || LubData == "2")
+                    if (LubData != "Grease")
                     {
                         tmp_chang_lub_price = System.Math.Round((DiscountPrice * 0.15), 0, MidpointRounding.AwayFromZero);
                         if (Currency == "EUR")
@@ -2650,7 +2650,7 @@ namespace APEX_API.Services
                 }
                 else if (Spec.Substring(0, 2) == "AT")
                 {
-                    if (LubData == "1" || LubData == "2")
+                    if (LubData == "Low Temp. Grease" || LubData == "Food Grade Grease")
                     {
                         //加收10%並且4捨五入
                         FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
@@ -2674,11 +2674,11 @@ namespace APEX_API.Services
                 }
                 else
                 {
-                    if (LubData == "1")
+                    if (LubData == "Grease")
                     {
                         FinalCharge = System.Math.Round((DiscountPrice * 1.05), 0, MidpointRounding.AwayFromZero);
                     }
-                    else if (LubData == "2" || LubData == "3")
+                    else if (LubData == "Low Temp. Grease" || LubData == "Food Grade Grease")
                     {
                         //加收10%並且4捨五入
                         FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
@@ -2687,7 +2687,7 @@ namespace APEX_API.Services
             }
             else
             {
-                if (LubData == "0")
+                if (LubData == "")
                 {
                     //加收10%並且4捨五入
                     FinalCharge = System.Math.Round((DiscountPrice * 1.1), 0, MidpointRounding.AwayFromZero);
@@ -3556,15 +3556,15 @@ namespace APEX_API.Services
 
         public void UpdateOrderList(dynamic tempOrder, dynamic tempOrderDetail)
         {
-            if (tempOrder.Count > 0)
-            {
-                Order _order = new Order
-                {
-                    OrderId = Convert.ToString(tempOrder["OrderId"]),
-                    Pono = Convert.ToString(tempOrder["Pono"])
-                };
-                var update = _web2Context.Orders.Where(x => x.OrderId == _order.OrderId);
-            }
+            //if (tempOrder.Count > 0)
+            //{
+            //    Order _order = new Order
+            //    {
+            //        OrderId = Convert.ToString(tempOrder["OrderId"]),
+            //        Pono = Convert.ToString(tempOrder["Pono"])
+            //    };
+            //    var update = _web2Context.Orders.Where(x => x.OrderId == _order.OrderId);
+            //}
 
             if (tempOrderDetail.Count > 0)
             {
@@ -3574,7 +3574,8 @@ namespace APEX_API.Services
                     OrderDetailId = Convert.ToInt32(tempOrderDetail["OrderDetailId"]),
                     Qty = Convert.ToInt32(tempOrderDetail["Qty"]),
                     Memo = Convert.ToString(tempOrderDetail["Memo"]),
-                    SubTot = Convert.ToDouble(tempOrderDetail["SubTot"])
+                    SubTot = Convert.ToDouble(tempOrderDetail["SubTot"]),
+                    Customize = Convert.ToString(tempOrderDetail["Customize"])
                 };
                 var update = _web2Context.OrderDetails.Where(x => x.OrderId == _orderDetail.OrderId && x.OrderDetailId == _orderDetail.OrderDetailId);
                 if (update.Count() > 0)
@@ -3582,6 +3583,7 @@ namespace APEX_API.Services
                     update.SingleOrDefault().Qty = _orderDetail.Qty;
                     update.SingleOrDefault().Memo = _orderDetail.Memo;
                     update.SingleOrDefault().SubTot = _orderDetail.SubTot;
+                    update.SingleOrDefault().Customize = _orderDetail.Customize;
                     _web2Context.SaveChanges();
                 }
             }
