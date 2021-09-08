@@ -3589,14 +3589,27 @@ namespace APEX_API.Services
             }
 
         }
-        public OrderDetail ProductInformation(dynamic Orderdetail)
+
+        public void DeleteOrderList( dynamic tempOrderDetail)
         {
 
+            if (tempOrderDetail.Count > 0)
+            {
+                OrderDetail _orderDetail = new OrderDetail
+                {
+                    OrderId = Convert.ToString(tempOrderDetail["OrderId"]),
+                    OrderDetailId = Convert.ToInt32(tempOrderDetail["OrderDetailId"]),
+                };
+                var deleteData = _web2Context.OrderDetails.Where(x => x.OrderId == _orderDetail.OrderId && x.OrderDetailId == _orderDetail.OrderDetailId);
+                if (deleteData.Count() > 0)
+                {
+                    _web2Context.OrderDetails.Remove(deleteData.SingleOrDefault());
+                    _web2Context.SaveChanges();
+                }
+            }
 
-            OrderDetail _orderdetail = new OrderDetail();
-
-            return _orderdetail;
         }
+
         private class Datas
         {
             public object Data { get; set; }

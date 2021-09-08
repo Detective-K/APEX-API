@@ -56,14 +56,12 @@ namespace APEX_API.Controllers
             return BadRequest(new { code = 400, message = "登入失敗，帳號或密碼為空" });
         }
 
-
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public string OrderList(string feStr)
+        public ActionResult MotorBrandList(string CustId)
         {
-            var joinList = _orderService.OrderList(feStr);
-            return System.Text.Json.JsonSerializer.Serialize(joinList);
-            //return JsonSerializer.Serialize(joinList);
+            var joinList = _orderService.GetCustInfo(CustId);
+            return Ok(new { code = 200, CustInfo = joinList });
         }
 
         [HttpGet("[action]")]
@@ -150,6 +148,16 @@ namespace APEX_API.Controllers
             return BadRequest(new { code = 400, message = "Error Request" });
         }
 
+
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
+        public string OrderList(string feStr)
+        {
+            var joinList = _orderService.OrderList(feStr);
+            return System.Text.Json.JsonSerializer.Serialize(joinList);
+            //return JsonSerializer.Serialize(joinList);
+        }
+
         // POST api/<OrderController>
         [HttpPost("[action]")]
         [EnableCors("CorsPolicy")]
@@ -195,25 +203,10 @@ namespace APEX_API.Controllers
             if (!string.IsNullOrEmpty(feStr.ToString()))
             {
                 dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-                //_orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
+                _orderService.DeleteOrderList( Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
                 return Ok(new { code = 200, message = "Delete Success" });
             }
             return BadRequest(new { code = 400, message = "Error Request" });
-        }
-
-
-        // GET api/<OrderController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return Convert.ToString(id);
-        }
-
-        // GET api/<OrderController>/5
-        [HttpGet("[action]")]
-        public string Get2()
-        {
-            return Convert.ToString("get2");
         }
 
         // POST api/<OrderController>
