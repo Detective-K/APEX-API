@@ -1,5 +1,6 @@
 ﻿using APEX_API.Models;
 using APEX_API.TopprodModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,21 @@ namespace APEX_API.Services
             var MemberInfo = _web2Context.Custs.Where(C => C.CustId.Contains(CustId));
             return MemberInfo.ToList();
         }
+
+        public List<TcOekFile> GetMotorInfo(string isSale)
+        {
+            var MotorInfo = _DataContext.TcOekFiles.AsQueryable();
+            if (isSale == "Y")
+            {
+                MotorInfo =  MotorInfo.Where(m => ("YES,EIP").ToUpper().Contains(m.TcOek21.ToUpper())).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
+            }
+            else
+            {
+                MotorInfo =  MotorInfo.Where(m => m.TcOek21.ToUpper().Contains("YES")).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
+            }
+            return MotorInfo.ToList();
+        }
+
 
         public object OrderList(string feStr)
         {

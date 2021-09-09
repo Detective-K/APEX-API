@@ -58,10 +58,16 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
-        public ActionResult MotorBrandList(string CustId)
+        public ActionResult GearBoxInit(string feStr)
         {
-            var joinList = _orderService.GetCustInfo(CustId);
-            return Ok(new { code = 200, CustInfo = joinList });
+            if (!string.IsNullOrEmpty(feStr))
+            {
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                var MortorInfo = _orderService.GetMotorInfo(Convert.ToString(OData["isSale"]));
+                return Ok(new { code = 200, MortorInfo = MortorInfo });
+            }
+           
+            return BadRequest(new { code = 400, message = "Error Request" });
         }
 
         [HttpGet("[action]")]
