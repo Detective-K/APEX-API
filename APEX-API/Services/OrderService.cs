@@ -51,7 +51,30 @@ namespace APEX_API.Services
             {
                 MotorInfo =  MotorInfo.Where(m => m.TcOek21.ToUpper().Contains("YES")).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
             }
+            MotorInfo = MotorInfo.OrderBy(m => m.TcOek01);
             return MotorInfo.ToList();
+        }
+
+
+        public List<TcOekFile> GetModelInfo(dynamic OData)
+        {
+            var ModelInfo = _DataContext.TcOekFiles.AsQueryable();
+            string _isSale = Convert.ToString(OData["isSale"]);
+            string _tcOek01 = Convert.ToString(OData["tcOek01"]);
+            if (_isSale == "Y")
+            {
+                ModelInfo = ModelInfo.Where(m => ("YES,EIP").ToUpper().Contains(m.TcOek21.ToUpper()) && m.TcOek01 == _tcOek01)
+                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02 , TcOek21 = m.TcOek21 , TcOek27 = m.TcOek27 })
+                           .Distinct();
+            }
+            else
+            {
+                ModelInfo = ModelInfo.Where(m => m.TcOek21.ToUpper().Contains("YES") && m.TcOek01 == _tcOek01)
+                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02, TcOek21 = m.TcOek21, TcOek27 = m.TcOek27 })
+                           .Distinct();
+            }
+            ModelInfo = ModelInfo.OrderBy(m => m.TcOek02);
+            return ModelInfo.ToList();
         }
 
 
