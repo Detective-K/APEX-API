@@ -78,6 +78,33 @@ namespace APEX_API.Services
         }
 
 
+        public List<TcOekFile> GetGearBoxInfo(dynamic OData)
+        {
+            var GBInfo = _DataContext.TcMmeFiles.AsQueryable();
+            string _isSale = Convert.ToString(OData["isSale"]);
+            string _custId = Convert.ToString(OData["custId"]);
+            if (_isSale == "Y")
+            {
+                GBInfo = GBInfo
+                    .Where(GB => ("R01,R02,R03,R04,R08,R09,R10,R11,R12,R13,R14,R15,R16,R19,R20,R21,R22,R23,R24,R26,R27,R28,R29, R30,R31, R32,R33, R57, R58, R59, R60, R61, R86,R69,R65,R66,R67,RB6,RB7, RB9,  RC4, RC1, RC3, RB8,RC2, RC5, RC6,  RC7, RC8, RC9,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RJ9,RJ5,RK9,RK5,R53,R54,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS1,RS2,RS3,RS4,RS5,RS6,RS7").Contains(GB.TcMme01) && GB.TcMme04 == "Y")
+                    .Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 })
+                    .Union(GBInfo.Where(GB => ("R10,R11,R21,R22,R23,R24,R64").Contains(GB.TcMme01)).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
+                    .Union(GBInfo.Where(GB => ("RG4,RG5").Contains(GB.TcMme01)).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
+                    .Union(GBInfo.Where(GB => GB.TcMme01.Contains("R42")).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
+                    .OrderBy(GB => GB.TcMme06);
+                    ;
+            }
+            else
+            {
+                ModelInfo = ModelInfo.Where(m => m.TcOek21.ToUpper().Contains("YES") && m.TcOek01 == _tcOek01)
+                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02, TcOek21 = m.TcOek21, TcOek27 = m.TcOek27 })
+                           .Distinct();
+            }
+            ModelInfo = ModelInfo.OrderBy(m => m.TcOek02);
+            return ModelInfo.ToList();
+        }
+
+
         public object OrderList(string feStr)
         {
             var feObject = JsonSerializer.Deserialize<Cust>(feStr);

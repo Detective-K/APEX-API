@@ -65,6 +65,7 @@ namespace APEX_API.Controllers
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
                 var MortorInfo = _orderService.GetMotorInfo(Convert.ToString(OData["isSale"]));
                 var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"]))?_orderService.GetModelInfo(OData):"";
+                //var GearBoxInfo = 
                 return Ok(new { code = 200, MortorInfo = MortorInfo , ModelInfo = ModelInfo });
             }
            
