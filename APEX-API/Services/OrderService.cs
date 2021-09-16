@@ -45,11 +45,11 @@ namespace APEX_API.Services
             var MotorInfo = _DataContext.TcOekFiles.AsQueryable();
             if (isSale == "Y")
             {
-                MotorInfo =  MotorInfo.Where(m => ("YES,EIP").ToUpper().Contains(m.TcOek21.ToUpper())).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
+                MotorInfo = MotorInfo.Where(m => ("YES,EIP").ToUpper().Contains(m.TcOek21.ToUpper())).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
             }
             else
             {
-                MotorInfo =  MotorInfo.Where(m => m.TcOek21.ToUpper().Contains("YES")).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
+                MotorInfo = MotorInfo.Where(m => m.TcOek21.ToUpper().Contains("YES")).Select(m => new TcOekFile { TcOek01 = m.TcOek01 }).Distinct();
             }
             MotorInfo = MotorInfo.OrderBy(m => m.TcOek01);
             return MotorInfo.ToList();
@@ -64,7 +64,7 @@ namespace APEX_API.Services
             if (_isSale == "Y")
             {
                 ModelInfo = ModelInfo.Where(m => ("YES,EIP").ToUpper().Contains(m.TcOek21.ToUpper()) && m.TcOek01 == _tcOek01)
-                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02 , TcOek21 = m.TcOek21 , TcOek27 = m.TcOek27 })
+                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02, TcOek21 = m.TcOek21, TcOek27 = m.TcOek27 })
                            .Distinct();
             }
             else
@@ -78,7 +78,7 @@ namespace APEX_API.Services
         }
 
 
-        public List<TcOekFile> GetGearBoxInfo(dynamic OData)
+        public List<TcMmeFile> GetGearBoxInfo(dynamic OData)
         {
             var GBInfo = _DataContext.TcMmeFiles.AsQueryable();
             string _isSale = Convert.ToString(OData["isSale"]);
@@ -91,17 +91,43 @@ namespace APEX_API.Services
                     .Union(GBInfo.Where(GB => ("R10,R11,R21,R22,R23,R24,R64").Contains(GB.TcMme01)).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
                     .Union(GBInfo.Where(GB => ("RG4,RG5").Contains(GB.TcMme01)).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
                     .Union(GBInfo.Where(GB => GB.TcMme01.Contains("R42")).Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 }))
-                    .OrderBy(GB => GB.TcMme06);
-                    ;
+                ;
             }
             else
             {
-                ModelInfo = ModelInfo.Where(m => m.TcOek21.ToUpper().Contains("YES") && m.TcOek01 == _tcOek01)
-                           .Select(m => new TcOekFile { TcOek02 = m.TcOek02, TcOek21 = m.TcOek21, TcOek27 = m.TcOek27 })
-                           .Distinct();
+                if (("AA0005,BAC016,BAC017,BAC019,BAC019-1,BAJ002").Contains(_custId))
+                {
+                    GBInfo = GBInfo.Where(GB => ("R01,R02,R03,R04,R08,R09,R10,R11,R12,R13,R14,R15,R16,R19,R20,R21,R22,R23,R24,R26,R27,R28,R29,R30,R31,R32,R33,R57,R58,R59,R60,R61,R64,R86,R69,R65,R66,R67,RB6,RB7,RB9,RC4,RC1,RC3,RB8,RC2,RC5,RC6,RC7,RC8,RC9,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RJ9,RJ5,RK9,RK5,R53,R54,RG4,RG5,R42").Contains(GB.TcMme01));
+                }
+                else if (("BAK001,BAC001,AA0003,AA0003-1,BAC015,BAA001,BAS002").Contains(_custId))
+                {
+                    GBInfo = GBInfo.Where(GB => ("R01,R02,R03,R04,R08,R09,R10,R11,R12,R13,R14,R15,R16,R19,R20,R21,R22,R23,R24,R26,R27,R28,R29,R30,R31,R32,R33,R57,R58,R59,R60,R61,R64,R86,R69,R65,R66,R67,RB6,RB7,RB9,RC4,RC1,RC3,RB8,RC2,RC5,RC6,RC7,RC8,RC9,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RJ9,RJ5,RK9,RK5,R53,R54,RG4,RG5,R42").Contains(GB.TcMme01));
+                }
+                else if (_custId == "BAC001-1")
+                {
+                    GBInfo = GBInfo.Where(GB => ("RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS1,RS2,RS3,RS4,RS5,RS6,RS7").Contains(GB.TcMme01));
+                }
+                else if (_custId == "BAJ003")
+                {
+                    GBInfo = GBInfo.Where(GB => (GB.TcMme02.Contains("AFX")) || (GB.TcMme01 == "R86"));
+                }
+                else if (_custId == "BAJ002")
+                {
+                    GBInfo = GBInfo.Where(GB => ("R01,R02,R03,R04,R08,R09,R10,R11,R12,R13,R14,R15,R16,R19,R20,R21,R22,R23,R24,R26,R27,R28,R29, R30,R31, R32,R33, R57, R58, R59, R60, R61, R86,R69,R65,R66,R67,RB6,RB7, RB9,  RC4, RC1, RC3, RB8,RC2, RC5, RC6,  RC7, RC8, RC9,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RJ9,RJ5,RK9,RK5,R53,R54,RG4,RG5,R42").Contains(GB.TcMme01));
+                }
+                else if (("BAF001,BAI010,BAI035,BAM002,BAP001,BAS001,BAS003,BAT001,BAT002,BAC023,BAU001,BAG025,BAI006").Contains(_custId))
+                {
+                    GBInfo = GBInfo.Where(GB => ("R01,R02,R03,R04,R08,R09,R10,R11,R12,R13,R14,R15,R16,R19,R20,R21,R22,R23,R24,R26,R27,R28,R29, R30,R31, R32,R33, R57, R58, R59, R60, R61, R86,R69,R65,R66,R67,RB6,RB7, RB9,  RC4, RC1, RC3, RB8,RC2, RC5, RC6,  RC7, RC8, RC9,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RJ9,RJ5,RK9,RK5,R53,R54,RG4,RG5,R42").Contains(GB.TcMme01));
+                }
+                else
+                {
+                    GBInfo = GBInfo.Where(GB => ("R01, R02, R03, R04, R08, R09, R10, R11, R12, R13, R14, R15, R16, R19, R20, R21, R22, R23, R24, R26, R27, R28, R29, R30, R31, R32, R33, R57, R58, R59, R60, R61, R86, R69, R65, R66, R67, RB6, RB7, RB9, RC4, RC1, RC3, RB8, RC2, RC5, RC6, RC7, RC8, RC9, RD1, RD2, RD3, RD4, RD5, RE1, RD9, RE2, RE9, R40, RF2, RB3, RA9, RB4, RJ9, RJ5, RK9, RK5, R53, R54, RG4, RG5, R42").Contains(GB.TcMme01));
+                }
+                GBInfo = GBInfo.Where(GB => GB.TcMme04 == "Y");
+                GBInfo = GBInfo.Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02 , TcMme06 = GB.TcMme06 });
+                GBInfo = GBInfo.OrderBy(m => m.TcMme06);
             }
-            ModelInfo = ModelInfo.OrderBy(m => m.TcOek02);
-            return ModelInfo.ToList();
+            return GBInfo.ToList();
         }
 
 
@@ -298,9 +324,9 @@ namespace APEX_API.Services
             string l_Rack_Quality = "";
             double l_Rack_Mn = 0;
 
-            List<TcShgFile> TcShg_FileData = _DataContext.TcShgFiles.Where(tcShg => tcShg.TcShg10 == "APEX" && tcShg.TcShg01 == p_Ordercode ).ToList();
+            List<TcShgFile> TcShg_FileData = _DataContext.TcShgFiles.Where(tcShg => tcShg.TcShg10 == "APEX" && tcShg.TcShg01 == p_Ordercode).ToList();
 
-            if (TcShg_FileData.Count()>0)
+            if (TcShg_FileData.Count() > 0)
             {
                 l_Rack_Length = Convert.ToDouble(TcShg_FileData.SingleOrDefault().TcShg11);
                 l_Rack_Quality = Convert.ToString(TcShg_FileData.SingleOrDefault().TcShg02);
@@ -2231,7 +2257,7 @@ namespace APEX_API.Services
 
             List<TcShhFile> TcShh_FileData = _DataContext.TcShhFiles.Where(tcShh => tcShh.TcShh08 == "APEX" && tcShh.TcShh01 == p_Ordercode).ToList();
 
-            if (TcShh_FileData.Count()>0)
+            if (TcShh_FileData.Count() > 0)
             {
                 l_Pinion_Type = Convert.ToString(TcShh_FileData.SingleOrDefault().TcShh02);
                 l_Pinion_Mn = Convert.ToDouble(TcShh_FileData.SingleOrDefault().TcShh05);
@@ -3656,7 +3682,7 @@ namespace APEX_API.Services
 
         }
 
-        public void DeleteOrderList( dynamic tempOrderDetail)
+        public void DeleteOrderList(dynamic tempOrderDetail)
         {
 
             if (tempOrderDetail.Count > 0)
