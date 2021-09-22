@@ -74,6 +74,27 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
+        public ActionResult GearBoxDetail(string feStr)
+        {
+            if (!string.IsNullOrEmpty(feStr))
+            {
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                var MortorInfo = _orderService.GetMotorInfoDetail(OData);
+                if (("R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5").Contains(OData["Brand"]))
+                {
+                }
+
+                //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
+                //var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
+                //return Ok(new { code = 200, MortorInfo = MortorInfo, ModelInfo = ModelInfo, GearBoxInfo = GearBoxInfo });
+                return Ok();
+            }
+
+            return BadRequest(new { code = 400, message = "Error Request" });
+        }
+
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
         public ActionResult CustSearchInfo(string CustId)
         {
             var joinList = _orderService.GetCustInfo(CustId);

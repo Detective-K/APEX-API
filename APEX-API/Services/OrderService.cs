@@ -55,6 +55,22 @@ namespace APEX_API.Services
             return MotorInfo.ToList();
         }
 
+        public List<TcOekFile> GetMotorInfoDetail(dynamic OData)
+        {
+            string _tcOek01 = Convert.ToString(OData["Brand"]);
+            string _tcOek02 = Convert.ToString(OData["Spec"]);
+            var MotorInfo = _DataContext.TcOekFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_tcOek01))
+            {
+                MotorInfo = MotorInfo.Where(m => m.TcOek01 == _tcOek01);
+            }
+            if (!string.IsNullOrEmpty(_tcOek02))
+            {
+                MotorInfo = MotorInfo.Where(m => m.TcOek02 == _tcOek02);
+            }
+            return MotorInfo.ToList();
+        }
+
 
         public List<TcOekFile> GetModelInfo(dynamic OData)
         {
