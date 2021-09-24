@@ -71,6 +71,52 @@ namespace APEX_API.Services
             return MotorInfo.ToList();
         }
 
+        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia)
+        {
+            string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
+            Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
+            var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
+            ReducerInfo = ReducerInfo.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
+            if (T1N != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+            }
+            if (T1B != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
+            }
+            if (_InertiaApp != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
+            }
+            ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
+            ReducerInfo.OrderBy(r => r.TcMmd03);
+            return ReducerInfo.ToList();
+        }
+
+        public List<Reducer1Order> GetRatio(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia)
+        {
+            string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
+            Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
+            var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
+            ReducerInfo = ReducerInfo.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
+            if (T1N != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+            }
+            if (T1B != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
+            }
+            if (_InertiaApp != 0)
+            {
+                ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
+            }
+            ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
+            ReducerInfo.OrderBy(r => r.TcMmd03);
+            return ReducerInfo.ToList();
+        }
+
 
         public List<TcOekFile> GetModelInfo(dynamic OData)
         {
@@ -140,7 +186,7 @@ namespace APEX_API.Services
                     GBInfo = GBInfo.Where(GB => ("R01, R02, R03, R04, R08, R09, R10, R11, R12, R13, R14, R15, R16, R19, R20, R21, R22, R23, R24, R26, R27, R28, R29, R30, R31, R32, R33, R57, R58, R59, R60, R61, R86, R69, R65, R66, R67, RB6, RB7, RB9, RC4, RC1, RC3, RB8, RC2, RC5, RC6, RC7, RC8, RC9, RD1, RD2, RD3, RD4, RD5, RE1, RD9, RE2, RE9, R40, RF2, RB3, RA9, RB4, RJ9, RJ5, RK9, RK5, R53, R54, RG4, RG5, R42").Contains(GB.TcMme01));
                 }
                 GBInfo = GBInfo.Where(GB => GB.TcMme04 == "Y");
-                GBInfo = GBInfo.Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02 , TcMme06 = GB.TcMme06 });
+                GBInfo = GBInfo.Select(GB => new TcMmeFile { TcMme01 = GB.TcMme01, TcMme02 = GB.TcMme02, TcMme06 = GB.TcMme06 });
                 GBInfo = GBInfo.OrderBy(m => m.TcMme06);
             }
             return GBInfo.ToList();

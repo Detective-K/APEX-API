@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using APEX_API.Services;
 using Microsoft.AspNetCore.Cors;
+using APEX_API.PublicServices;
+using APEX_API.TopprodModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,11 +25,13 @@ namespace APEX_API.Controllers
     {
         private readonly web2Context _web2Context;
         private readonly OrderService _orderService;
+        private readonly PublicFunctions _publicFunction;
 
-        public OrderController(web2Context context, OrderService orderService)
+        public OrderController(web2Context context, OrderService orderService, PublicFunctions publicFunctions)
         {
             _web2Context = context;
             _orderService = orderService;
+            _publicFunction = publicFunctions;
         }
 
         // GET: api/<OrderController>
@@ -79,15 +83,17 @@ namespace APEX_API.Controllers
             if (!string.IsNullOrEmpty(feStr))
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
-                var MortorInfo = _orderService.GetMotorInfoDetail(OData);
-                if (("R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5").Contains(OData["Brand"]))
+                List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
+                var InertiaApp = _publicFunction.FCheck_Single(OData["InertiaApp"]);
+                List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
+                if (("R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5").Contains(OData["GBSeries"]))
                 {
+                     ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08));
                 }
 
                 //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
                 //var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
-                //return Ok(new { code = 200, MortorInfo = MortorInfo, ModelInfo = ModelInfo, GearBoxInfo = GearBoxInfo });
-                return Ok();
+                return Ok(new { code = 200, ReducerInfo = ReducerInfo });
             }
 
             return BadRequest(new { code = 400, message = "Error Request" });

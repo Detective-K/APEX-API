@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using APEX_API.Models;
 using APEX_API.Services;
 using APEX_API.TopprodModels;
+using APEX_API.PublicServices;
 
 namespace APEX_API
 {
@@ -41,7 +42,7 @@ namespace APEX_API
                  });
 
             services.AddDbContext<web2Context>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Web2Pro2")));
+                options.UseSqlServer(Configuration.GetConnectionString("Web2Pro")));
             services.AddDbContext<DataContext>(options =>
                 options.UseOracle(Configuration.GetConnectionString("OraTop")));
             services.AddControllers();
@@ -66,6 +67,7 @@ namespace APEX_API
             });
 
             services.AddScoped<OrderService>();
+            services.AddScoped<PublicFunctions>();
             //services.AddCors(options =>
             //{
             //    options.AddDefaultPolicy(
