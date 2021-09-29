@@ -68,11 +68,11 @@ namespace APEX_API.Controllers
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
                 var MortorInfo = _orderService.GetMotorInfo(Convert.ToString(OData["isSale"]));
-                var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"]))?_orderService.GetModelInfo(OData):"";
+                var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
                 var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
-                return Ok(new { code = 200, MortorInfo = MortorInfo , ModelInfo = ModelInfo , GearBoxInfo = GearBoxInfo });
+                return Ok(new { code = 200, MortorInfo = MortorInfo, ModelInfo = ModelInfo, GearBoxInfo = GearBoxInfo });
             }
-           
+
             return BadRequest(new { code = 400, message = "Error Request" });
         }
 
@@ -84,16 +84,15 @@ namespace APEX_API.Controllers
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
                 List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
-                var InertiaApp = _publicFunction.FCheck_Single(OData["InertiaApp"]);
                 List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
-                if (("R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5").Contains(OData["GBSeries"]))
-                {
-                     ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08));
-                }
+                List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
+
+                ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), "", "");
+                RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03));
 
                 //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
                 //var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
-                return Ok(new { code = 200, ReducerInfo = ReducerInfo });
+                return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo });
             }
 
             return BadRequest(new { code = 400, message = "Error Request" });
@@ -223,7 +222,7 @@ namespace APEX_API.Controllers
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"];
                 dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-                _orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);         
+                _orderService.UpdateOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["Order"], Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
                 return Ok(new { code = 200, message = "Save Success" });
             }
             return BadRequest(new { code = 400, message = "Error Request" });
@@ -238,7 +237,7 @@ namespace APEX_API.Controllers
             if (!string.IsNullOrEmpty(feStr.ToString()))
             {
                 dynamic OdData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"];
-                _orderService.DeleteOrderList( Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
+                _orderService.DeleteOrderList(Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString())["OrderDetail"]);
                 return Ok(new { code = 200, message = "Delete Success" });
             }
             return BadRequest(new { code = 400, message = "Error Request" });

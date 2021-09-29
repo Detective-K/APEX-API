@@ -71,12 +71,26 @@ namespace APEX_API.Services
             return MotorInfo.ToList();
         }
 
-        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia)
+        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, string item, string _TcMmd03)
         {
             string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
             Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
             var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
+            switch (Convert.ToString(OData["Range"]))
+            {
+                case "1":
+                    break;
+                case "2":
+                    break;
+                default:
+                    if (("R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5").Contains(_TcMmd01))
+                    {
+                    }
+                    break;
+            }
+
             ReducerInfo = ReducerInfo.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
+
             if (T1N != 0)
             {
                 ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
@@ -85,38 +99,63 @@ namespace APEX_API.Services
             {
                 ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
             }
+            if (!string.IsNullOrEmpty(_TcMmd03))
+            {
+                ReducerInfo = ReducerInfo.Where(r => r.TcMmd03 == _TcMmd03);
+            }
             if (_InertiaApp != 0)
             {
                 ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
             }
-            ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
-            ReducerInfo.OrderBy(r => r.TcMmd03);
+            switch (item)
+            {
+                case "Ratio":
+                    ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd04 = r.TcMmd04, TcMmd07 = r.TcMmd07, TcMmd05 = r.TcMmd05, TcMmd27 = r.TcMmd27, TcMmd35 = r.TcMmd35 }).Distinct();
+                    ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd04);
+                    break;
+                default:
+                    ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
+                    ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd03);
+                    break;
+            }
             return ReducerInfo.ToList();
         }
 
-        public List<Reducer1Order> GetRatio(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia)
+        public List<Reducer1Order> GetReducerSB(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia)
         {
             string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
             Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
             var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
             ReducerInfo = ReducerInfo.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
-            if (T1N != 0)
-            {
-                ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
-            }
-            if (T1B != 0)
-            {
-                ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
-            }
-            if (_InertiaApp != 0)
-            {
-                ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
-            }
-            ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
-            ReducerInfo.OrderBy(r => r.TcMmd03);
+            //if (T1N != 0)
+            //{
+            //    ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+            //}
+            //if (T1B != 0)
+            //{
+            //    ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
+            //}
+            //if (!string.IsNullOrEmpty(_TcMmd03))
+            //{
+            //    ReducerInfo = ReducerInfo.Where(r => r.TcMmd03 == _TcMmd03);
+            //}
+            //if (_InertiaApp != 0)
+            //{
+            //    ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
+            //}
+            //switch (item)
+            //{
+            //    case "Ratio":
+            //        ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd04 = r.TcMmd04, TcMmd07 = r.TcMmd07, TcMmd05 = r.TcMmd05, TcMmd27 = r.TcMmd27, TcMmd35 = r.TcMmd35 }).Distinct();
+            //        ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd04);
+            //        break;
+            //    default:
+            //        ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
+            //        ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd03);
+            //        break;
+            //}
             return ReducerInfo.ToList();
         }
-
 
         public List<TcOekFile> GetModelInfo(dynamic OData)
         {
