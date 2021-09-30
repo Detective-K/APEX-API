@@ -87,7 +87,7 @@ namespace APEX_API.Controllers
                 List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
                 List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
 
-                ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), "", "");
+                ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), "", "" ,"");
                 RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03));
 
                 //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
