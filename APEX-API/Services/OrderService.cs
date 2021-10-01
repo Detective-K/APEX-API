@@ -71,58 +71,66 @@ namespace APEX_API.Services
             return MotorInfo.ToList();
         }
 
-        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, string item, string _TcMmd03 , string MotorScrewOrientation)
+        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, string item, string _TcMmd03, string MotorScrewOrientation)
         {
             string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
             Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
             string R14Groups = "R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5";
             string R21Groups = "R21,R22,R23,R24,R64,R27,R29,R31,R33,R61,RB7,RB9,RC2,RC4,RC6";
-            var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
+            IQueryable<Reducer1Order> ReducerInfo = Enumerable.Empty<Reducer1Order>().AsQueryable();
+            var Reducer1Info = _DataContext.Reducer1Orders.AsQueryable();
             var Reducer2Info = _DataContext.Reducer2Orders.AsQueryable();
             var Reducer3Info = _DataContext.Reducer3Orders.AsQueryable();
-            switch (Convert.ToString(OData["Range"]))
-            {
-                case "1":
-                    break;
-                case "2":
-                    break;
-                default:
-                    if ((R14Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
-                    {
-                        ReducerInfo = ReducerInfo.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
-                        if (T1N != 0)
-                        {
-                            ReducerInfo = ReducerInfo.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
-                        }
-                        if (T1B != 0)
-                        {
-                            ReducerInfo = ReducerInfo.Where(r => r.TcMmd05 >= T1B);
-                        }
-                        if (!string.IsNullOrEmpty(_TcMmd03))
-                        {
-                            ReducerInfo = ReducerInfo.Where(r => r.TcMmd03 == _TcMmd03);
-                        }
-                    }
-                    else if ((R21Groups).Contains(_TcMmd01) && MotorScrewOrientation !="Y")
-                    { 
-                    
-                    }
-                    if (_InertiaApp != 0)
-                    {
-                        ReducerInfo = ReducerInfo.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
-                    }
-                    break;
-            }      
+
 
             switch (item)
             {
                 case "Ratio":
-                    ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd04 = r.TcMmd04, TcMmd07 = r.TcMmd07, TcMmd05 = r.TcMmd05, TcMmd27 = r.TcMmd27, TcMmd35 = r.TcMmd35 }).Distinct();
-                    ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd04);
+                    ReducerInfo = Reducer1Info.Select(r => new Reducer1Order { TcMmd04 = r.TcMmd04, TcMmd07 = r.TcMmd07, TcMmd05 = r.TcMmd05, TcMmd27 = r.TcMmd27, TcMmd35 = r.TcMmd35 }).Distinct();
+                    ReducerInfo = Reducer1Info.OrderBy(r => r.TcMmd04);
                     break;
-                default://Gearbox model
-                    ReducerInfo = ReducerInfo.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03, TcMmd22 = r.TcMmd22, TcMmd23 = r.TcMmd23 }).Distinct();
-                    ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd03);
+                default://Gearbox Model
+                    switch (Convert.ToString(OData["Range"]))
+                    {
+                        case "1":
+                            break;
+                        case "2":
+                            break;
+                        default:
+                            if ((R14Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
+                            {
+                                Reducer1Info = Reducer1Info.Where(r => EF.Functions.Like(r.TcMmd01, _TcMmd01 + "%"));
+                                if (T1N != 0)
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r => r.TcMmd07 >= T1N && (r.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+                                }
+                                if (T1B != 0)
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r => r.TcMmd05 >= T1B);
+                                }
+                                if (!string.IsNullOrEmpty(_TcMmd03))
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r => r.TcMmd03 == _TcMmd03);
+                                }
+                                if (_InertiaApp != 0)
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r => (_InertiaApp / (r.TcMmd04 * r.TcMmd04) / Inertia) <= 4);
+                                }
+                                ReducerInfo = Reducer1Info;
+                            }
+                            else if ((R21Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
+                            {
+
+                            }
+                  
+                            break;
+                    }
+                    if ((R14Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
+                    {
+                        ReducerInfo = Reducer1Info.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03 }).Distinct();
+                    }
+
+                    ReducerInfo = Reducer1Info.OrderBy(r => r.TcMmd03);
                     break;
             }
             return ReducerInfo.ToList();
