@@ -71,17 +71,18 @@ namespace APEX_API.Services
             return MotorInfo.ToList();
         }
 
-        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, string item, string _TcMmd03, string MotorScrewOrientation)
+        public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
         {
             string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
             Decimal _InertiaApp = Convert.ToString(OData["InertiaApp"]) == "" ? 0 : Convert.ToDecimal(OData["InertiaApp"]);
             string R14Groups = "R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5";
             string R21Groups = "R21,R22,R23,R24,R64,R27,R29,R31,R33,R61,RB7,RB9,RC2,RC4,RC6";
+            string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";
+            string RedSpStr = "R27, R29, R31, R33, R61,RB7, RB9,RC2,RC4,RC6";
             IQueryable<Reducer1Order> ReducerInfo = Enumerable.Empty<Reducer1Order>().AsQueryable();
             var Reducer1Info = _DataContext.Reducer1Orders.AsQueryable();
             var Reducer2Info = _DataContext.Reducer2Orders.AsQueryable();
             var Reducer3Info = _DataContext.Reducer3Orders.AsQueryable();
-
 
             switch (item)
             {
@@ -120,9 +121,50 @@ namespace APEX_API.Services
                             }
                             else if ((R21Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
                             {
-
+                                Reducer3Info = Reducer3Info.Where(r3 => EF.Functions.Like(r3.TcMmd01, _TcMmd01 + "%"));
+                                Reducer2Info = Reducer2Info.Where(r2 => EF.Functions.Like(r2.TcMmd01, _TcMmd01 + "%"));
+                                if (T1N != 0)
+                                {
+                                    Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd07 >= T1N && (r3.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+                                    Reducer2Info = Reducer2Info.Where(r2 => r2.TcMmd07 >= T1N && (r2.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
+                                }
+                                if (T1B != 0)
+                                {
+                                    Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd05 >= T1B);
+                                    Reducer2Info = Reducer2Info.Where(r2 => r2.TcMmd05 >= T1B);
+                                }
+                                if (S != 0)
+                                {
+                                    Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd16 >= S && r3.TcMmd16 <= S * Convert.ToDecimal(2.6));
+                                    Reducer2Info = Reducer2Info.Where(r2 => r2.TcMmd16 >= S && r2.TcMmd16 <= S * Convert.ToDecimal(2.6));
+                                }
+                                if (RedSpStr.Contains(_TcMmd01))
+                                {
+                                    Reducer3Info = Reducer3Info.Where(r3 => (r3.TcMmd24 == 1 && (r3.TcMmd16 - S >= Convert.ToDecimal(1.3) || r3.TcMmd16 - S == 0) || r3.TcMmd24 != 1));
+                                    Reducer2Info = Reducer2Info.Where(r2 => (r2.TcMmd24 == 1 && (r2.TcMmd16 - S >= Convert.ToDecimal(1.3) || r2.TcMmd16 - S == 0) || r2.TcMmd24 != 1));
+                                }
+                                if (_InertiaApp != 0)
+                                {
+                                    Reducer3Info = Reducer3Info.Where(r3 => (_InertiaApp / (r3.TcMmd04 * r3.TcMmd04) / Inertia) <= 4);
+                                    Reducer2Info = Reducer2Info.Where(r2 => (_InertiaApp / (r2.TcMmd04 * r2.TcMmd04) / Inertia) <= 4);
+                                }
+                                Reducer2Info = Reducer2Info.Where(r2 => !Reducer3Info.Select(r3 => r3.Re).Contains(r2.Re));
+                                ReducerInfo = Reducer3Info
+                                             .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03 }).Distinct()
+                                             .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03 }).Distinct());
                             }
-                  
+                            else if ((R65Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
+                            {
+                                Reducer1Info = Reducer1Info.Where(r1 => r1.TcMmd35 == "N");
+                                if (T1N != 0)
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r1 => r1.TcMmd07 >= T1N);
+                                }
+                                if ("R65,R66,R67,R69,R86".Contains(_TcMmd01))
+                                {
+                                    Reducer1Info = Reducer1Info.Where(r1 =>  EF.Functions.Like(r1.TcMmd01, _TcMmd01 + "%") && !EF.Functions.Like(r1.TcMmd01, _TcMmd01 + "0%"));
+                                }
+                          
                             break;
                     }
                     if ((R14Groups).Contains(_TcMmd01) && MotorScrewOrientation != "Y")
@@ -130,7 +172,7 @@ namespace APEX_API.Services
                         ReducerInfo = Reducer1Info.Select(r => new Reducer1Order { TcMmd03 = r.TcMmd03 }).Distinct();
                     }
 
-                    ReducerInfo = Reducer1Info.OrderBy(r => r.TcMmd03);
+                    ReducerInfo = ReducerInfo.OrderBy(r => r.TcMmd03);
                     break;
             }
             return ReducerInfo.ToList();
