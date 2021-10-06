@@ -13,6 +13,7 @@ using APEX_API.Services;
 using Microsoft.AspNetCore.Cors;
 using APEX_API.PublicServices;
 using APEX_API.TopprodModels;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -87,8 +88,8 @@ namespace APEX_API.Controllers
                 List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
                 List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
 
-                ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek09), "", "" ,"");
-                RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.SingleOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
+                ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "", "", "");
+                RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
 
                 //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
                 //var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
@@ -285,7 +286,7 @@ namespace APEX_API.Controllers
         [EnableCors("CorsPolicy")]
         public void Cd(string CustId)
         {
-    
+           
         }
     }
 
