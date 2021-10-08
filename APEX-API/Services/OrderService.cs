@@ -112,16 +112,6 @@ namespace APEX_API.Services
                     {
                         Reducer3Info = Reducer3Info.Where(r3 => EF.Functions.Like(r3.TcMmd01, _TcMmd01 + "%"));
                         Reducer2Info = Reducer2Info.Where(r2 => EF.Functions.Like(r2.TcMmd01, _TcMmd01 + "%"));
-                        if (T1N != 0)
-                        {
-                            Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd07 >= T1N && (r3.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
-                            Reducer2Info = Reducer2Info.Where(r2 => r2.TcMmd07 >= T1N && (r2.TcMmd27 * Convert.ToDecimal(0.5) <= T1N));
-                        }
-                        if (T1B != 0)
-                        {
-                            Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd05 >= T1B);
-                            Reducer2Info = Reducer2Info.Where(r2 => r2.TcMmd05 >= T1B);
-                        }
                         if (S != 0)
                         {
                             Reducer3Info = Reducer3Info.Where(r3 => r3.TcMmd16 >= S && r3.TcMmd16 <= S * Convert.ToDecimal(2.6));
