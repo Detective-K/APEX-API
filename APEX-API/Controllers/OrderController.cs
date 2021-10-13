@@ -87,13 +87,12 @@ namespace APEX_API.Controllers
                 List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
                 List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
+                List<Reducer1Order> BacklashShaft = new List<Reducer1Order> { };
 
                 ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "", "", "");
                 RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
-
-                //var ModelInfo = !string.IsNullOrEmpty(Convert.ToString(OData["tcOek01"])) ? _orderService.GetModelInfo(OData) : "";
-                //var GearBoxInfo = _orderService.GetGearBoxInfo(OData);
-                return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo });
+                BacklashShaft = _orderService.GetReducerSB(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), (!string.IsNullOrEmpty(Convert.ToString(OData["Ratio"])) ? Convert.ToDecimal(OData["Ratio"]) : Convert.ToDecimal(RatioInfo.FirstOrDefault().TcMmd04)));
+                return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo , BacklashShaft = BacklashShaft });
             }
 
             return BadRequest(new { code = 400, message = "Error Request" });
