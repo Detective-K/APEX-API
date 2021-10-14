@@ -237,8 +237,8 @@ namespace APEX_API.Services
 
                         Reducer2Info = Reducer2Info.Where(r2 => !Reducer3Info.Select(r3 => r3.Re).Contains(r2.Re));
                         ReducerInfo = Reducer3Info
-                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03 }).Distinct()
-                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03 }).Distinct());
+                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03, TcMmd04 = r3.TcMmd04 }).Distinct()
+                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03, TcMmd04 = r2.TcMmd04 }).Distinct());
                     }
                     break;
                 case "2":
@@ -366,8 +366,8 @@ namespace APEX_API.Services
 
                         Reducer2Info = Reducer2Info.Where(r2 => !Reducer3Info.Select(r3 => r3.Re).Contains(r2.Re));
                         ReducerInfo = Reducer3Info
-                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03 }).Distinct()
-                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03 }).Distinct());
+                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03, TcMmd04 = r3.TcMmd04 }).Distinct()
+                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03, TcMmd04 = r2.TcMmd04 }).Distinct());
                     }
                     break;
                 default:
