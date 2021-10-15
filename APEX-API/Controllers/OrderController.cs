@@ -100,6 +100,28 @@ namespace APEX_API.Controllers
 
         [HttpGet("[action]")]
         [EnableCors("CorsPolicy")]
+        public ActionResult GearBoxReSult(string feStr)
+        {
+            if (!string.IsNullOrEmpty(feStr))
+            {
+                dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
+                //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
+                //List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
+                //List<Reducer1Order> BacklashShaft = new List<Reducer1Order> { };
+
+                //ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "", "", "");
+                //RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
+                //BacklashShaft = _orderService.GetReducerSB(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), (!string.IsNullOrEmpty(Convert.ToString(OData["Ratio"])) ? Convert.ToDecimal(OData["Ratio"]) : Convert.ToDecimal(RatioInfo.FirstOrDefault().TcMmd04)));
+                //return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo, BacklashShaft = BacklashShaft });
+                return Ok(new { code = 200, Message = "" });
+            }
+
+            return BadRequest(new { code = 400, message = "Error Request" });
+        }
+
+        [HttpGet("[action]")]
+        [EnableCors("CorsPolicy")]
         public ActionResult CustSearchInfo(string CustId)
         {
             var joinList = _orderService.GetCustInfo(CustId);
