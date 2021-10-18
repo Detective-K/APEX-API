@@ -27,12 +27,14 @@ namespace APEX_API.Controllers
         private readonly web2Context _web2Context;
         private readonly OrderService _orderService;
         private readonly PublicFunctions _publicFunction;
+        private readonly PublicOrders _publicOrder;
 
-        public OrderController(web2Context context, OrderService orderService, PublicFunctions publicFunctions)
+        public OrderController(web2Context context, OrderService orderService, PublicFunctions publicFunctions , PublicOrders publicOrders)
         {
             _web2Context = context;
             _orderService = orderService;
             _publicFunction = publicFunctions;
+            _publicOrder = publicOrders;
         }
 
         // GET: api/<OrderController>
@@ -105,10 +107,20 @@ namespace APEX_API.Controllers
             if (!string.IsNullOrEmpty(feStr))
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
+                string R14Groups = "R14,R26,R28,R30,R32,R57,R58,R59,R60,RB6,RB8,RC1,RC3,RC7,RC8,RC9,RC5";
+                string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";//tmp_type 3,
+                string R25Groups = "R25";
+                string RG4Groups = "RG4,RG5";
+
+                if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
+                {
+                    _publicOrder.GBResult(OData , "3", "false");
+                }
                 //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
                 //List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
                 //List<Reducer1Order> BacklashShaft = new List<Reducer1Order> { };
+
 
                 //ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "", "", "");
                 //RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
@@ -157,13 +169,13 @@ namespace APEX_API.Controllers
                         break;
                     default:
                         BasePrice = _orderService.GetBasePrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
-                        Discount = _orderService.GetDiscount(Convert.ToString(OData["Currency"]), BasePrice, Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
+                        Discount = _publicFunction.GetDiscount(Convert.ToString(OData["Currency"]), BasePrice, Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
                         SellingPrice = _orderService.GetSellingPrice(Convert.ToString(OData["CustId"]), Convert.ToString(OData["PartNo"]), Convert.ToString(OData["Currency"]), Convert.ToInt32(OData["Qty"]));
                         DiscountPrice = System.Math.Round(SellingPrice * (1 - Discount), 0, MidpointRounding.AwayFromZero);
                         FinalCharge = DiscountPrice;
                         if (("A,C").ToString().IndexOf(Convert.ToString(OData["PartNo"]).Substring(0, 1)) != -1)
                         {
-                            double ChangeOilPrice = _orderService.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
+                            double ChangeOilPrice = _publicFunction.GetChangeOilPrice(Convert.ToString(OData["PartNo"]), DiscountPrice, Convert.ToString(OData["Lubrication"]), Convert.ToString(OData["CustId"]), Convert.ToString(OData["Currency"]), Convert.ToString(OData["Spec"]));
                             if (ChangeOilPrice != 0)
                             {
                                 FinalCharge = ChangeOilPrice;
@@ -198,7 +210,7 @@ namespace APEX_API.Controllers
             if (!string.IsNullOrEmpty(feStr))
             {
                 dynamic OData = Utf8Json.JsonSerializer.Deserialize<dynamic>(feStr.ToString());
-                double Discount = _orderService.GetDiscount(Convert.ToString(OData["Currency"]), Convert.ToString(OData["UnitPrice"]), Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
+                double Discount = _publicFunction.GetDiscount(Convert.ToString(OData["Currency"]), Convert.ToString(OData["UnitPrice"]), Convert.ToInt16(OData["Qty"]), Convert.ToString(OData["PartNo"]));
                 return Ok(new { code = 200, Discount = Discount });
             }
             return BadRequest(new { code = 400, message = "Error Request" });

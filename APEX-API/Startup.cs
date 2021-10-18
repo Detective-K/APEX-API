@@ -68,6 +68,7 @@ namespace APEX_API
 
             services.AddScoped<OrderService>();
             services.AddScoped<PublicFunctions>();
+            services.AddScoped<PublicOrders>();
             //services.AddCors(options =>
             //{
             //    options.AddDefaultPolicy(
