@@ -89,6 +89,32 @@ namespace APEX_API.Services
             }
             return ReducerInfo.ToList();
         }
+        public List<Resg> GetResgInfo(dynamic OData)
+        {
+            string _tc_mmd01 = Convert.ToString(OData["Ratio"]);
+            var ResgInfo = _DataContext.Resgs.AsQueryable();
+            if (!string.IsNullOrEmpty(_tc_mmd01) )
+            {
+                ResgInfo = ResgInfo.Where(r => r.TcMmd01 == _tc_mmd01);
+            }
+            return ResgInfo.ToList();
+        }
+
+        public List<TcOelFile> GetTcOelFileInfo(dynamic OData)
+        {
+            string _tcOel01 = Convert.ToString(OData["Brand"]);
+            string _tcOel02 = Convert.ToString(OData["Spec"]);
+            var TcOelFileInfo = _DataContext.TcOelFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_tcOel01))
+            {
+                TcOelFileInfo = TcOelFileInfo.Where(m => m.TcOel01 == _tcOel01);
+            }
+            if (!string.IsNullOrEmpty(_tcOel02))
+            {
+                TcOelFileInfo = TcOelFileInfo.Where(m => m.TcOel02 == _tcOel02);
+            }
+            return TcOelFileInfo.ToList();
+        }
 
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
@@ -741,7 +767,6 @@ namespace APEX_API.Services
             ModelInfo = ModelInfo.OrderBy(m => m.TcOek02);
             return ModelInfo.ToList();
         }
-
 
         public List<TcMmeFile> GetGearBoxInfo(dynamic OData)
         {
