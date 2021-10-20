@@ -1017,7 +1017,555 @@ namespace APEX_API.PublicServices
 
             return FinalCharge;
         }
+        public string Get_C12(string p_LZ1)
+        {
+            string l_return = "0=0";
+            if (p_LZ1 == "M3")
+            {
+                l_return = " and tc_mma29 = 3.4 ";
+            }
+            if (p_LZ1 == "M4")
+            {
+                l_return = " and tc_mma29 = 4.5 ";
+            }
+            if (p_LZ1 == "M5")
+            {
+                l_return = " and tc_mma29 = 5.5 ";
+            }
+            if (p_LZ1 == "M6")
+            {
+                l_return = " and tc_mma29 = 6.6 ";
+            }
+            if (p_LZ1 == "M8")
+            {
+                l_return = " and tc_mma29 = 9 ";
+            }
+            if (p_LZ1 == "M10")
+            {
+                l_return = " and tc_mma29 = 11 ";
+            }
+            if (p_LZ1 == "M12")
+            {
+                l_return = " and tc_mma29 = 14 ";
+            }
+            if (p_LZ1 == "M14")
+            {
+                l_return = " and tc_mma29 = 16 ";
+            }
+            if (p_LZ1 == "M16")
+            {
+                l_return = " and tc_mma29 = 18 ";
+            }
+            if (p_LZ1 == "M18")
+            {
+                l_return = " and tc_mma29 = 20 ";
+            }
+            if (p_LZ1 == "M20")
+            {
+                l_return = " and tc_mma29 = 22 ";
+            }
+            if (p_LZ1 == "M22")
+            {
+                l_return = " and tc_mma29 = 24 ";
+            }
+            if (p_LZ1 == "M24")
+            {
+                l_return = " and tc_mma29 = 26 ";
+            }
+            if (p_LZ1 == "NO.4-40 UNC")
+            {
+                l_return = " and tc_mma29 = 3.4 ";
+            }
+            if (p_LZ1 == "NO.5-40 UNC")
+            {
+                l_return = " and tc_mma29 = 3.4 ";
+            }
+            if (p_LZ1 == "NO.6-32 UNC")
+            {
+                l_return = " and tc_mma29 = 4.5 ";
+            }
+            if (p_LZ1 == "NO.8-32 UNC")
+            {
+                l_return = " and tc_mma29 = 4.5 ";
+            }
+            if (p_LZ1 == "10-24 UNC")
+            {
+                l_return = " and tc_mma29 = 5.5 ";
+            }
+            if (p_LZ1 == "NO.12-24 UNC")
+            {
+                l_return = " and tc_mma29 = 6.6 ";
+            }
+            if (p_LZ1 == "1/4-20 UNC")
+            {
+                l_return = " and tc_mma29 = 6.6 ";
+            }
+            if (p_LZ1 == "5/16-28 UNC")
+            {
+                l_return = " and tc_mma29 = 9 ";
+            }
+            if (p_LZ1 == "3/8-16 UNC")
+            {
+                l_return = " and tc_mma29 = 11 ";
+            }
+            if (p_LZ1 == "7/16-14 UNC")
+            {
+                l_return = " and tc_mma29 = 14 ";
+            }
+            if (p_LZ1 == "1/2-13 UNC")
+            {
+                l_return = " and tc_mma29 = 14 ";
+            }
+            if (p_LZ1 == "9/16-12 UNC")
+            {
+                l_return = " and tc_mma29 = 16 ";
+            }
+            if (p_LZ1 == "5/8-11 UNC")
+            {
+                l_return = " and tc_mma29 = 18 ";
+            }
+            if (p_LZ1 == "3/4-10 UNC")
+            {
+                l_return = " and tc_mma29 = 22 ";
+            }
+            if (p_LZ1 == "7/8-9 UNC")
+            {
+                l_return = " and tc_mma29 = 24 ";
+            }
 
+            return l_return;
+        }
+        public string Get_M(double Dia)
+        {
+            string l_return = "0";
+            if (Dia < 3.2)
+            {
+                l_return = "3";
+            }
+            if (Dia >= 3.2 && Dia < 4.3)
+            {
+                l_return = "3";
+            }
+            if (Dia >= 4.3 && Dia < 5.3)
+            {
+                l_return = "4";
+            }
+            if (Dia >= 5.3 && Dia < 6.3)
+            {
+                l_return = "5";
+            }
+            if (Dia >= 6.3 && Dia < 8.3)
+            {
+                l_return = "6";
+            }
+            if (Dia >= 8.3 && Dia < 10.5)
+            {
+                l_return = "8";
+            }
+            if (Dia >= 10.5 && Dia < 13)
+            {
+                l_return = "10";
+            }
+            if (Dia >= 13 && Dia < 14.7)
+            {
+                l_return = "12";
+            }
+            if (Dia >= 14.7 && Dia < 17)
+            {
+                l_return = "14";
+            }
+            if (Dia >= 17 && Dia <= 19)
+            {
+                l_return = "16";
+            }
+            if (Dia > 19 && Dia < 21)
+            {
+                l_return = "18";
+            }
+            if (Dia >= 21 && Dia < 23)
+            {
+                l_return = "20";
+            }
+            if (Dia >= 23 && Dia < 25)
+            {
+                l_return = "22";
+            }
+            if (Dia >= 25 && Dia < 27)
+            {
+                l_return = "24";
+            }
+            if (Dia >= 27)
+            {
+                l_return = "0";
+            }
+
+            return l_return;
+        }
+        public string Get_C12_NEW(string p_LZ1)
+        {
+            string l_return = "0";
+            if (p_LZ1 == "M3")
+            {
+                l_return = "3.4";
+            }
+            if (p_LZ1 == "M4")
+            {
+                l_return = "4.5";
+            }
+            if (p_LZ1 == "M5")
+            {
+                l_return = "5.5";
+            }
+            if (p_LZ1 == "M6")
+            {
+                l_return = "6.6";
+            }
+            if (p_LZ1 == "M8")
+            {
+                l_return = "9";
+            }
+            if (p_LZ1 == "M10")
+            {
+                l_return = "11";
+            }
+            if (p_LZ1 == "M12")
+            {
+                l_return = "14";
+            }
+            if (p_LZ1 == "M14")
+            {
+                l_return = "16";
+            }
+            if (p_LZ1 == "M16")
+            {
+                l_return = "18";
+            }
+            if (p_LZ1 == "M18")
+            {
+                l_return = "20";
+            }
+            if (p_LZ1 == "M20")
+            {
+                l_return = "22";
+            }
+            if (p_LZ1 == "M22")
+            {
+                l_return = "24";
+            }
+            if (p_LZ1 == "M24")
+            {
+                l_return = "26";
+            }
+            if (p_LZ1 == "NO.4-40 UNC")
+            {
+                l_return = "3.4";
+            }
+            if (p_LZ1 == "NO.5-40 UNC")
+            {
+                l_return = "3.4";
+            }
+            if (p_LZ1 == "NO.6-32 UNC")
+            {
+                l_return = "4.5";
+            }
+            if (p_LZ1 == "NO.8-32 UNC")
+            {
+                l_return = "4.5";
+            }
+            if (p_LZ1 == "10-24 UNC")
+            {
+                l_return = "5.5";
+            }
+            if (p_LZ1 == "NO.12-24 UNC")
+            {
+                l_return = "6.6";
+            }
+            if (p_LZ1 == "1/4-20 UNC")
+            {
+                l_return = "6.6";
+            }
+            if (p_LZ1 == "5/16-28 UNC")
+            {
+                l_return = "9";
+            }
+            if (p_LZ1 == "3/8-16 UNC")
+            {
+                l_return = "11";
+            }
+            if (p_LZ1 == "7/16-14 UNC")
+            {
+                l_return = "14";
+            }
+            if (p_LZ1 == "1/2-13 UNC")
+            {
+                l_return = "14";
+            }
+            if (p_LZ1 == "9/16-12 UNC")
+            {
+                l_return = "16";
+            }
+            if (p_LZ1 == "5/8-11 UNC")
+            {
+                l_return = "18";
+            }
+            if (p_LZ1 == "3/4-10 UNC")
+            {
+                l_return = "22 ";
+            }
+            if (p_LZ1 == "7/8-9 UNC")
+            {
+                l_return = "24";
+            }
+
+            return l_return;
+        }
+        public double Ceiling(double value, double significance)
+        {
+            if ((value % significance) != 0)
+            {
+                return ((int)(value / significance) * significance) + significance;
+            }
+
+            return Convert.ToDouble(value);
+        }
+        //找出螺絲的總牙長    
+        public int getScrewT(string Dia)
+        {
+            int l_return = 0;
+            switch (Dia)
+            {
+                case "3":
+                    l_return = 6;
+                    break;
+
+                case "4":
+                    l_return = 9;
+                    break;
+
+                case "5":
+                    l_return = 10;
+                    break;
+
+                case "6":
+                    l_return = 12;
+                    break;
+
+                case "8":
+                    l_return = 15;
+                    break;
+
+                case "10":
+                    l_return = 18;
+                    break;
+
+                case "12":
+                    l_return = 21;    //20181107 22->21
+                    break;
+
+                case "14":
+                    l_return = 24;   //20181107 25->24
+                    break;
+
+                case "16":
+                    l_return = 28;
+                    break;
+
+                case "18":
+                    l_return = 33;
+                    break;
+
+                case "20":
+                    l_return = 36;
+                    break;
+
+                default:
+                    l_return = 0;
+                    break;
+
+            }
+
+            return l_return;
+        }
+        public double  Get_Screw_Max_Dia(double p_C12)
+        {
+            double l_return = 0;
+            if (p_C12 == 3.4)
+            {
+                l_return = 6.4;
+            }
+            if (p_C12 == 4.5)
+            {
+                l_return = 8.1;
+            }
+            if (p_C12 == 5.5)
+            {
+                l_return = 9.2;
+            }
+            if (p_C12 == 6.6)
+            {
+                l_return = 11.5;
+            }
+            if (p_C12 == 9)
+            {
+                l_return = 15;
+            }
+            if (p_C12 == 11)
+            {
+                l_return = 19.6;
+            }
+            if (p_C12 == 14)
+            {
+                l_return = 21.9;
+            }
+            if (p_C12 == 16)
+            {
+                l_return = 25.4;
+            }
+            if (p_C12 == 18)
+            {
+                l_return = 27.7;
+            }
+
+            return l_return;
+        }
+
+        protected void formula(string Adptable, string LBck , int rblAdpCount)
+        {
+            //int l_adapter_list_count = 3; //可供選擇的連接板數量
+
+            //int g_count = 0;
+
+            //string[] l_adpter_type = { "P", "O" };
+
+            //string tmp_newPartNo = "None";
+
+            //foreach (string l_string in l_adpter_type)
+            //{
+            //    if (tmp_newPartNo != "None")
+            //    {
+            //        continue;
+            //    }
+
+            //    double tmp = 40;
+
+            //    double LAtmp = 0.1;
+
+            //    while (tmp <= 40 && rblAdpCount < l_adapter_list_count)
+            //    {
+            //        if (LBck == "LBstd")
+            //        {
+            //            g_sql = "SELECT * FROM " + Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >=" + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >=" + Convert.ToDouble(LE) + " and tc_mma12 >=" + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05=" + Convert.ToSingle(ScrewDia) + " and tc_mma16=" + Convert.ToDouble(AWidth1) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma01 like '" + l_string + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),substr(tc_mma01,0,1) desc,abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24";
+            //        }
+            //        else
+            //        {
+            //            g_sql = "SELECT * FROM " + Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >=" + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10<=" + Convert.ToDouble(Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >=" + Convert.ToDouble(LB) + " and tc_mma11>=" + Convert.ToDouble(LE) + " and tc_mma12 >=" + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05=" + Convert.ToDouble(ScrewDia) + " and tc_mma16=" + Convert.ToDouble(AWidth1) + " and tc_mma13<=" + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13>=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma01 like '" + l_string + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),substr(tc_mma01,0,1) desc,abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24";
+            //        }
+
+            //        DataSet myDataReader_3 = class_nana_ds1.ORACLE_DS(g_sql);
+            //        g_count = g_count + 1;
+
+            //        if (myDataReader_3.Tables[0].Rows.Count > 0)
+            //        {
+            //            for (int i = 0; i < myDataReader_3.Tables[0].Rows.Count; i++)
+            //            {
+            //                if (rblAdpCount < l_adapter_list_count)
+            //                {
+            //                    if (tmp_newPartNo == null || tmp_newPartNo == "None")
+            //                    {
+            //                        tmp_newPartNo = Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]);
+
+            //                        //換一體式連接板
+            //                        if (Convert.ToString(ViewState["g_Reducer_One_piece"]) == "Y")
+            //                        {
+            //                            if (Convert.ToString(ViewState["g_Reducer_One_piece_used"]) == "Y")
+            //                            {
+            //                                //先關閉等生管通知
+            //                                Fun_replace_one_piece(Convert.ToString(ViewState["Reducer_No"]), tmp_newPartNo);
+            //                            }
+            //                        }
+            //                    }
+            //                    //if (Convert.ToString(ViewState["g_Reducer_One_piece_chenged"]) == "Y")//已經換成一體式,不要再找其他連接板
+            //                    //{
+            //                    //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(ViewState["Adaper_No"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(ViewState["Adaper_No"])), Convert.ToString(ViewState["Adaper_No"])));
+            //                    //    tmp = 100; //離開while 迴圈
+            //                    //    break;
+            //                    //}
+            //                    //else
+            //                    //{
+            //                    //    if (rbl_adapter.Items.Count == 0) //最適配連接板
+            //                    //    {
+            //                    //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+
+            //                    //        if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking")
+            //                    //        {
+            //                    //            //break;
+            //                    //        }
+            //                    //    }
+            //                    //    else
+            //                    //    {
+            //                    //        //if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
+            //                    //        //{
+            //                    //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+            //                    //        //}
+            //                    //    }
+            //                    //}
+            //                }
+            //                else
+            //                {
+            //                    tmp = 100; //離開while 迴圈
+            //                }
+            //            }
+
+            //            if (tmp == 0)
+            //            {
+            //                tmp = 2.5;
+            //            }
+            //            else
+            //            {
+            //                tmp = tmp * 2;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (LAtmp == 0)
+            //            {
+            //                if (tmp == 0)
+            //                {
+            //                    tmp = 2.5;
+            //                }
+            //                else
+            //                {
+            //                    tmp = tmp * 2;
+
+            //                    if (tmp > 40)
+            //                    {
+            //                        LAtmp = 0.1;
+            //                        tmp = 40;
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                if (tmp == 0)
+            //                {
+            //                    tmp = 2.5;
+            //                }
+            //                else
+            //                {
+            //                    tmp = tmp * 2;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            ////if (rblAdpCount > 0)
+            ////{
+            ////    rbl_adapter.SelectedIndex = 0;
+            ////    tmp_newPartNo = rbl_adapter.SelectedValue;
+            ////}
+            //return tmp_newPartNo;
+        }
         #endregion
     }
 }

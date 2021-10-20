@@ -116,6 +116,17 @@ namespace APEX_API.Services
             return TcOelFileInfo.ToList();
         }
 
+
+        public List<TcShwFile> GetTcShwFileInfo(string suitAdapter)
+        {
+            var TcShwFileInfo = _DataContext.TcShwFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(suitAdapter))
+            {
+                TcShwFileInfo = TcShwFileInfo.Where(tS => tS.TcShw01 == suitAdapter);
+            }
+            return TcShwFileInfo.ToList();
+        }
+
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
         {
