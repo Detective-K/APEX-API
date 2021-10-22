@@ -31,10 +31,11 @@ namespace APEX_API.PublicServices
             string ta_oeb005 = string.Empty;
             string AdapterData1, AdapterData2, AdapterData3, AdapterData4, AdapterData5;
             string AWidth1, AWidth2, ratio_x, file_ratio_x, R1No, PartNo, M3max, P_OuterDia, newrdeucer, l_AWidth1, suitadapter_c4;
-            string C3, LR, LB, LE, LA, LC, ScrewDia, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
+            string C3, LR, LB, LE, LA, LC, ScrewDia = string.Empty, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
             string M3maxWeb, suitadapter;
             string T, txtadaperNo, txtSUNGEAR;
             string LN, LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
+            string G_Reducer_One_piece = "N" , G_Reducer_One_piece_chenged = "N";
             double Reducer_D7 = 0, Reducer_D9 = 0, Reducer_A1 = 0, Reducer_A2 = 0; //反鎖馬達用
 
             Double tc_shw10 = 0;
@@ -43,7 +44,7 @@ namespace APEX_API.PublicServices
             Double tc_shw03 = 0;
             string l_suitadapter = string.Empty;
 
-            DateTime g_begin , g_end;
+            DateTime g_begin, g_end;
             string adaperNo, DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
 
             string errMsg = string.Empty;
@@ -52,6 +53,8 @@ namespace APEX_API.PublicServices
             List<Resg> ResgInfo = _orderService.GetResgInfo(OData["GearBox"]);
             List<TcOelFile> TcOelInfo = _orderService.GetTcOelFileInfo(OData["Motor"]);
             List<TcShwFile> TcShwInfo = new List<TcShwFile> { };
+            List<OrderService.AdpDatas> _adpDatas = new List<OrderService.AdpDatas>();
+            List<PublicFunctions.TcMmiFileInfo> _tcMmiFileInfo = new List<PublicFunctions.TcMmiFileInfo>();
 
             if (Convert.ToString(type) == "2")
             {
@@ -163,7 +166,7 @@ namespace APEX_API.PublicServices
                 Reducer_D9 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd52) != "" ? Convert.ToDouble(ReducerInfo.FirstOrDefault().TcMmd52) : 0;
                 Reducer_A1 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd53) != "" ? Convert.ToDouble(ReducerInfo.FirstOrDefault().TcMmd53) : 0;
                 Reducer_A2 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd54) != "" ? Convert.ToDouble(ReducerInfo.FirstOrDefault().TcMmd54) : 0;
-
+                G_Reducer_One_piece = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd45);
             }
             else
             {
@@ -540,9 +543,52 @@ namespace APEX_API.PublicServices
             }
 
             g_begin = DateTime.Now;
+
             if (Convert.ToString(type) == "1")
             {
-               // adaperNo = formula(AdapterData1, "LBstd");
+                _adpDatas.Add(new OrderService.AdpDatas
+                {
+                    TableName = AdapterData1,
+                    LBck = "LBstd",
+                    LR = LR,
+                    LB = LB,
+                    LE = LE,
+                    LT = LT,
+                    LA = LA,
+                    ScrewDia = ScrewDia,
+                    AWidth1 = AWidth1,
+                    LC = LC,
+                    LAtmp = "",
+                    Tmp = "",
+                    L_string = "",
+                    RblAdpCount = 0 ,
+                    G_Reducer_One_piece = G_Reducer_One_piece,
+                    G_Reducer_One_piece_used = "Y",
+                    Reducer_No = PartNo
+                });
+                _tcMmiFileInfo =  _publicFunction.Formula(_adpDatas);
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
+                PartNo = !string.IsNullOrEmpty(_tcMmiFileInfo.FirstOrDefault().PartNo) ? _tcMmiFileInfo.FirstOrDefault().PartNo : PartNo;
+                G_Reducer_One_piece_chenged = _tcMmiFileInfo.FirstOrDefault().G_Reducer_One_piece_chenged;
+            }
+            if (Convert.ToString(type) == "2")
+            {
+                _tcMmiFileInfo = _publicFunction.Formula_P2(_adpDatas , G_Reducer_One_piece_chenged );
+            }
+
+            if (Convert.ToString(type) == "3")
+            {
+                adaperNo = " ";
+            }
+
+            if (Convert.ToString(type) == "4")
+            {
+                adaperNo = formula2(AdapterData1, "LBstd");
+            }
+
+            if (Convert.ToString(type) == "5")
+            {
+                adaperNo = formula_type5(AdapterData1, "LBstd", Motor_Screw_orientation);
             }
 
         }
