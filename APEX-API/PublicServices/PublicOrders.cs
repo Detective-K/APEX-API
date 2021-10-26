@@ -34,8 +34,8 @@ namespace APEX_API.PublicServices
             string C3, LR, LB, LE, LA, LC, ScrewDia = string.Empty, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
             string M3maxWeb, suitadapter;
             string T, txtadaperNo, txtSUNGEAR;
-            string LN, LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
-            string G_Reducer_One_piece = "N" , G_Reducer_One_piece_chenged = "N";
+            string LN = "0", LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
+            string G_Reducer_One_piece = "N", G_Reducer_One_piece_chenged = "N";
             double Reducer_D7 = 0, Reducer_D9 = 0, Reducer_A1 = 0, Reducer_A2 = 0; //反鎖馬達用
 
             Double tc_shw10 = 0;
@@ -544,36 +544,43 @@ namespace APEX_API.PublicServices
 
             g_begin = DateTime.Now;
 
-            if (Convert.ToString(type) == "1")
+            _adpDatas.Add(new OrderService.AdpDatas
             {
-                _adpDatas.Add(new OrderService.AdpDatas
-                {
-                    TableName = AdapterData1,
-                    LBck = "LBstd",
-                    LR = LR,
-                    LB = LB,
-                    LE = LE,
-                    LT = LT,
-                    LA = LA,
-                    ScrewDia = ScrewDia,
-                    AWidth1 = AWidth1,
-                    LC = LC,
-                    LAtmp = "",
-                    Tmp = "",
-                    L_string = "",
-                    RblAdpCount = 0 ,
-                    G_Reducer_One_piece = G_Reducer_One_piece,
-                    G_Reducer_One_piece_used = "Y",
-                    Reducer_No = PartNo
-                });
-                _tcMmiFileInfo =  _publicFunction.Formula(_adpDatas);
+                TableName = AdapterData1,
+                LBck = "LBstd",
+                LR = LR,
+                LB = LB,
+                LE = LE,
+                LT = LT,
+                LA = LA,
+                ScrewDia = ScrewDia,
+                AWidth1 = AWidth1,
+                LC = LC,
+                LAtmp = "",
+                Tmp = "",
+                L_string = "",
+                RblAdpCount = 0,
+                G_Reducer_One_piece = G_Reducer_One_piece,
+                G_Reducer_One_piece_used = "Y",
+                Reducer_No = PartNo,
+                Suitadapter_c4 = suitadapter_c4,
+                Suitadapter = suitadapter,
+                Brand = OData["Motor"]["Brand"],
+                Spec = OData["Motor"]["Spec"],
+                LN = LN
+            });
+
+            if (Convert.ToString(type) == "1")
+            {              
+                _tcMmiFileInfo = _publicFunction.Formula(_adpDatas);
                 adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 PartNo = !string.IsNullOrEmpty(_tcMmiFileInfo.FirstOrDefault().PartNo) ? _tcMmiFileInfo.FirstOrDefault().PartNo : PartNo;
                 G_Reducer_One_piece_chenged = _tcMmiFileInfo.FirstOrDefault().G_Reducer_One_piece_chenged;
             }
             if (Convert.ToString(type) == "2")
             {
-                _tcMmiFileInfo = _publicFunction.Formula_P2(_adpDatas , G_Reducer_One_piece_chenged );
+                
+                _tcMmiFileInfo = _publicFunction.Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
             }
 
             if (Convert.ToString(type) == "3")
@@ -583,7 +590,7 @@ namespace APEX_API.PublicServices
 
             if (Convert.ToString(type) == "4")
             {
-                adaperNo = formula2(AdapterData1, "LBstd");
+                adaperNo = _publicFunction.Formula2(_adpDatas);
             }
 
             if (Convert.ToString(type) == "5")

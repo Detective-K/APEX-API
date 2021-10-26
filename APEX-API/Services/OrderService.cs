@@ -77,7 +77,7 @@ namespace APEX_API.Services
         public List<Reducer1Order> GetReducerInfo(dynamic OData)
         {
             string _tc_mmd03 = Convert.ToString(OData["GBModel"]);
-            decimal _tc_mmd04 = Convert.ToString(OData["Ratio"]) == "" ? 0 :  Convert.ToDecimal(OData["Ratio"]);
+            decimal _tc_mmd04 = Convert.ToString(OData["Ratio"]) == "" ? 0 : Convert.ToDecimal(OData["Ratio"]);
             var ReducerInfo = _DataContext.Reducer1Orders.AsQueryable();
             if (!string.IsNullOrEmpty(_tc_mmd03))
             {
@@ -93,7 +93,7 @@ namespace APEX_API.Services
         {
             string _tc_mmd01 = Convert.ToString(OData["Ratio"]);
             var ResgInfo = _DataContext.Resgs.AsQueryable();
-            if (!string.IsNullOrEmpty(_tc_mmd01) )
+            if (!string.IsNullOrEmpty(_tc_mmd01))
             {
                 ResgInfo = ResgInfo.Where(r => r.TcMmd01 == _tc_mmd01);
             }
@@ -132,7 +132,7 @@ namespace APEX_API.Services
             var TcMmiFileInfo = _DataContext.TcMmiFiles.AsQueryable();
             if (!string.IsNullOrEmpty(_tcMmi04))
             {
-                TcMmiFileInfo = TcMmiFileInfo.Where(tM => tM.TcMmi05 == "Y" && tM.TcMmi04 == _tcMmi04 );
+                TcMmiFileInfo = TcMmiFileInfo.Where(tM => tM.TcMmi05 == "Y" && tM.TcMmi04 == _tcMmi04);
             }
             return TcMmiFileInfo.ToList();
         }
@@ -636,8 +636,8 @@ namespace APEX_API.Services
                         }
                         Reducer2Info = Reducer2Info.Where(r2 => !Reducer3Info.Select(r3 => r3.Re).Contains(r2.Re));
                         ReducerInfo = Reducer3Info
-                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03 , TcMmd04 = r3.TcMmd04 }).Distinct()
-                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03 , TcMmd04 = r2.TcMmd04}).Distinct());
+                                     .Select(r3 => new Reducer1Order { TcMmd03 = r3.TcMmd03, TcMmd04 = r3.TcMmd04 }).Distinct()
+                                     .Union(Reducer2Info.Select(r2 => new Reducer1Order { TcMmd03 = r2.TcMmd03, TcMmd04 = r2.TcMmd04 }).Distinct());
                     }
                     break;
             }
@@ -656,7 +656,7 @@ namespace APEX_API.Services
         }
 
         //Backlash & Shaft 
-        public List<Reducer1Order> GetReducerSB(dynamic OData , Decimal S, string _TcMmd03, Decimal _TcMmd04)
+        public List<Reducer1Order> GetReducerSB(dynamic OData, Decimal S, string _TcMmd03, Decimal _TcMmd04)
         {
             string _TcMmd01 = Convert.ToString(OData["GBSeries"]);
             string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";//tmp_type 3,
@@ -3405,243 +3405,597 @@ namespace APEX_API.Services
         }
 
 
-        public IEnumerable<dynamic> GetAdapInfo(List<AdpDatas> _datas)
+        public IEnumerable<dynamic> GetAdapInfo(List<AdpDatas> _datas, string item)
         {
             if (_datas.FirstOrDefault().LBck == "LBstd")
             {
                 switch (_datas.FirstOrDefault().TableName)
                 {
                     case "Adap_class1":
-                        return _DataContext.AdapClass1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapClass1sInfo = _DataContext.AdapClass1s.AsQueryable();
+                        if ("Formula,Formula_P2".Contains(item))
+                        {
+                            AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                            switch (item)
+                            {
+                                case "Formula":
+                                    AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                          && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                          && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                          && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                          )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                         .ThenBy(Adp => Adp.TcMma08)
+                                                                         .ThenBy(Adp => Adp.TcMma11)
+                                                                         .ThenBy(Adp => Adp.TcMma10)
+                                                                         .ThenBy(Adp => Adp.TcMma24)
+                                                                         ;
+                                    break;
+                                case "Formula_P2":
+                                    AdapClass1sInfo = AdapClass1sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+    
+                                                                            && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                             && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                            )
+                                                                             .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                            .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                            .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                            .ThenBy(Adp => Adp.TcMma13)
+                                                                            .ThenBy(Adp => Adp.TcMma08)
+                                                                            .ThenBy(Adp => Adp.TcMma11)
+                                                                            .ThenBy(Adp => Adp.TcMma10)
+                                                                            .ThenBy(Adp => Adp.TcMma24)
+                                                                            ;
+                                    break;
+                            }
+                        }
+                        else if (item == "formula2")
+                        {
+                            Where ( or tc_mma07  = " + Convert.ToDouble(LN) * 2 + ") and tc_mma08 >= " + Convert.ToDouble(LR) + " and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(LT) + " and tc_mma04=" + Convert.ToDouble(LA) + " and tc_mma05=" + Convert.ToDouble(LZ) + " and tc_mma16 = " + Convert.ToDouble(AWidth1) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >= " + Convert.ToDouble(Convert.ToSingle(LC) - tmp) + " order by tc_mma13,tc_mma08,tc_mma11,tc_mma10,tc_mma24 ";
+                            AdapClass1sInfo = AdapClass1sInfo.Where( Adp => (Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) || Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN/2))
+                                              );
+                        }
+                        return AdapClass1sInfo;
                     case "Adap_classEx2":
-                        return _DataContext.AdapClassex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapClassex2sInfo = _DataContext.AdapClassex2s.AsQueryable();
+                        AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapClassex2sInfo;
                     case "Adap_classEx3":
-                        return _DataContext.AdapClassex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapClassex3sInfo = _DataContext.AdapClassex3s.AsQueryable();
+                        AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapClassex3sInfo;
                     case "Adap_classEx4":
-                        return _DataContext.AdapClassex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapClassex4sInfo = _DataContext.AdapClassex4s.AsQueryable();
+                        AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapClassex4sInfo;
                     case "Adap_type1_class0":
-                        return _DataContext.AdapType1Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapType1Class0sInfo = _DataContext.AdapType1Class0s.AsQueryable();
+                        AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Class0sInfo;
                     case "Adap_type1_class1":
-                        return _DataContext.AdapType1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                             && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                             && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                             && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                             && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                             )
-                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenBy(Adp => Adp.TcMma08)
-                                                        .ThenBy(Adp => Adp.TcMma11)
-                                                        .ThenBy(Adp => Adp.TcMma10)
-                                                        .ThenBy(Adp => Adp.TcMma24)
-                                                        ;
+                        var AdapType1Class1sInfo = _DataContext.AdapType1Class1s.AsQueryable();
+                        AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Class1sInfo;
                     case "Adap_type1_class5":
-                        return _DataContext.AdapType1Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                        var AdapType1Class5sInfo = _DataContext.AdapType1Class5s.AsQueryable();
+                        AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Class5sInfo;
 
                     case "Adap_type5_class0":
-                        return _DataContext.AdapType5Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapType5Class0sInfo = _DataContext.AdapType5Class0s.AsQueryable();
+                        AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType5Class0sInfo;
                     case "Adap_type5_class5":
-                        return _DataContext.AdapType5Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
+                        var AdapType5Class5sInfo = _DataContext.AdapType5Class5s.AsQueryable();
+                        AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType5Class5sInfo;
                     case "Adap_type1_classEx2":
-                        return _DataContext.AdapType1Classex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                        var AdapType1Classex2sInfo = _DataContext.AdapType1Classex2s.AsQueryable();
+                        AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Classex2sInfo;
                     case "Adap_type1_classEx3":
-                        return _DataContext.AdapType1Classex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                        var AdapType1Classex3sInfo = _DataContext.AdapType1Classex3s.AsQueryable();
+                        AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Classex3sInfo;
                     case "Adap_type1_classEx4":
-                        return _DataContext.AdapType1Classex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapType1Classex4sInfo = _DataContext.AdapType1Classex4s.AsQueryable();
+                        AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Classex4sInfo;
                     case "Adap_type1_classEx5":
-                        return _DataContext.AdapType1Classex5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                        var AdapType1Classex5sInfo = _DataContext.AdapType1Classex5s.AsQueryable();
+                        AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapType1Classex5sInfo;
                     case "Adap_dir1_class1":
-                        return _DataContext.AdapDir1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                        var AdapDir1Class1sInfo = _DataContext.AdapDir1Class1s.AsQueryable();
+                        AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                                      && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                       && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
+                                                                       );
+                        switch (item)
+                        {
+                            case "Formula":
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                      && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                      && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                      && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                      )
+                                                                     .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                     .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                     .ThenBy(Adp => Adp.TcMma08)
+                                                                     .ThenBy(Adp => Adp.TcMma11)
+                                                                     .ThenBy(Adp => Adp.TcMma10)
+                                                                     .ThenBy(Adp => Adp.TcMma24)
+                                                                     ;
+                                break;
+                            case "Formula_P2":
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                                                        && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
+                                                                         && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                                        )
+                                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                                        .ThenBy(Adp => Adp.TcMma13)
+                                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                                        ;
+                                break;
+                        }
+                        return AdapDir1Class1sInfo;
                     default:
                         return null;
                 }
@@ -3651,12 +4005,13 @@ namespace APEX_API.Services
                 switch (_datas.FirstOrDefault().TableName)
                 {
                     case "Adap_class1":
-                        return _DataContext.AdapClass1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapClass1sInfo = _DataContext.AdapClass1s.AsQueryable();
+                        AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3664,15 +4019,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapClass1sInfo;
                     case "Adap_classEx2":
-                        return _DataContext.AdapClassex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapClassex2sInfo = _DataContext.AdapClassex2s.AsQueryable();
+                        AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3680,15 +4036,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapClassex2sInfo;
                     case "Adap_classEx3":
-                        return _DataContext.AdapClassex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapClassex3sInfo = _DataContext.AdapClassex3s.AsQueryable();
+                        AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3696,15 +4053,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapClassex3sInfo;
                     case "Adap_classEx4":
-                        return _DataContext.AdapClassex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapClassex4sInfo = _DataContext.AdapClassex4s.AsQueryable();
+                        AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3712,15 +4070,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapClassex4sInfo;
                     case "Adap_type1_class0":
-                        return _DataContext.AdapType1Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Class0sInfo = _DataContext.AdapType1Class0s.AsQueryable();
+                        AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3728,31 +4087,33 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Class0sInfo;
                     case "Adap_type1_class1":
-                        return _DataContext.AdapType1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                             && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                             && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                             && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                             && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                             )
-                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenBy(Adp => Adp.TcMma08)
-                                                        .ThenBy(Adp => Adp.TcMma11)
-                                                        .ThenBy(Adp => Adp.TcMma10)
-                                                        .ThenBy(Adp => Adp.TcMma24)
-                                                        ;
+                        var AdapType1Class1sInfo = _DataContext.AdapType1Class1s.AsQueryable();
+                        AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
+                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
+                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                         .ThenBy(Adp => Adp.TcMma08)
+                                                         .ThenBy(Adp => Adp.TcMma11)
+                                                         .ThenBy(Adp => Adp.TcMma10)
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Class1sInfo;
                     case "Adap_type1_class5":
-                        return _DataContext.AdapType1Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Class5sInfo = _DataContext.AdapType1Class5s.AsQueryable();
+                        AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3760,17 +4121,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Class5sInfo;
                     case "Adap_type5_class0":
-                        return _DataContext.AdapType5Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType5Class0sInfo = _DataContext.AdapType5Class0s.AsQueryable();
+                        AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3778,15 +4138,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType5Class0sInfo;
                     case "Adap_type5_class5":
-                        return _DataContext.AdapType5Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType5Class5sInfo = _DataContext.AdapType5Class5s.AsQueryable();
+                        AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3794,17 +4155,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType5Class5sInfo;
                     case "Adap_type1_classEx2":
-                        return _DataContext.AdapType1Classex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Classex2sInfo = _DataContext.AdapType1Classex2s.AsQueryable();
+                        AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3812,16 +4172,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Classex2sInfo;
                     case "Adap_type1_classEx3":
-                        return _DataContext.AdapType1Classex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Classex3sInfo = _DataContext.AdapType1Classex3s.AsQueryable();
+                        AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3829,16 +4189,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Classex3sInfo;
                     case "Adap_type1_classEx4":
-                        return _DataContext.AdapType1Classex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Classex4sInfo = _DataContext.AdapType1Classex4s.AsQueryable();
+                        AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3846,15 +4206,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Classex4sInfo;
                     case "Adap_type1_classEx5":
-                        return _DataContext.AdapType1Classex5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapType1Classex5sInfo = _DataContext.AdapType1Classex5s.AsQueryable();
+                        AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3862,15 +4223,16 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapType1Classex5sInfo;
                     case "Adap_dir1_class1":
-                        return _DataContext.AdapDir1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
+                        var AdapDir1Class1sInfo = _DataContext.AdapDir1Class1s.AsQueryable();
+                        AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                                                && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                                && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
+                                                                 && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                                  && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
+                                                                )
                                                          .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
                                                          .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
                                                          .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
@@ -3878,490 +4240,8 @@ namespace APEX_API.Services
                                                          .ThenBy(Adp => Adp.TcMma08)
                                                          .ThenBy(Adp => Adp.TcMma11)
                                                          .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    default:
-                        return null;
-                }
-            }
-
-        }
-
-        public IEnumerable<dynamic> GetAdapInfo2(List<AdpDatas> _datas)
-        {
-            if (_datas.FirstOrDefault().LBck == "LBstd")
-            {
-                switch (_datas.FirstOrDefault().TableName)
-                {
-                    case "Adap_class1":
-                        return _DataContext.AdapClass1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx2":
-                        return _DataContext.AdapClassex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx3":
-                        return _DataContext.AdapClassex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx4":
-                        return _DataContext.AdapClassex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_class0":
-                        return _DataContext.AdapType1Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_class1":
-                        return _DataContext.AdapType1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                             && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                             && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                             && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                             && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                             )
-                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenBy(Adp => Adp.TcMma08)
-                                                        .ThenBy(Adp => Adp.TcMma11)
-                                                        .ThenBy(Adp => Adp.TcMma10)
-                                                        .ThenBy(Adp => Adp.TcMma24)
-                                                        ;
-                    case "Adap_type1_class5":
-                        return _DataContext.AdapType1Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
-                    case "Adap_type5_class0":
-                        return _DataContext.AdapType5Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type5_class5":
-                        return _DataContext.AdapType5Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
-                    case "Adap_type1_classEx2":
-                        return _DataContext.AdapType1Classex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-                    case "Adap_type1_classEx3":
-                        return _DataContext.AdapType1Classex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-                    case "Adap_type1_classEx4":
-                        return _DataContext.AdapType1Classex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_classEx5":
-                        return _DataContext.AdapType1Classex5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_dir1_class1":
-                        return _DataContext.AdapDir1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-                    default:
-                        return null;
-                }
-            }
-            else
-            {
-                switch (_datas.FirstOrDefault().TableName)
-                {
-                    case "Adap_class1":
-                        return _DataContext.AdapClass1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx2":
-                        return _DataContext.AdapClassex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx3":
-                        return _DataContext.AdapClassex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_classEx4":
-                        return _DataContext.AdapClassex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_class0":
-                        return _DataContext.AdapType1Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_class1":
-                        return _DataContext.AdapType1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                             && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                             && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                             && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                             && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                             )
-                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                        .ThenBy(Adp => Adp.TcMma08)
-                                                        .ThenBy(Adp => Adp.TcMma11)
-                                                        .ThenBy(Adp => Adp.TcMma10)
-                                                        .ThenBy(Adp => Adp.TcMma24)
-                                                        ;
-                    case "Adap_type1_class5":
-                        return _DataContext.AdapType1Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
-                    case "Adap_type5_class0":
-                        return _DataContext.AdapType5Class0s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type5_class5":
-                        return _DataContext.AdapType5Class5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-
-                    case "Adap_type1_classEx2":
-                        return _DataContext.AdapType1Classex2s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-                    case "Adap_type1_classEx3":
-                        return _DataContext.AdapType1Classex3s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-
-                    case "Adap_type1_classEx4":
-                        return _DataContext.AdapType1Classex4s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_type1_classEx5":
-                        return _DataContext.AdapType1Classex5s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
-                    case "Adap_dir1_class1":
-                        return _DataContext.AdapDir1Class1s.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 <= (Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal(0.1)) && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
-                                                              && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
-                                                              && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
-                                                              && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
-                                                              )
-                                                         .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 + Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenByDescending(Adp => Adp.TcMma01.Substring(0, 1))
-                                                         .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
-                                                         .ThenBy(Adp => Adp.TcMma08)
-                                                         .ThenBy(Adp => Adp.TcMma11)
-                                                         .ThenBy(Adp => Adp.TcMma10)
-                                                         .ThenBy(Adp => Adp.TcMma24)
-                                                         ;
+                                                         .ThenBy(Adp => Adp.TcMma24);
+                        return AdapDir1Class1sInfo;
                     default:
                         return null;
                 }
@@ -4488,6 +4368,12 @@ namespace APEX_API.Services
             public string G_Reducer_One_piece { get; set; }
             public string G_Reducer_One_piece_used { get; set; }
             public string Reducer_No { get; set; }
+            public string Suitadapter_c4 { get; set; }
+            public string Suitadapter { get; set; }
+            public string Brand { get; set; }
+            public string Spec { get; set; }
+            public string LN { get; set; }
+
 
 
         }
