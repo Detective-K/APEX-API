@@ -1724,29 +1724,19 @@ namespace APEX_API.PublicServices
         public  string Formula2(List<OrderService.AdpDatas> adpDatas)
         {
             string tmp_newPartNo = "None";
+            List<OrderService.AdpDatas> _adpDatas = adpDatas;
+            List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>();
 
             double tmp = 0;
-
+            _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
+            var adpInfo = _orderService.GetAdapInfo(_adpDatas, "Formula_P2");
             while (tmp <= 40)
-            {
-                if (LBck == "LBstd")
+            {               
+                if (adpInfo.Count() > 0 )
                 {
-                    //g_sql = "SELECT * FROM " + Adptable + " Where (c23 = " + Convert.ToSingle(LN) + " or c23  = " + Convert.ToSingle(LN) / 2 + " or c23  = " + Convert.ToSingle(LN) * 2 + ") and c4 >= " + Convert.ToSingle(LR) + " and c4min <=" + Convert.ToSingle(LR) + " and c5 = " + Convert.ToSingle(LB) + " and c6 >= " + Convert.ToSingle(LE) + " and c61 >= " + Convert.ToSingle(LT) + " and c1=" + Convert.ToSingle(LA) + " and c21=" + Convert.ToSingle(LZ) + " and RWidth = " + Convert.ToSingle(AWidth1) + " and c7 <= " + Convert.ToSingle(Convert.ToSingle(LC) + tmp) + " and c7 >= " + Convert.ToSingle(Convert.ToSingle(LC) - tmp) + " order by c7,c4,c6,c5,[Effective Date] ";
-                    g_sql = "SELECT * FROM " + Adptable + " Where (tc_mma07 = " + Convert.ToDouble(LN) + " or tc_mma07  = " + Convert.ToDouble(LN) / 2 + " or tc_mma07  = " + Convert.ToDouble(LN) * 2 + ") and tc_mma08 >= " + Convert.ToDouble(LR) + " and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(LT) + " and tc_mma04=" + Convert.ToDouble(LA) + " and tc_mma05=" + Convert.ToDouble(LZ) + " and tc_mma16 = " + Convert.ToDouble(AWidth1) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >= " + Convert.ToDouble(Convert.ToSingle(LC) - tmp) + " order by tc_mma13,tc_mma08,tc_mma11,tc_mma10,tc_mma24 ";
-                }
-                else
-                {
-                    //g_sql = "SELECT * FROM " + Adptable + " Where (c23 = " + Convert.ToSingle(LN2) + " or c23  = " + Convert.ToSingle(LN2) / 2 + "or c23  = " + Convert.ToSingle(LN2) * 2 + ") and c4min <=" + Convert.ToSingle(LR) + " and c5 <= " + Convert.ToSingle(Convert.ToSingle(LB) + 0.15) + " and c5 >= " + Convert.ToSingle(LB) + " and c6 >= " + Convert.ToSingle(LE) + " and c61 >= " + Convert.ToSingle(LT) + " and c1 = " + Convert.ToSingle(LA2) + " and c21=" + Convert.ToSingle(LZ2) + " and RWidth = " + Convert.ToSingle(AWidth1) + " and c7 <= " + Convert.ToSingle(Convert.ToSingle(LC) + tmp) + " and c7 >= " + Convert.ToSingle(Convert.ToSingle(LC) - tmp) + " order by c7,c4,c6,c5,[Effective Date] ";
-                    g_sql = "SELECT * FROM " + Adptable + " Where (tc_mma07 = " + Convert.ToDouble(LN2) + " or tc_mma07  = " + Convert.ToDouble(LN2) / 2 + "or tc_mma07  = " + Convert.ToDouble(LN2) * 2 + ") and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10 <= " + Convert.ToDouble(Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(LT) + " and tc_mma04 = " + Convert.ToDouble(LA2) + " and tc_mma05=" + Convert.ToDouble(LZ2) + " and tc_mma16 = " + Convert.ToDouble(AWidth1) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >= " + Convert.ToDouble(Convert.ToSingle(LC) - tmp) + " order by tc_mma13,tc_mma08,tc_mma11,tc_mma10,tc_mma24 ";
-                }
+                    tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
 
-                OracleDataReader myDataReader_3 = class_nana_ds1.ORACLE_RD(g_sql);
-
-                if (myDataReader_3.Read())
-                {
-                    tmp_newPartNo = Convert.ToString(myDataReader_3["tc_mma01"]);
-
-                    ViewState["spec"] = Convert.ToString(myDataReader_3[2]);
+                    ViewState["spec"] = Convert.ToString(adpInfo.FirstOrDefault().TcMma03);
 
                     while (myDataReader_3.Read())
                     {

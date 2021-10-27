@@ -567,7 +567,11 @@ namespace APEX_API.PublicServices
                 Suitadapter = suitadapter,
                 Brand = OData["Motor"]["Brand"],
                 Spec = OData["Motor"]["Spec"],
-                LN = LN
+                LN = LN,
+                LZ = LZ,
+                LN2 = LN2,
+                LA2 = LA2,
+                LZ2 = LZ2
             });
 
             if (Convert.ToString(type) == "1")
