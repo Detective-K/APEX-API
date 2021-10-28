@@ -1770,6 +1770,193 @@ namespace APEX_API.PublicServices
             return tmp_newPartNo;
         }
 
+        public string Formula_type5(List<OrderService.AdpDatas> adpDatas, string p_Motor_Screw_orientation)
+        {
+
+            string[] l_adpter_type = { "P", "O" };
+
+            string tmp_newPartNo = "None";
+
+            Boolean l_flag = true;//判斷可否可以安裝 true:代表可以 false:不行
+
+            foreach (string l_string in l_adpter_type)
+            {
+                if (tmp_newPartNo != "None")
+                {
+                    continue;
+                }
+
+                double tmp = 40;
+
+                double LAtmp = 0.1;
+
+                //while (tmp <= 40)
+                //{
+                if (adpDatas.FirstOrDefault().LBck == "LBstd")
+                {
+                    if (p_Motor_Screw_orientation == "N") //正鎖
+                    {
+                        g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05= " + Convert.ToDouble(ScrewDia) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
+                    }
+                    else  //反鎖
+                    {
+                        g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " " + ScrewDia + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
+                    }
+                }
+                else
+                {
+                    //g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >=" + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11>= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + (Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >= " + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05=" + Convert.ToDouble(ScrewDia) + " and tc_mma13<=" + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13>=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24";//移除Awidth1
+
+                    if (p_Motor_Screw_orientation == "N") //正鎖
+                    {
+                        g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05= " + Convert.ToDouble(ScrewDia) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
+                    }
+                    else  //反鎖
+                    {
+                        g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " " + ScrewDia + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
+                    }
+                }
+
+                OracleDataReader myDataReader_3 = class_nana_ds1.ORACLE_RD(g_sql);
+                g_count = g_count + 1;
+
+                while (myDataReader_3.Read())
+                {
+                    if (p_Motor_Screw_orientation == "Y") //反鎖需多判斷下面2點
+                    {
+                        double Adapter_C12 = 0.0;
+                        double Adapter_C8 = 0.0;
+                        double Adapter_C81 = 0.0;
+                        double B2 = 0.0;
+
+                        l_flag = false;//先預設不能裝
+
+                        if (!DBNull.Value.Equals(myDataReader_3["tc_mma29"]))
+                        {
+                            Adapter_C12 = Convert.ToDouble(myDataReader_3["tc_mma29"]);
+                        }
+
+                        if (!DBNull.Value.Equals(myDataReader_3["tc_mma14"]))
+                        {
+                            Adapter_C8 = Convert.ToDouble(myDataReader_3["tc_mma14"]);
+                        }
+
+                        if (!DBNull.Value.Equals(myDataReader_3["tc_mma34"]))
+                        {
+                            Adapter_C81 = Convert.ToDouble(myDataReader_3["tc_mma34"]);
+                        }
+
+                        B2 = Get_Screw_Plus_Len(Adapter_C12) + Adapter_C8 - Adapter_C81;
+
+                        //判斷反鎖螺絲是否會與減速機干涉
+                        //Reducer.D9 + 外六角最大外徑 +2 <= Motor.LA
+
+                        if (Reducer_D9 + Get_Screw_Max_Dia(Adapter_C12) + 2 <= Convert.ToDouble(LA))
+                        {
+                            //判斷AES反鎖螺絲是否放得下
+                            //如果Motor.LA - 外六角最大外徑 < Reducer.D7
+                            //則需B2 < Reducer.A1 + Adapter.C81
+                            //
+                            //判斷AERS反鎖螺絲是否放得下
+                            //如果Motor.LA - 外六角最大外徑 < Reducer.D7
+                            //則需B2 < Reducer.A3 + Adapter.C81
+                            //
+                            //判斷通過才能裝
+                            //
+                            // B2 = 螺絲長度加項 + Adapter.C8 - Adpter.C81
+
+                            if (Convert.ToDouble(LA) - Get_Screw_Max_Dia(Adapter_C12) < Reducer_D7)
+                            {
+                                if (R1No == "RG4") //AES
+                                {
+                                    if (B2 < Reducer_A1 + Adapter_C81)
+                                    {
+                                        l_flag = true;
+                                    }
+                                }
+
+                                if (R1No == "RG5") //AERS
+                                {
+                                    double Reducer_A3 = 0.0;
+
+                                    double ang;
+
+                                    ang = Math.Asin(Convert.ToDouble(LA) / Reducer_D7 * Math.Cos((Math.PI / 180) * 45));
+
+                                    Reducer_A3 = (Reducer_D7 / 2) - ((Reducer_D7 / 2) * Math.Cos(ang)) + Reducer_A2;
+
+                                    if (B2 < Reducer_A3 + Adapter_C81)
+                                    {
+                                        l_flag = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                l_flag = true;
+                            }
+                        }
+                        else
+                        {
+                            l_flag = true;
+                        }
+
+                    }
+                    else
+                    {
+                        l_flag = true;
+                    }
+
+                    if (l_flag)
+                    {
+                        if (tmp_newPartNo == "None")
+                        {
+                            tmp_newPartNo = Convert.ToString(myDataReader_3["tc_mma01"]);
+
+                            ViewState["spec"] = Convert.ToString(myDataReader_3["tc_mma03"]);
+                        }
+
+                        //if (rbl_adapter.Items.Count == 0) //最適配連接板
+                        //{
+                        //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
+
+                        //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存不再列出第二選項
+                        //    {
+                        //        break;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
+                        //    {
+                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
+                        //    }
+
+                        //    if (rbl_adapter.Items.Count >= 2)
+                        //    {
+                        //        break;
+                        //    }
+                        //}
+
+
+                    }
+
+                    //tmp = 100; //離開while 迴圈
+                    //}
+
+
+                }
+                myDataReader_3.Close();
+            }
+
+            //if (tmp_newPartNo != "None")
+            //{
+            //    rbl_adapter.SelectedValue = tmp_newPartNo;
+            //}
+
+            return tmp_newPartNo;
+        }
+
         public List<TcMmiFileInfo> Fun_replace_one_piece(string p_gerbox_no, string p_adpter_no)
         {
             var TcMmiFileInfo = _orderService.GetTcMmiFileInfo(p_adpter_no);

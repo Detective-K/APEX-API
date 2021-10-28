@@ -3438,9 +3438,7 @@ namespace APEX_API.Services
                                                                          ;
                                     break;
                                 case "Formula_P2":
-                                    AdapClass1sInfo = AdapClass1sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
-
-
+                                    AdapClass1sInfo = AdapClass1sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
                                                                             && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
                                                                              && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
                                                                             )
@@ -3463,7 +3461,6 @@ namespace APEX_API.Services
                                                                    && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= Convert.ToDecimal(_datas.FirstOrDefault().LT) && Adp.TcMma04 == Convert.ToDecimal(_datas.FirstOrDefault().LA)
                                                                    && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().LZ) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
                                                                    && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
-
                                                                     )
                                                                     .OrderBy(Adp => Adp.TcMma13)
                                                                     .ThenBy(Adp => Adp.TcMma08)
@@ -3472,6 +3469,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapClass1sInfo;
                     case "Adap_classEx2":
@@ -3516,7 +3538,7 @@ namespace APEX_API.Services
                                                                             .ThenBy(Adp => Adp.TcMma10)
                                                                             .ThenBy(Adp => Adp.TcMma24)
                                                                             ;
-                                    break;
+                                    break;                               
                             }
                         }
                         else if (item == "formula2")
@@ -3535,6 +3557,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapClassex2sInfo;
                     case "Adap_classEx3":
@@ -3599,6 +3646,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapClassex3sInfo;
                     case "Adap_classEx4":
                         var AdapClassex4sInfo = _DataContext.AdapClassex4s.AsQueryable();
@@ -3661,6 +3733,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapClassex4sInfo;
                     case "Adap_type1_class0":
@@ -3725,6 +3822,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Class0sInfo;
                     case "Adap_type1_class1":
                         var AdapType1Class1sInfo = _DataContext.AdapType1Class1s.AsQueryable();
@@ -3787,6 +3909,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Class1sInfo;
                     case "Adap_type1_class5":
@@ -3851,6 +3998,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Class5sInfo;
                     case "Adap_type5_class0":
                         var AdapType5Class0sInfo = _DataContext.AdapType5Class0s.AsQueryable();
@@ -3914,19 +4086,44 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType5Class0sInfo;
                     case "Adap_type5_class5":
-                        var AdapType5Class5Info = _DataContext.AdapType5Class5s.AsQueryable();
+                        var AdapType5Class5sInfo = _DataContext.AdapType5Class5s.AsQueryable();
                         if ("Formula,Formula_P2".Contains(item))
                         {
-                            AdapType5Class5Info = AdapType5Class5Info.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                            AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
                                                                       && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
                                                                        && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia)
                                                                        );
                             switch (item)
                             {
                                 case "Formula":
-                                    AdapType5Class5Info = AdapType5Class5Info.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
+                                    AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5))
                                                                           && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
                                                                           && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
                                                                           && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + "%")
@@ -3942,7 +4139,7 @@ namespace APEX_API.Services
                                                                          ;
                                     break;
                                 case "Formula_P2":
-                                    AdapType5Class5Info = AdapType5Class5Info.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
+                                    AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => (Adp.TcMma08 + Convert.ToDecimal(_datas.FirstOrDefault().Suitadapter_c4)) >= Convert.ToDecimal(_datas.FirstOrDefault().LR) &&
 
 
                                                                             && Adp.TcMma13 >= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0) && Adp.TcMma13 <= _publicFunction.gRound((Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp)), 0)
@@ -3962,7 +4159,7 @@ namespace APEX_API.Services
                         }
                         else if (item == "formula2")
                         {
-                            AdapType5Class5Info = AdapType5Class5Info.Where(Adp => (Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) || Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) / 2 || Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) * 2)
+                            AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => (Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) || Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) / 2 || Adp.TcMma07 == Convert.ToDecimal(_datas.FirstOrDefault().LN) * 2)
                                                                   && Adp.TcMma08 >= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB)
                                                                    && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE) && Adp.TcMma12 >= Convert.ToDecimal(_datas.FirstOrDefault().LT) && Adp.TcMma04 == Convert.ToDecimal(_datas.FirstOrDefault().LA)
                                                                    && Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().LZ) && Adp.TcMma16 == Convert.ToDecimal(_datas.FirstOrDefault().AWidth1)
@@ -3977,7 +4174,32 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
-                        return AdapType5Class5Info;
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
+                        return AdapType5Class5sInfo;
                     case "Adap_type1_classEx2":
                         var AdapType1Classex2sInfo = _DataContext.AdapType1Classex2s.AsQueryable();
                         if ("Formula,Formula_P2".Contains(item))
@@ -4039,6 +4261,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Classex2sInfo;
                     case "Adap_type1_classEx3":
@@ -4103,6 +4350,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Classex3sInfo;
                     case "Adap_type1_classEx4":
                         var AdapType1Classex4sInfo = _DataContext.AdapType1Classex4s.AsQueryable();
@@ -4164,7 +4436,31 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma10)
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
 
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Classex4sInfo;
                     case "Adap_type1_classEx5":
@@ -4229,6 +4525,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Classex5sInfo;
                     case "Adap_dir1_class1":
                         var AdapDir1Class1sInfo = _DataContext.AdapDir1Class1s.AsQueryable();
@@ -4292,6 +4613,31 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) && Adp.TcMma10 == Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapDir1Class1sInfo;
                     default:
                         return null;
@@ -4336,6 +4682,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR) 
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClass1sInfo = AdapClass1sInfo.Where(Adp =>  Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClass1sInfo = AdapClass1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapClass1sInfo;
                     case "Adap_classEx2":
                         var AdapClassex2sInfo = _DataContext.AdapClassex2s.AsQueryable();
@@ -4372,7 +4745,34 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
-                        return AdapClassex2sInfo;
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex2sInfo = AdapClassex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
+                            return AdapClassex2sInfo;
                     case "Adap_classEx3":
                         var AdapClassex3sInfo = _DataContext.AdapClassex3s.AsQueryable();
                         if ("Formula,Formula_P2".Contains(item))
@@ -4407,6 +4807,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex3sInfo = AdapClassex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapClassex3sInfo;
                     case "Adap_classEx4":
@@ -4444,6 +4871,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapClassex4sInfo = AdapClassex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapClassex4sInfo;
                     case "Adap_type1_class0":
                         var AdapType1Class0sInfo = _DataContext.AdapType1Class0s.AsQueryable();
@@ -4479,6 +4933,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class0sInfo = AdapType1Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Class0sInfo;
                     case "Adap_type1_class1":
@@ -4516,6 +4997,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class1sInfo = AdapType1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Class1sInfo;
                     case "Adap_type1_class5":
                         var AdapType1Class5sInfo = _DataContext.AdapType1Class5s.AsQueryable();
@@ -4551,6 +5059,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Class5sInfo = AdapType1Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Class5sInfo;
                     case "Adap_type5_class0":
@@ -4588,6 +5123,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType5Class0sInfo = AdapType5Class0sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType5Class0sInfo;
                     case "Adap_type5_class5":
                         var AdapType5Class5sInfo = _DataContext.AdapType5Class5s.AsQueryable();
@@ -4624,6 +5186,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType5Class5sInfo = AdapType5Class5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType5Class5sInfo;
                     case "Adap_type1_classEx2":
                         var AdapType1Classex2sInfo = _DataContext.AdapType1Classex2s.AsQueryable();
@@ -4658,7 +5247,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma10)
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
 
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex2sInfo = AdapType1Classex2sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Classex2sInfo;
                     case "Adap_type1_classEx3":
@@ -4696,6 +5311,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex3sInfo = AdapType1Classex3sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Classex3sInfo;
                     case "Adap_type1_classEx4":
                         var AdapType1Classex4sInfo = _DataContext.AdapType1Classex4s.AsQueryable();
@@ -4731,6 +5373,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex4sInfo = AdapType1Classex4sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapType1Classex4sInfo;
                     case "Adap_type1_classEx5":
@@ -4768,6 +5437,33 @@ namespace APEX_API.Services
                                                                     ;
 
                         }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapType1Classex5sInfo = AdapType1Classex5sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
+                        }
                         return AdapType1Classex5sInfo;
                     case "Adap_dir1_class1":
                         var AdapDir1Class1sInfo = _DataContext.AdapDir1Class1s.AsQueryable();
@@ -4803,6 +5499,33 @@ namespace APEX_API.Services
                                                                     .ThenBy(Adp => Adp.TcMma24)
                                                                     ;
 
+                        }
+                        else if (item == "Formula_type5")
+                        {
+                            AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma23.ToUpper() == "YES" && Adp.TcMma08 >= (Convert.ToDecimal(_datas.FirstOrDefault().LR) - 1) && Adp.TcMma09 <= Convert.ToDecimal(_datas.FirstOrDefault().LR)
+                                                        && Adp.TcMma10 >= Convert.ToDecimal(_datas.FirstOrDefault().LB) && Adp.TcMma10 <= Convert.ToDecimal(_datas.FirstOrDefault().LB) + Convert.ToDecimal()
+                                                        && Adp.TcMma11 >= Convert.ToDecimal(_datas.FirstOrDefault().LE)
+                                                        && Adp.TcMma12 >= (Convert.ToDecimal(_datas.FirstOrDefault().LT) + Convert.ToDecimal(0.5)) && Adp.TcMma04 >= (Convert.ToDecimal(_datas.FirstOrDefault().LA) - Convert.ToDecimal(_datas.FirstOrDefault().LAtmp))
+                                                        && Adp.TcMma13 >= (Convert.ToDecimal(_datas.FirstOrDefault().LC) - Convert.ToDecimal(_datas.FirstOrDefault().Tmp)) && Adp.TcMma13 <= (Convert.ToDecimal(_datas.FirstOrDefault().LC) + Convert.ToDecimal(_datas.FirstOrDefault().Tmp))
+                                                        && Adp.TcMma26 == _datas.FirstOrDefault().Motor_Interface && Adp.TcMma27 == _datas.FirstOrDefault().Motor_Screw_orientation
+                                                        && EF.Functions.Like(Adp.TcMma01, _datas.FirstOrDefault().L_string + _datas.FirstOrDefault().Suitadapter.Substring(1) + "%")
+                                                        )
+                                                        .OrderBy(Adp => Math.Abs((double)(Adp.TcMma04 - Convert.ToDecimal(_datas.FirstOrDefault().LA))))
+                                                        .ThenBy(Adp => Math.Abs((double)(Adp.TcMma13 - Convert.ToDecimal(_datas.FirstOrDefault().LC))))
+                                                        .ThenBy(Adp => Adp.TcMma08)
+                                                        .ThenBy(Adp => Adp.TcMma11)
+                                                        .ThenBy(Adp => Adp.TcMma10)
+                                                        .ThenBy(Adp => Adp.TcMma24)
+                                                        ;
+
+                            if (_datas.FirstOrDefault().Motor_Screw_orientation == "N") //正鎖
+                            {
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma05 == Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia) && Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)));
+                            }
+                            else
+                            {
+                                AdapDir1Class1sInfo = AdapDir1Class1sInfo.Where(Adp => Adp.TcMma04 <= (Convert.ToDecimal(_datas.FirstOrDefault().LA) + Convert.ToDecimal(_datas.FirstOrDefault().LAtmp)) + Convert.ToDecimal(_datas.FirstOrDefault().ScrewDia));
+                            }
                         }
                         return AdapDir1Class1sInfo;
                     default:
@@ -4940,6 +5663,8 @@ namespace APEX_API.Services
             public string LN2 { get; set; }
             public string LA2 { get; set; }
             public string LZ2 { get; set; }
+            public string Motor_Interface { get; set; }
+            public string Motor_Screw_orientation { get; set; }
         }
 
     }

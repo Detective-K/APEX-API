@@ -571,7 +571,9 @@ namespace APEX_API.PublicServices
                 LZ = LZ,
                 LN2 = LN2,
                 LA2 = LA2,
-                LZ2 = LZ2
+                LZ2 = LZ2,
+                Motor_Interface = Motor_Interface,
+                Motor_Screw_orientation = Motor_Screw_orientation
             });
 
             if (Convert.ToString(type) == "1")
@@ -599,7 +601,7 @@ namespace APEX_API.PublicServices
 
             if (Convert.ToString(type) == "5")
             {
-                adaperNo = formula_type5(AdapterData1, "LBstd", Motor_Screw_orientation);
+                adaperNo = _publicFunction.Formula_type5(_adpDatas, Motor_Screw_orientation);
             }
 
         }
