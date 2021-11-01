@@ -115,7 +115,7 @@ namespace APEX_API.Controllers
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    _publicOrder.GBResult(OData, "3", "false");
+                   // _publicOrder.GBResult(OData, "3", "false");
                 }
                 //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
@@ -325,12 +325,12 @@ namespace APEX_API.Controllers
                  { "TcMmgFiles", typeof( TcMmgFile)},
                  { "TcOekFiles", typeof( TcOekFile)}
                 };
-            IEnumerable<dynamic> cz;
+           // IEnumerable<dynamic> cz;
 
-            cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek17 == null);
-            var aa = _DataContext.Set<dynamic>("TcMmgFiles");
-            var MotorInfo = _DataContext.TcOekFiles.AsQueryable();
-            MotorInfo = MotorInfo.Where(m => m.TcOek17 == null);
+            //cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek17 == null);
+            List<PublicFunctions.TcMmiFileInfo> TcMmiFileInfo = new List<PublicFunctions.TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { Spec = "" } };
+            TcMmiFileInfo.FirstOrDefault().Spec = "csa";
+
         }
 
 
