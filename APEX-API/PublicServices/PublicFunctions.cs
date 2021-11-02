@@ -3,17 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace APEX_API.PublicServices
 {
     public class PublicFunctions
     {
-        //private readonly OrderService _orderService;
-        //public PublicFunctions(OrderService orderService)
-        //{
-        //    _orderService = orderService;
-        //}
-        #region OrderService        
+        private readonly IServiceProvider _orderService = null;
+
+        #region OrderService
         public int Get_NO(double Dia)
         {
             int Get_NO_temp = 0;
@@ -1436,7 +1434,7 @@ namespace APEX_API.PublicServices
         }
 
         //需注意x是否有可能為負值
-        public  decimal GRound(decimal x, decimal z)
+        public decimal GRound(decimal x, decimal z)
         {
 
             if (z < 0)
@@ -1446,541 +1444,541 @@ namespace APEX_API.PublicServices
 
             return Convert.ToDecimal(Math.Floor(Convert.ToDouble(x) * Math.Pow(10, Convert.ToDouble(z)) + 0.5) / Math.Pow(10, Convert.ToDouble(z)));
         }
-
-        //public List<TcMmiFileInfo> Formula(List<OrderService.AdpDatas> adpDatas)
-        //{
-        //    int l_adapter_list_count = 3; //可供選擇的連接板數量
-
-        //    int g_count = 0;
-
-        //    string[] l_adpter_type = { "P", "O" };
-
-        //    string tmp_newPartNo = "None";
-
-        //    List<OrderService.AdpDatas> _adpDatas = adpDatas;
-        //    List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>();
-
-        //    foreach (string l_string in l_adpter_type)
-        //    {
-        //        if (tmp_newPartNo != "None")
-        //        {
-        //            continue;
-        //        }
-
-        //        double tmp = 40;
-        //        _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
-
-        //        double LAtmp = 0.1;
-        //        _adpDatas.FirstOrDefault().LAtmp = Convert.ToString(LAtmp);
-        //        _adpDatas.FirstOrDefault().L_string = l_string;
-
-        //        while (tmp <= 40 && _adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
-        //        {
-        //            var adpInfo = _orderService.GetAdapInfo(_adpDatas, "Formula");
-
-        //            g_count = g_count + 1;
-
-        //            if (adpInfo.Count() > 0)
-        //            {
-        //                for (int i = 0; i < adpInfo.Count(); i++)
-        //                {
-        //                    if (_adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
-        //                    {
-        //                        if (tmp_newPartNo == null || tmp_newPartNo == "None")
-        //                        {
-        //                            tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
-
-        //                            //換一體式連接板
-        //                            if (_adpDatas.FirstOrDefault().G_Reducer_One_piece == "Y")
-        //                            {
-        //                                if (_adpDatas.FirstOrDefault().G_Reducer_One_piece_used == "Y")
-        //                                {
-        //                                    //先關閉等生管通知
-        //                                    _TcMmiFileInfo = Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, tmp_newPartNo);
-        //                                }
-        //                            }
-        //                        }
-        //                        //if (Convert.ToString(ViewState["g_Reducer_One_piece_chenged"]) == "Y")//已經換成一體式,不要再找其他連接板
-        //                        //{
-        //                        //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(ViewState["Adaper_No"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(ViewState["Adaper_No"])), Convert.ToString(ViewState["Adaper_No"])));
-        //                        //    tmp = 100; //離開while 迴圈
-        //                        //    break;
-        //                        //}
-        //                        //else
-        //                        //{
-        //                        //    if (rbl_adapter.Items.Count == 0) //最適配連接板
-        //                        //    {
-        //                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
-
-        //                        //        if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking")
-        //                        //        {
-        //                        //            //break;
-        //                        //        }
-        //                        //    }
-        //                        //    else
-        //                        //    {
-        //                        //        //if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
-        //                        //        //{
-        //                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
-        //                        //        //}
-        //                        //    }
-        //                        //}
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = 100; //離開while 迴圈
-        //                    }
-        //                }
-
-        //                if (tmp == 0)
-        //                {
-        //                    tmp = 2.5;
-        //                }
-        //                else
-        //                {
-        //                    tmp = tmp * 2;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (LAtmp == 0)
-        //                {
-        //                    if (tmp == 0)
-        //                    {
-        //                        tmp = 2.5;
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = tmp * 2;
-
-        //                        if (tmp > 40)
-        //                        {
-        //                            LAtmp = 0.1;
-        //                            tmp = 40;
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (tmp == 0)
-        //                    {
-        //                        tmp = 2.5;
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = tmp * 2;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    //if (rblAdpCount > 0)
-        //    //{
-        //    //    rbl_adapter.SelectedIndex = 0;
-        //    //    tmp_newPartNo = rbl_adapter.SelectedValue;
-        //    //}
-        //    _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = tmp_newPartNo;
-        //    return _TcMmiFileInfo;
-        //}
-
-        //public List<TcMmiFileInfo> Formula_P2(List<OrderService.AdpDatas> adpDatas ,string G_Reducer_One_piece_chenged)
-        //{
-        //    int l_adapter_list_count = 3; //可供選擇的連接板數量
-
-        //    int g_count = 0;
-
-        //    string[] l_adpter_type = { "P", "O" };
-
-        //    string tmp_newPartNo = "None";
-
-        //    List<OrderService.AdpDatas> _adpDatas = adpDatas;
-        //    List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>();
-
-        //    foreach (string l_string in l_adpter_type)
-        //    {
-        //        if (tmp_newPartNo != "None")
-        //        {
-        //            continue;
-        //        }
-        //        double tmp = 40;
-        //        _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
-
-        //        double LAtmp = 0.1;
-        //        _adpDatas.FirstOrDefault().LAtmp = Convert.ToString(LAtmp);
-        //        _adpDatas.FirstOrDefault().L_string = l_string;
-
-        //        while (tmp <= 40 && _adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
-        //        {
-        //            var adpInfo = _orderService.GetAdapInfo(_adpDatas , "Formula_P2");
-
-        //            g_count = g_count + 1;
-
-        //            if (adpInfo.Count() > 0)
-        //            {
-        //                for (int i = 0; i < adpInfo.Count(); i++)
-        //                {
-        //                    if (_adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count && G_Reducer_One_piece_chenged == "N")
-        //                    {
-        //                        if (tmp_newPartNo == null || tmp_newPartNo == "None")
-        //                        {
-        //                            tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
-        //                            _TcMmiFileInfo.FirstOrDefault().Adaper_No = tmp_newPartNo;
-        //                            //換一體式連接板
-        //                            if (_adpDatas.FirstOrDefault().G_Reducer_One_piece == "Y")
-        //                            {
-        //                                if (_adpDatas.FirstOrDefault().G_Reducer_One_piece_used == "Y")
-        //                                {
-        //                                    //先關閉等生管通知
-        //                                    _TcMmiFileInfo = Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, tmp_newPartNo);
-        //                                }
-        //                            }
-        //                            _TcMmiFileInfo.FirstOrDefault().Adaper_Spec = Convert.ToString(adpInfo.FirstOrDefault().TcMma03);
-        //                        }
-        //                        //if (Convert.ToString(ViewState["g_Reducer_One_piece_chenged"]) == "Y")//已經換成一體式,不要再找其他連接板
-        //                        //{
-        //                        //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(ViewState["Adaper_No"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(ViewState["Adaper_No"])), Convert.ToString(ViewState["Adaper_No"])));
-        //                        //    tmp = 100; //離開while 迴圈
-        //                        //    break;
-        //                        //}
-        //                        //else
-        //                        //{
-        //                        //    if (rbl_adapter.Items.Count == 0) //最適配連接板
-        //                        //    {
-        //                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
-
-        //                        //        if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking")
-        //                        //        {
-        //                        //            //break;
-        //                        //        }
-        //                        //    }
-        //                        //    else
-        //                        //    {
-        //                        //        //if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
-        //                        //        //{
-        //                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
-        //                        //        //}
-        //                        //    }
-        //                        //}
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = 100; //離開while 迴圈
-        //                    }
-        //                }
-
-        //                if (tmp == 0)
-        //                {
-        //                    tmp = 2.5;
-        //                }
-        //                else
-        //                {
-        //                    tmp = tmp * 2;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (LAtmp == 0)
-        //                {
-        //                    if (tmp == 0)
-        //                    {
-        //                        tmp = 2.5;
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = tmp * 2;
-
-        //                        if (tmp > 40)
-        //                        {
-        //                            LAtmp = 0.1;
-        //                            tmp = 40;
-        //                        }
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (tmp == 0)
-        //                    {
-        //                        tmp = 2.5;
-        //                    }
-        //                    else
-        //                    {
-        //                        tmp = tmp * 2;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    //if (rblAdpCount > 0)
-        //    //{
-        //    //    rbl_adapter.SelectedIndex = 0;
-        //    //    tmp_newPartNo = rbl_adapter.SelectedValue;
-        //    //}
-        //    _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = tmp_newPartNo;
-        //    return _TcMmiFileInfo;
-        //}
-
-        //public  string Formula2(List<OrderService.AdpDatas> adpDatas)
-        //{
-        //    string tmp_newPartNo = "None";
-        //    List<OrderService.AdpDatas> _adpDatas = adpDatas;
-        //    List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>();
-
-        //    double tmp = 0;
-        //    _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
-        //    var adpInfo = _orderService.GetAdapInfo(_adpDatas, "Formula_P2");
-        //    while (tmp <= 40)
-        //    {               
-        //        if (adpInfo.Count() > 0 )
-        //        {
-        //            tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
-
-        //            _TcMmiFileInfo.FirstOrDefault().Spec = Convert.ToString(adpInfo.FirstOrDefault().TcMma03);
-
-        //            //while (myDataReader_3.Read())
-        //            //{
-        //            //    adapterNx = adapterNx + Convert.ToString(myDataReader_3[0]) + " ,";
-
-        //            //}
-
-        //            //myDataReader_3.Close();
-
-        //            tmp = 100; //離開while 迴圈
-
-        //        }
-        //        else
-        //        {
-        //            if (tmp == 0)
-        //            {
-        //                tmp = 2.5;
-        //            }
-        //            else
-        //            {
-        //                tmp = tmp * 2;
-        //            }
-
-        //            tmp_newPartNo = "None";
-
-        //        }
-
-        //    }
-
-        //    return tmp_newPartNo;
-        //}
-
-        //public string Formula_type5(List<OrderService.AdpDatas> adpDatas, string p_Motor_Screw_orientation)
-        //{
-
-        //    string[] l_adpter_type = { "P", "O" };
-
-        //    string tmp_newPartNo = "None";
-
-        //    Boolean l_flag = true;//判斷可否可以安裝 true:代表可以 false:不行
-
-        //    //foreach (string l_string in l_adpter_type)
-        //    //{
-        //    //    if (tmp_newPartNo != "None")
-        //    //    {
-        //    //        continue;
-        //    //    }
-
-        //    //    double tmp = 40;
-
-        //    //    double LAtmp = 0.1;
-
-        //    //    //while (tmp <= 40)
-        //    //    //{
-        //    //    if (adpDatas.FirstOrDefault().LBck == "LBstd")
-        //    //    {
-        //    //        if (p_Motor_Screw_orientation == "N") //正鎖
-        //    //        {
-        //    //            g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05= " + Convert.ToDouble(ScrewDia) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
-        //    //        }
-        //    //        else  //反鎖
-        //    //        {
-        //    //            g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 = " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " " + ScrewDia + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
-        //    //        }
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        //g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >=" + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <=" + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11>= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + (Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >= " + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05=" + Convert.ToDouble(ScrewDia) + " and tc_mma13<=" + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13>=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24";//移除Awidth1
-
-        //    //        if (p_Motor_Screw_orientation == "N") //正鎖
-        //    //        {
-        //    //            g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " and tc_mma05= " + Convert.ToDouble(ScrewDia) + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
-        //    //        }
-        //    //        else  //反鎖
-        //    //        {
-        //    //            g_sql = "SELECT * FROM " + p_Adptable + " Where upper(tc_mma23) = 'YES' and tc_mma08 >= " + (Convert.ToDouble(LR) - 1) + " and tc_mma09 <= " + Convert.ToDouble(LR) + " and tc_mma10 <= " + (Convert.ToDouble(LB) + 0.1) + " and tc_mma10 >= " + Convert.ToDouble(LB) + " and tc_mma11 >= " + Convert.ToDouble(LE) + " and tc_mma12 >= " + Convert.ToDouble(Convert.ToDouble(LT) + 0.5) + " and tc_mma04 >=" + (Convert.ToDouble(LA) - LAtmp) + " and tc_mma04 <= " + (Convert.ToDouble(LA) + LAtmp) + " " + ScrewDia + " and tc_mma13 <= " + Convert.ToDouble(Convert.ToDouble(LC) + tmp) + " and tc_mma13 >=" + Convert.ToDouble(Convert.ToDouble(LC) - tmp) + " and tc_mma26='" + Motor_Interface + "' and tc_mma27='" + Motor_Screw_orientation + "' and tc_mma01 like '" + l_string + suitadapter.Substring(1) + "%' order by abs(tc_mma04-" + LA + "),abs(tc_mma13-" + LC + "),tc_mma08,tc_mma11,tc_mma10,tc_mma24"; //移除Awidth1
-        //    //        }
-        //    //    }
-
-        //    //    OracleDataReader myDataReader_3 = class_nana_ds1.ORACLE_RD(g_sql);
-        //    //    g_count = g_count + 1;
-
-        //    //    while (myDataReader_3.Read())
-        //    //    {
-        //    //        if (p_Motor_Screw_orientation == "Y") //反鎖需多判斷下面2點
-        //    //        {
-        //    //            double Adapter_C12 = 0.0;
-        //    //            double Adapter_C8 = 0.0;
-        //    //            double Adapter_C81 = 0.0;
-        //    //            double B2 = 0.0;
-
-        //    //            l_flag = false;//先預設不能裝
-
-        //    //            if (!DBNull.Value.Equals(myDataReader_3["tc_mma29"]))
-        //    //            {
-        //    //                Adapter_C12 = Convert.ToDouble(myDataReader_3["tc_mma29"]);
-        //    //            }
-
-        //    //            if (!DBNull.Value.Equals(myDataReader_3["tc_mma14"]))
-        //    //            {
-        //    //                Adapter_C8 = Convert.ToDouble(myDataReader_3["tc_mma14"]);
-        //    //            }
-
-        //    //            if (!DBNull.Value.Equals(myDataReader_3["tc_mma34"]))
-        //    //            {
-        //    //                Adapter_C81 = Convert.ToDouble(myDataReader_3["tc_mma34"]);
-        //    //            }
-
-        //    //            B2 = Get_Screw_Plus_Len(Adapter_C12) + Adapter_C8 - Adapter_C81;
-
-        //    //            //判斷反鎖螺絲是否會與減速機干涉
-        //    //            //Reducer.D9 + 外六角最大外徑 +2 <= Motor.LA
-
-        //    //            if (Reducer_D9 + Get_Screw_Max_Dia(Adapter_C12) + 2 <= Convert.ToDouble(LA))
-        //    //            {
-        //    //                //判斷AES反鎖螺絲是否放得下
-        //    //                //如果Motor.LA - 外六角最大外徑 < Reducer.D7
-        //    //                //則需B2 < Reducer.A1 + Adapter.C81
-        //    //                //
-        //    //                //判斷AERS反鎖螺絲是否放得下
-        //    //                //如果Motor.LA - 外六角最大外徑 < Reducer.D7
-        //    //                //則需B2 < Reducer.A3 + Adapter.C81
-        //    //                //
-        //    //                //判斷通過才能裝
-        //    //                //
-        //    //                // B2 = 螺絲長度加項 + Adapter.C8 - Adpter.C81
-
-        //    //                if (Convert.ToDouble(LA) - Get_Screw_Max_Dia(Adapter_C12) < Reducer_D7)
-        //    //                {
-        //    //                    if (R1No == "RG4") //AES
-        //    //                    {
-        //    //                        if (B2 < Reducer_A1 + Adapter_C81)
-        //    //                        {
-        //    //                            l_flag = true;
-        //    //                        }
-        //    //                    }
-
-        //    //                    if (R1No == "RG5") //AERS
-        //    //                    {
-        //    //                        double Reducer_A3 = 0.0;
-
-        //    //                        double ang;
-
-        //    //                        ang = Math.Asin(Convert.ToDouble(LA) / Reducer_D7 * Math.Cos((Math.PI / 180) * 45));
-
-        //    //                        Reducer_A3 = (Reducer_D7 / 2) - ((Reducer_D7 / 2) * Math.Cos(ang)) + Reducer_A2;
-
-        //    //                        if (B2 < Reducer_A3 + Adapter_C81)
-        //    //                        {
-        //    //                            l_flag = true;
-        //    //                        }
-        //    //                    }
-        //    //                }
-        //    //                else
-        //    //                {
-        //    //                    l_flag = true;
-        //    //                }
-        //    //            }
-        //    //            else
-        //    //            {
-        //    //                l_flag = true;
-        //    //            }
-
-        //    //        }
-        //    //        else
-        //    //        {
-        //    //            l_flag = true;
-        //    //        }
-
-        //    //        if (l_flag)
-        //    //        {
-        //    //            if (tmp_newPartNo == "None")
-        //    //            {
-        //    //                tmp_newPartNo = Convert.ToString(myDataReader_3["tc_mma01"]);
-
-        //    //                ViewState["spec"] = Convert.ToString(myDataReader_3["tc_mma03"]);
-        //    //            }
-
-        //    //            //if (rbl_adapter.Items.Count == 0) //最適配連接板
-        //    //            //{
-        //    //            //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
-
-        //    //            //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存不再列出第二選項
-        //    //            //    {
-        //    //            //        break;
-        //    //            //    }
-        //    //            //}
-        //    //            //else
-        //    //            //{
-        //    //            //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
-        //    //            //    {
-        //    //            //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
-        //    //            //    }
-
-        //    //            //    if (rbl_adapter.Items.Count >= 2)
-        //    //            //    {
-        //    //            //        break;
-        //    //            //    }
-        //    //            //}
-
-
-        //    //        }
-
-        //    //        //tmp = 100; //離開while 迴圈
-        //    //        //}
-
-
-        //    //    }
-        //    //    myDataReader_3.Close();
-        //    //}
-
-        //    ////if (tmp_newPartNo != "None")
-        //    ////{
-        //    ////    rbl_adapter.SelectedValue = tmp_newPartNo;
-        //    ////}
-
-        //    return tmp_newPartNo;
-        //}
-
-        //public List<TcMmiFileInfo> Fun_replace_one_piece(string p_gerbox_no, string p_adpter_no)
-        //{
-        //    var TcMmiFileInfo = _orderService.GetTcMmiFileInfo(p_adpter_no);
-        //    List<TcMmiFileInfo> _tcMmiFileInfo = new List<TcMmiFileInfo>();
-        //    if (p_adpter_no.Substring(0, 5) == "P0411")
-        //    {
-        //        TcMmiFileInfo = TcMmiFileInfo.Where(tM => tM.TcMmi02.Substring(5, 1) == p_gerbox_no.Substring(6, 1)).ToList();
-        //    }
-
-        //    if (TcMmiFileInfo.Count() > 0)
-        //    {
-        //        _tcMmiFileInfo.Add( new TcMmiFileInfo { 
-        //                PartNo = p_gerbox_no.Substring(0, 3) + Convert.ToString( TcMmiFileInfo.FirstOrDefault().TcMmi01) + p_gerbox_no.Substring(4, p_gerbox_no.Length - 4) ,
-        //                Adaper_No = TcMmiFileInfo.FirstOrDefault().TcMmi02,
-        //                Plate_1 = TcMmiFileInfo.FirstOrDefault().TcMmi02,
-        //                TxtAdaperNo = TcMmiFileInfo.FirstOrDefault().TcMmi02,
-        //                G_Reducer_One_piece_old_Reducer_No = p_gerbox_no,
-        //                G_Reducer_One_piece_old_Adapter_No = p_adpter_no,
-        //                G_Reducer_One_piece_chenged = "Y"
-        //        });
-        //    }
-        //    return _tcMmiFileInfo;
-
-        //}
-
+        public double Get_Screw_Plus_Len(double p_C12)
+        {
+            double l_return = 0;
+            if (p_C12 == 3.4)
+            {
+                l_return = 7.8;
+            }
+            if (p_C12 == 4.5)
+            {
+                l_return = 10.76;
+            }
+            if (p_C12 == 5.5)
+            {
+                l_return = 13.04;
+            }
+            if (p_C12 == 6.6)
+            {
+                l_return = 15.8;
+            }
+            if (p_C12 == 9)
+            {
+                l_return = 20.5;
+            }
+            if (p_C12 == 11)
+            {
+                l_return = 25.2;
+            }
+            if (p_C12 == 14)
+            {
+                l_return = 29.9;
+            }
+            if (p_C12 == 16)
+            {
+                l_return = 34.6;
+            }
+            if (p_C12 == 18)
+            {
+                l_return = 37.6;
+            }
+
+            return l_return;
+        }
+
+        public List<TcMmiFileInfo> Formula(List<OrderService.AdpDatas> adpDatas)
+        {
+            int l_adapter_list_count = 3; //可供選擇的連接板數量
+
+            int g_count = 0;
+
+            string[] l_adpter_type = { "P", "O" };
+
+            string tmp_newPartNo = "None";
+
+            List<OrderService.AdpDatas> _adpDatas = adpDatas;
+            List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
+
+            foreach (string l_string in l_adpter_type)
+            {
+                if (tmp_newPartNo != "None")
+                {
+                    continue;
+                }
+
+                double tmp = 40;
+                _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
+
+                double LAtmp = 0.1;
+                _adpDatas.FirstOrDefault().LAtmp = Convert.ToString(LAtmp);
+                _adpDatas.FirstOrDefault().L_string = l_string;
+
+                while (tmp <= 40 && _adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
+                {
+                    var adpInfo = _orderService.GetService<OrderService>().GetAdapInfo(_adpDatas, "Formula");
+
+                    g_count = g_count + 1;
+
+                    if (adpInfo.Count() > 0)
+                    {
+                        for (int i = 0; i < adpInfo.Count(); i++)
+                        {
+                            if (_adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
+                            {
+                                if (tmp_newPartNo == null || tmp_newPartNo == "None")
+                                {
+                                    tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
+
+                                    //換一體式連接板
+                                    if (_adpDatas.FirstOrDefault().G_Reducer_One_piece == "Y")
+                                    {
+                                        if (_adpDatas.FirstOrDefault().G_Reducer_One_piece_used == "Y")
+                                        {
+                                            //先關閉等生管通知
+                                            _TcMmiFileInfo = Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, tmp_newPartNo);
+                                        }
+                                    }
+                                }
+                                //if (Convert.ToString(ViewState["g_Reducer_One_piece_chenged"]) == "Y")//已經換成一體式,不要再找其他連接板
+                                //{
+                                //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(ViewState["Adaper_No"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(ViewState["Adaper_No"])), Convert.ToString(ViewState["Adaper_No"])));
+                                //    tmp = 100; //離開while 迴圈
+                                //    break;
+                                //}
+                                //else
+                                //{
+                                //    if (rbl_adapter.Items.Count == 0) //最適配連接板
+                                //    {
+                                //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+
+                                //        if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking")
+                                //        {
+                                //            //break;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        //if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
+                                //        //{
+                                //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+                                //        //}
+                                //    }
+                                //}
+                            }
+                            else
+                            {
+                                tmp = 100; //離開while 迴圈
+                            }
+                        }
+
+                        if (tmp == 0)
+                        {
+                            tmp = 2.5;
+                        }
+                        else
+                        {
+                            tmp = tmp * 2;
+                        }
+                    }
+                    else
+                    {
+                        if (LAtmp == 0)
+                        {
+                            if (tmp == 0)
+                            {
+                                tmp = 2.5;
+                            }
+                            else
+                            {
+                                tmp = tmp * 2;
+
+                                if (tmp > 40)
+                                {
+                                    LAtmp = 0.1;
+                                    tmp = 40;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (tmp == 0)
+                            {
+                                tmp = 2.5;
+                            }
+                            else
+                            {
+                                tmp = tmp * 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //if (rblAdpCount > 0)
+            //{
+            //    rbl_adapter.SelectedIndex = 0;
+            //    tmp_newPartNo = rbl_adapter.SelectedValue;
+            //}
+            _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = tmp_newPartNo;
+            return _TcMmiFileInfo;
+        }
+
+        public List<TcMmiFileInfo> Formula_P2(List<OrderService.AdpDatas> adpDatas, string G_Reducer_One_piece_chenged)
+        {
+            int l_adapter_list_count = 3; //可供選擇的連接板數量
+
+            int g_count = 0;
+
+            string[] l_adpter_type = { "P", "O" };    
+
+            List<OrderService.AdpDatas> _adpDatas = adpDatas;
+            List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
+            _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = "None";
+
+            foreach (string l_string in l_adpter_type)
+            {
+                if (_TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo != "None")
+                {
+                    continue;
+                }
+                double tmp = 40;
+                _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
+
+                double LAtmp = 0.1;
+                _adpDatas.FirstOrDefault().LAtmp = Convert.ToString(LAtmp);
+                _adpDatas.FirstOrDefault().L_string = l_string;
+
+                while (tmp <= 40 && _adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count)
+                {
+                    var adpInfo = _orderService.GetService<OrderService>().GetAdapInfo(_adpDatas, "Formula_P2");
+
+                    g_count = g_count + 1;
+
+                    if (adpInfo.Count() > 0)
+                    {
+                        for (int i = 0; i < adpInfo.Count(); i++)
+                        {
+                            if (_adpDatas.FirstOrDefault().RblAdpCount < l_adapter_list_count && G_Reducer_One_piece_chenged == "N")
+                            {
+                                if (_TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo == null || _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo == "None")
+                                {
+                                    _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
+                                    _TcMmiFileInfo.FirstOrDefault().Adaper_No = _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
+                                    //換一體式連接板
+                                    if (_adpDatas.FirstOrDefault().G_Reducer_One_piece == "Y")
+                                    {
+                                        if (_adpDatas.FirstOrDefault().G_Reducer_One_piece_used == "Y")
+                                        {
+                                            //先關閉等生管通知
+                                            _TcMmiFileInfo = Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo);
+                                        }
+                                    }
+                                    _TcMmiFileInfo.FirstOrDefault().Adaper_Spec = Convert.ToString(adpInfo.FirstOrDefault().TcMma03);
+                                }
+                                //if (Convert.ToString(ViewState["g_Reducer_One_piece_chenged"]) == "Y")//已經換成一體式,不要再找其他連接板
+                                //{
+                                //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(ViewState["Adaper_No"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(ViewState["Adaper_No"])), Convert.ToString(ViewState["Adaper_No"])));
+                                //    tmp = 100; //離開while 迴圈
+                                //    break;
+                                //}
+                                //else
+                                //{
+                                //    if (rbl_adapter.Items.Count == 0) //最適配連接板
+                                //    {
+                                //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+
+                                //        if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking")
+                                //        {
+                                //            //break;
+                                //        }
+                                //    }
+                                //    else
+                                //    {
+                                //        //if (get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
+                                //        //{
+                                //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])), Convert.ToString(myDataReader_3.Tables[0].Rows[i]["tc_mma01"])));
+                                //        //}
+                                //    }
+                                //}
+                            }
+                            else
+                            {
+                                tmp = 100; //離開while 迴圈
+                            }
+                        }
+
+                        if (tmp == 0)
+                        {
+                            tmp = 2.5;
+                        }
+                        else
+                        {
+                            tmp = tmp * 2;
+                        }
+                    }
+                    else
+                    {
+                        if (LAtmp == 0)
+                        {
+                            if (tmp == 0)
+                            {
+                                tmp = 2.5;
+                            }
+                            else
+                            {
+                                tmp = tmp * 2;
+
+                                if (tmp > 40)
+                                {
+                                    LAtmp = 0.1;
+                                    tmp = 40;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (tmp == 0)
+                            {
+                                tmp = 2.5;
+                            }
+                            else
+                            {
+                                tmp = tmp * 2;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //if (rblAdpCount > 0)
+            //{
+            //    rbl_adapter.SelectedIndex = 0;
+            //    tmp_newPartNo = rbl_adapter.SelectedValue;
+            //}
+            return _TcMmiFileInfo;
+        }
+
+        public List<TcMmiFileInfo> Formula2(List<OrderService.AdpDatas> adpDatas)
+        {            
+            List<OrderService.AdpDatas> _adpDatas = adpDatas;
+            List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
+
+            _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = "None";
+            double tmp = 0;
+            _adpDatas.FirstOrDefault().Tmp = Convert.ToString(tmp);
+            var adpInfo = _orderService.GetService<OrderService>().GetAdapInfo(_adpDatas, "Formula_P2");
+            while (tmp <= 40)
+            {
+                if (adpInfo.Count() > 0)
+                {
+                    _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = Convert.ToString(adpInfo.FirstOrDefault().TcMma01);
+
+                    _TcMmiFileInfo.FirstOrDefault().Spec = Convert.ToString(adpInfo.FirstOrDefault().TcMma03);
+
+
+                    foreach (var item in adpInfo)
+                    {
+                        _TcMmiFileInfo.FirstOrDefault().AdapterNx += Convert.ToString(item.TcMma01) + " ,";
+                    }
+                    
+                    tmp = 100; //離開迴圈
+
+                }
+                else
+                {
+                    if (tmp == 0)
+                    {
+                        tmp = 2.5;
+                    }
+                    else
+                    {
+                        tmp = tmp * 2;
+                    }
+
+                    _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = "None";
+
+                }
+
+            }
+
+            return _TcMmiFileInfo;
+        }
+
+        public List<TcMmiFileInfo> Formula_type5(List<OrderService.AdpDatas> adpDatas)
+        {
+
+            List<OrderService.AdpDatas> _adpDatas = adpDatas;
+            string[] l_adpter_type = { "P", "O" };
+            List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
+            string tmp_newPartNo = "None";
+
+            Boolean l_flag = true;//判斷可否可以安裝 true:代表可以 false:不行
+            var adpInfo = _orderService.GetService<OrderService>().GetAdapInfo(_adpDatas, "Formula_type5");
+
+            foreach (string l_string in l_adpter_type)
+            {
+                if (tmp_newPartNo != "None")
+                {
+                    continue;
+                }
+                foreach (var item in adpInfo)
+                {
+                    if (_adpDatas.FirstOrDefault().Motor_Screw_orientation == "Y") //反鎖需多判斷下面2點
+                    {
+                        double Adapter_C12 = 0.0;
+                        double Adapter_C8 = 0.0;
+                        double Adapter_C81 = 0.0;
+                        double B2 = 0.0;
+
+                        l_flag = false;//先預設不能裝
+
+                        if (!string.IsNullOrEmpty(Convert.ToString(item.TcMma29)))
+                        {
+                            Adapter_C12 = Convert.ToDouble(item.TcMma29);
+                        }
+
+                        if (!string.IsNullOrEmpty(Convert.ToString(item.TcMma14)))
+                        {
+                            Adapter_C8 = Convert.ToDouble(item.TcMma14);
+                        }
+
+                        if (!string.IsNullOrEmpty(Convert.ToString(item.TcMma34)))
+                        {
+                            Adapter_C81 = Convert.ToDouble(item.TcMma34);
+                        }
+
+                        B2 = Get_Screw_Plus_Len(Adapter_C12) + Adapter_C8 - Adapter_C81;
+
+                        //判斷反鎖螺絲是否會與減速機干涉
+                        //Reducer.D9 + 外六角最大外徑 +2 <= Motor.LA
+
+                        if (_adpDatas.FirstOrDefault().Reducer_D9 + Get_Screw_Max_Dia(Adapter_C12) + 2 <= Convert.ToDouble(_adpDatas.FirstOrDefault().LA))
+                        {
+                            //判斷AES反鎖螺絲是否放得下
+                            //如果Motor.LA - 外六角最大外徑 < Reducer.D7
+                            //則需B2 < Reducer.A1 + Adapter.C81
+                            //
+                            //判斷AERS反鎖螺絲是否放得下
+                            //如果Motor.LA - 外六角最大外徑 < Reducer.D7
+                            //則需B2 < Reducer.A3 + Adapter.C81
+                            //
+                            //判斷通過才能裝
+                            //
+                            // B2 = 螺絲長度加項 + Adapter.C8 - Adpter.C81
+
+                            if (Convert.ToDouble(_adpDatas.FirstOrDefault().LA) - Get_Screw_Max_Dia(Adapter_C12) < _adpDatas.FirstOrDefault().Reducer_D7)
+                            {
+                                if (_adpDatas.FirstOrDefault().R1No == "RG4") //AES
+                                {
+                                    if (B2 < _adpDatas.FirstOrDefault().Reducer_A1 + Adapter_C81)
+                                    {
+                                        l_flag = true;
+                                    }
+                                }
+
+                                if (_adpDatas.FirstOrDefault().R1No == "RG5") //AERS
+                                {
+                                    double Reducer_A3 = 0.0;
+
+                                    double ang;
+
+                                    ang = Math.Asin(Convert.ToDouble(_adpDatas.FirstOrDefault().LA) / _adpDatas.FirstOrDefault().Reducer_D7 * Math.Cos((Math.PI / 180) * 45));
+
+                                    Reducer_A3 = (_adpDatas.FirstOrDefault().Reducer_D7 / 2) - ((_adpDatas.FirstOrDefault().Reducer_D7 / 2) * Math.Cos(ang)) + _adpDatas.FirstOrDefault().Reducer_A2;
+
+                                    if (B2 < Reducer_A3 + Adapter_C81)
+                                    {
+                                        l_flag = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                l_flag = true;
+                            }
+                        }
+                        else
+                        {
+                            l_flag = true;
+                        }
+
+                    }
+                    else
+                    {
+                        l_flag = true;
+                    }
+
+                    if (l_flag)
+                    {
+                        if (tmp_newPartNo == "None")
+                        {
+                            tmp_newPartNo = Convert.ToString(item.TcMma01);
+
+                            _TcMmiFileInfo.FirstOrDefault().Spec = Convert.ToString(item.TcMma03);
+                        }
+
+                        //if (rbl_adapter.Items.Count == 0) //最適配連接板
+                        //{
+                        //    rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
+
+                        //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存不再列出第二選項
+                        //    {
+                        //        break;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])) != "Re-Stocking") //有庫存才列入選項
+                        //    {
+                        //        rbl_adapter.Items.Add(new ListItem(Convert.ToString(rbl_adapter.Items.Count + 1) + ". " + Convert.ToString(myDataReader_3["tc_mma03"]) + " / " + Convert.ToString(myDataReader_3["tc_mma01"]) + "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock&nbsp;&nbsp;&nbsp;" + get_stock_msg(Convert.ToString(myDataReader_3["tc_mma01"])), Convert.ToString(myDataReader_3["tc_mma01"])));
+                        //    }
+
+                        //    if (rbl_adapter.Items.Count >= 2)
+                        //    {
+                        //        break;
+                        //    }
+                        //}
+
+
+                    }
+                }
+            }
+
+            //if (tmp_newPartNo != "None")
+            //{
+            //    rbl_adapter.SelectedValue = tmp_newPartNo;
+            //}
+            _TcMmiFileInfo.FirstOrDefault().Tmp_newPartNo = tmp_newPartNo;
+            return _TcMmiFileInfo;
+        }
+
+        public List<TcMmiFileInfo> Fun_replace_one_piece(string p_gerbox_no, string p_adpter_no)
+        {
+            var TcMmiFileInfo = _orderService.GetService<OrderService>().GetTcMmiFileInfo(p_adpter_no);
+            List<TcMmiFileInfo> _tcMmiFileInfo = new List<TcMmiFileInfo>();
+            if (p_adpter_no.Substring(0, 5) == "P0411")
+            {
+                TcMmiFileInfo = TcMmiFileInfo.Where(tM => tM.TcMmi02.Substring(5, 1) == p_gerbox_no.Substring(6, 1)).ToList();
+            }
+
+            if (TcMmiFileInfo.Count() > 0)
+            {
+                _tcMmiFileInfo.Add(new TcMmiFileInfo
+                {
+                    PartNo = p_gerbox_no.Substring(0, 3) + Convert.ToString(TcMmiFileInfo.FirstOrDefault().TcMmi01) + p_gerbox_no.Substring(4, p_gerbox_no.Length - 4),
+                    Adaper_No = TcMmiFileInfo.FirstOrDefault().TcMmi02,
+                    Plate_1 = TcMmiFileInfo.FirstOrDefault().TcMmi02,
+                    TxtAdaperNo = TcMmiFileInfo.FirstOrDefault().TcMmi02,
+                    G_Reducer_One_piece_old_Reducer_No = p_gerbox_no,
+                    G_Reducer_One_piece_old_Adapter_No = p_adpter_no,
+                    G_Reducer_One_piece_chenged = "Y"
+                });
+            }
+            return _tcMmiFileInfo;
+
+        }
+        #endregion
         public class TcMmiFileInfo
         {
             public string PartNo { get; set; }
@@ -1993,8 +1991,7 @@ namespace APEX_API.PublicServices
             public string Tmp_newPartNo { get; set; }
             public string Adaper_Spec { get; set; }
             public string Spec { get; set; }
+            public string AdapterNx { get; set; }
         }
-
-        #endregion
     }
 }

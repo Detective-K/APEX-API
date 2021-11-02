@@ -325,11 +325,17 @@ namespace APEX_API.Controllers
                  { "TcMmgFiles", typeof( TcMmgFile)},
                  { "TcOekFiles", typeof( TcOekFile)}
                 };
-           // IEnumerable<dynamic> cz;
+            //IEnumerable<dynamic> cz;
 
-            //cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek17 == null);
-            List<PublicFunctions.TcMmiFileInfo> TcMmiFileInfo = new List<PublicFunctions.TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { Spec = "" } };
-            TcMmiFileInfo.FirstOrDefault().Spec = "csa";
+            List<PublicFunctions.TcMmiFileInfo> TcMmiFileInfo = new List<PublicFunctions.TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
+            //var cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek03 == null);
+            var cz = _DataContext.AdapClass1s.AsQueryable().Where(m => m.TcMma29 == null);
+            var aa = !DBNull.Value.Equals(cz.ToList().FirstOrDefault().TcMma29);
+            foreach (var item in cz)
+            {
+                TcMmiFileInfo.FirstOrDefault().AdapterNx += item.TcMma29 + ",";
+            }
+        
 
         }
 
