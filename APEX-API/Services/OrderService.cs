@@ -137,6 +137,65 @@ namespace APEX_API.Services
             return TcMmiFileInfo.ToList();
         }
 
+        public List<TcMmlFile> GetTcMmlFileInfo(List<TcMmlFile>_tcMmlFileData )
+        {
+            var TcMmlFileInfo = _DataContext.TcMmlFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_tcMmlFileData.FirstOrDefault().TcMml02))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml02 == _tcMmlFileData.FirstOrDefault().TcMml02);
+            }
+            if (!string.IsNullOrEmpty(_tcMmlFileData.FirstOrDefault().TcMml03))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml03 == _tcMmlFileData.FirstOrDefault().TcMml03);
+            }
+            if (!string.IsNullOrEmpty(_tcMmlFileData.FirstOrDefault().TcMml05))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml05 == _tcMmlFileData.FirstOrDefault().TcMml05);
+            }
+            if (!string.IsNullOrEmpty(_tcMmlFileData.FirstOrDefault().TcMml06))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml06 == _tcMmlFileData.FirstOrDefault().TcMml06);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml07)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml07 == _tcMmlFileData.FirstOrDefault().TcMml07);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml08)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml08 == _tcMmlFileData.FirstOrDefault().TcMml08);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml09)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml09 == _tcMmlFileData.FirstOrDefault().TcMml09);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml10)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml10 == _tcMmlFileData.FirstOrDefault().TcMml10);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml11)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml11 == _tcMmlFileData.FirstOrDefault().TcMml11);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml12)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml12 == _tcMmlFileData.FirstOrDefault().TcMml12);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml13)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml13 == _tcMmlFileData.FirstOrDefault().TcMml13);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml14)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml14 == _tcMmlFileData.FirstOrDefault().TcMml14);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml15)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml15 == _tcMmlFileData.FirstOrDefault().TcMml15);
+            }
+            TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml16 ?? " " ) == (_tcMmlFileData.FirstOrDefault().TcMml16 ?? " "));
+            return TcMmlFileInfo.ToList();
+        }
+
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
         {

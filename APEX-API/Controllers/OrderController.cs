@@ -331,10 +331,8 @@ namespace APEX_API.Controllers
             //var cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek03 == null);
             var cz = _DataContext.AdapClass1s.AsQueryable().Where(m => m.TcMma29 == null);
             var aa = !DBNull.Value.Equals(cz.ToList().FirstOrDefault().TcMma29);
-            foreach (var item in cz)
-            {
-                TcMmiFileInfo.FirstOrDefault().AdapterNx += item.TcMma29 + ",";
-            }
+            string cs = null;
+            var ax = cs ?? " ";
         
 
         }

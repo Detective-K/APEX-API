@@ -25,11 +25,14 @@ namespace APEX_API.PublicServices
             string AdpRG4Grooups = "RG4,RG5";
             string GBSeries = Convert.ToString(OData["GearBox"]["GBSeries"]);
             string GBType = Convert.ToString(OData["GearBox"]["GBModel"]);
+            string Ratio = Convert.ToString(OData["GearBox"]["Ratio"]);
+            string Shaft = Convert.ToString(OData["GearBox"]["Shaft"]);
+            string CustId = Convert.ToString(OData["custId"]);
             string ta_oeb005 = string.Empty;
             string AdapterData1, AdapterData2, AdapterData3, AdapterData4, AdapterData5;
             string AWidth1, AWidth2, ratio_x, file_ratio_x, R1No, PartNo, M3max, P_OuterDia, newrdeucer, l_AWidth1, suitadapter_c4;
             string C3, LR, LB, LE, LA, LC, ScrewDia = string.Empty, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
-            string M3maxWeb, suitadapter , AdapterNx = string.Empty;
+            string M3maxWeb, suitadapter, AdapterNx = string.Empty;
             string T, txtadaperNo, txtSUNGEAR;
             string LN = "0", LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
             string G_Reducer_One_piece = "N", G_Reducer_One_piece_chenged = "N";
@@ -43,6 +46,7 @@ namespace APEX_API.PublicServices
 
             DateTime g_begin, g_end;
             string adaperNo, DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
+            string adpter_tc_mmaa_file = string.Empty, addbuy_error = string.Empty;
 
             string errMsg = string.Empty;
             List<TcOekFile> MortorInfo = _orderService.GetService<OrderService>().GetMotorInfoDetail(OData["Motor"]);
@@ -577,7 +581,7 @@ namespace APEX_API.PublicServices
                 Motor_Screw_orientation = Motor_Screw_orientation,
                 Reducer_D9 = Reducer_D9,
                 Reducer_D7 = Reducer_D7,
-                R1No = R1No ,
+                R1No = R1No,
                 Reducer_A1 = Reducer_A1,
                 Reducer_A2 = Reducer_A2
             });
@@ -664,15 +668,655 @@ namespace APEX_API.PublicServices
 
                     if (Convert.ToString(type) == "2")
                     {
-                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas , G_Reducer_One_piece_chenged);
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
                     }
                 }
             }
             //=================================================  
             // 8000系列如下
             //=================================================  
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData2;
+                _adpDatas.FirstOrDefault().LBck = "LBstd";
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
+
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData2;
+                _adpDatas.FirstOrDefault().LBck = "LBmax";
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
+
+            if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
+            {
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData2;
+                    _adpDatas.FirstOrDefault().LBck = "LBstd";
+
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData2;
+                    _adpDatas.FirstOrDefault().LBck = "LBmax";
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+            }
+            //================================================= 
+            // 7000系列如下    需加固定版
+            //================================================= 
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData3;
+                _adpDatas.FirstOrDefault().LBck = "LBstd";
+
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
+
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData3;
+                _adpDatas.FirstOrDefault().LBck = "LBmax";
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
+
+            if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
+            {
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData3;
+                    _adpDatas.FirstOrDefault().LBck = "LBstd";
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData3;
+                    _adpDatas.FirstOrDefault().LBck = "LBmax";
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+            }
+
+            //================================================= 
+            // 9000系列如下    無庫存需全新設計
+            //================================================= 
+
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData4;
+                _adpDatas.FirstOrDefault().LBck = "LBstd";
+
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
+
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                AWidth1 = l_AWidth1;
+                _adpDatas.FirstOrDefault().TableName = AdapterData4;
+                _adpDatas.FirstOrDefault().LBck = "LBmax";
+
+                if (Convert.ToString(type) == "1")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                }
+            }
 
 
+            if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
+            {
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData4;
+                    _adpDatas.FirstOrDefault().LBck = "LBstd";
+
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                {
+                    AWidth1 = AWidth2;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData4;
+                    _adpDatas.FirstOrDefault().LBck = "LBmax";
+
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+                }
+            }
+
+            //================================================= 
+            // 自動開發系列如下
+            //=================================================
+
+            adpter_tc_mmaa_file = "false";
+
+            if (CustId != "D000482") //只有D00482測試===begin
+            {
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                {
+                    AWidth1 = l_AWidth1;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData5;
+                    _adpDatas.FirstOrDefault().LBck = "LBstd";
+
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+
+                    if (Convert.ToString(type) == "5")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_type5(_adpDatas);
+                    }
+
+                    //代表在自動開發連接板暫存
+                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No != "None")
+                    {
+                        adpter_tc_mmaa_file = "true";
+                    }
+                }
+
+                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                {
+                    AWidth1 = l_AWidth1;
+                    _adpDatas.FirstOrDefault().TableName = AdapterData5;
+                    _adpDatas.FirstOrDefault().LBck = "LBmax";
+
+                    if (Convert.ToString(type) == "1")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    }
+
+                    if (Convert.ToString(type) == "2")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    }
+
+                    if (Convert.ToString(type) == "5")
+                    {
+                        _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_type5(_adpDatas);
+                    }
+
+                    //代表在自動開發連接板暫存
+                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No != "None")
+                    {
+                        adpter_tc_mmaa_file = "true";
+                    }
+                }
+
+                if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04") //先抓P0401 在抓P0403
+                {
+                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                    {
+                        AWidth1 = AWidth2;
+                        _adpDatas.FirstOrDefault().TableName = AdapterData5;
+                        _adpDatas.FirstOrDefault().LBck = "LBstd";
+                        if (Convert.ToString(type) == "1")
+                        {
+                            _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        }
+
+                        if (Convert.ToString(type) == "2")
+                        {
+                            _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        }
+
+                        //代表在自動開發連接板暫存
+                        if (_tcMmiFileInfo.FirstOrDefault().Adaper_No != "None")
+                        {
+                            adpter_tc_mmaa_file = "true";
+                        }
+                    }
+
+                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                    {
+                        AWidth1 = AWidth2;
+                        _adpDatas.FirstOrDefault().TableName = AdapterData5;
+                        _adpDatas.FirstOrDefault().LBck = "LBmax";
+                        if (Convert.ToString(type) == "1")
+                        {
+                            _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        }
+
+                        if (Convert.ToString(type) == "2")
+                        {
+                            _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        }
+
+                        //代表在自動開發連接板暫存
+                        if (_tcMmiFileInfo.FirstOrDefault().Adaper_No != "None")
+                        {
+                            adpter_tc_mmaa_file = "true";
+                        }
+                    }
+                }
+            }
+            //=======================================================================================  
+            //adapter 訊息處理
+            //包含 conjunction選配
+            //=======================================================================================  
+            addbuy_error = "false";
+
+            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            {
+                //配不到連接板,將相關資訊寫入柱列
+                //取文件名稱====================begin
+                string l_docNumber;
+
+                if (Convert.ToString(type) == "1" || Convert.ToString(type) == "5")
+                {
+                    if (GBType.Substring(0, 2) == "AD")
+                    {
+                        if (Ratio == "16" || Ratio == "21" || Ratio == "31" || Ratio == "61" || Ratio == "91")
+                        {
+                            file_ratio_x = "B2";
+                        }
+                    }
+                    //2017040701 AB有S3 所以增加S3的檔名
+                    if (Shaft == "S3")
+                    {
+                        l_docNumber = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3";
+                    }
+                    else
+                    {
+                        l_docNumber = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x;
+                    }
+                }
+                else if (Convert.ToString(type) == "2")
+                {
+                    if ("RD1,RD2,RD3,RD4".Contains(GBSeries))
+                    {
+                        l_docNumber = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4) + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                    }
+                    else if (GBSeries == "RD5")
+                    {
+                        l_docNumber = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4).Replace("_", "") + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                    }
+                    else if ("RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE4,RE3,RJ5,RJ9,RK5,RK9,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR8,RR9,RR7,RS4,RS3,RS2,RS1,RS5,RS6,RS7,R42".Contains(GBSeries))
+                    {
+                        if (("R40,RB3,R53,R54,RR1,RR3,RS5,RS6".Contains(GBSeries)) && ("S3,S4".Contains(GBSeries)))
+                        {
+                            l_docNumber = GBType + "_" + Shaft + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                        }
+                        else if ("RF2,RR2".Contains(R1No) || (("RJ5,RK5,RS4,RS2".Contains(GBSeries)) && (Convert.ToDouble(Ratio.Replace("*", "")) == 5.5 || Convert.ToDouble(Ratio.Replace("*", "")) == 11 || Convert.ToDouble(Ratio.Replace("*", "")) == 4 || Convert.ToDouble(Ratio.Replace("*", "")) == 8)))
+                        {
+                            l_docNumber = GBType + "_" + ratio_x + "ST_SBG" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                        }
+                        else
+                        {
+                            l_docNumber = GBType + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                        }
+                    }
+                    else
+                    {
+                        l_docNumber = GBType.Replace("Ⅱ", "2").Substring(0, 3) + "-" + GBType.Replace("Ⅱ", "2").Substring(3) + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb));
+                    }
+                }
+                else if (Convert.ToString(type) == "3")
+                {
+                    l_docNumber = GBType.Replace("(Low friction)", "") + Convert.ToString(ratio_x);
+                }
+                else if (Convert.ToString(type) == "4")
+                {
+                    l_docNumber = Convert.ToString(GBType) + Convert.ToString(ratio_x);
+                }
+                else
+                {
+                    l_docNumber = "UnKnown Type";
+                }
+
+                //取文件名稱====================end
+                string l_LZ_temp = "0";
+                string l_LZ1_temp = "";
+
+                if (_adpDatas.FirstOrDefault().Motor_Screw_orientation == "Y")
+                {
+                    l_LZ_temp = "0";
+                    l_LZ1_temp = Convert.ToString(LZ1);
+                }
+                else
+                {
+                    l_LZ_temp = LZ;
+                    l_LZ1_temp = "";
+                }
+            }
+            //if (tc_shw13 == "" || (tc_shw13 != "" && Convert.ToDouble(LB) >= Convert.ToDouble(tc_shw13)) || (tc_shw13 != "" && Convert.ToDouble(LB) == 0))
+            //{
+            //    g_sql = @"Select * from tc_mml_file where tc_mml02='" + Convert.ToString(ViewState["tc_mmd01"]) + "'" +
+            //                                        " AND tc_mml03='" + l_docNumber + "'" +
+            //                                        " AND tc_mml05='" + lst_brand.SelectedItem.Text.Trim() + "'" +
+            //                                        " AND tc_mml06='" + lst_spec.SelectedItem.Text + "'" +
+            //                                        " AND tc_mml07='" + LA + "'" +
+            //                                        " AND tc_mml08='" + LB + "'" +
+            //                                        " AND tc_mml09='" + LC + "'" +
+            //                                        " AND tc_mml10='" + C3 + "'" +
+            //                                        " AND tc_mml11='" + l_LZ_temp + "'" +
+            //                                        " AND tc_mml12='" + LR + "'" +
+            //                                        " AND tc_mml13='" + LT + "'" +
+            //                                        " AND tc_mml14='" + LE + "'" +
+            //                                        " AND tc_mml15='" + FlangeWidth + "'" +
+            //                                        " AND nvl(tc_mml16,' ')='" + (Convert.ToString(ViewState["OrderCode"]) == "" ? " " : Convert.ToString(ViewState["OrderCode"])) + "'" +
+            //                                        " AND tc_mml23='" + Convert.ToString(ViewState["Motor_Interface"]) + "'" +
+            //                                        " AND tc_mml24='" + Convert.ToString(ViewState["Motor_Screw_orientation"]) + "'" +
+            //                                        " AND tc_mml25='" + Convert.ToString(ViewState["suitadapter"]) + "'" +
+            //                                        " AND nvl(tc_mml26,' ')='" + (l_LZ1_temp == "" ? " " : l_LZ1_temp) + "'" +
+            //                                        " AND tc_mml18='" + Session["user"] + "'";
+
+            //    OracleDataReader myDataReader_tc_mml = class_nana_ds1.ORACLE_RD(g_sql);
+
+            //    if (!myDataReader_tc_mml.Read())  //寫入tc_mml_file前判斷是否有同樣資料======begin
+            //    {
+
+            //        //將選配的數值填入自動開發連接板的佇列=====begin                                              
+
+            //        String StrCon_oracle = ConfigurationManager.ConnectionStrings["oracle"].ToString(); //web2共用連線字串於web.comfig設定
+
+            //        OracleConnection myConn_oracle = new OracleConnection(StrCon_oracle);
+
+            //        myConn_oracle.Open();
+
+            //        g_sql = "Insert Into tc_mml_file (tc_mml01,tc_mml02,tc_mml03,tc_mml04,tc_mml05,tc_mml06,tc_mml07,tc_mml08,tc_mml09,tc_mml10,tc_mml11,tc_mml12,tc_mml13,tc_mml14,tc_mml15,tc_mml16,tc_mml17,tc_mml18,tc_mml19,tc_mml20,tc_mml21,tc_mml22,tc_mml23,tc_mml24,tc_mml25,tc_mml26) ";
+
+            //        g_sql = g_sql + " Values (:tc_mml01,:tc_mml02,:tc_mml03,:tc_mml04,:tc_mml05,:tc_mml06,:tc_mml07,:tc_mml08,:tc_mml09,:tc_mml10,:tc_mml11,:tc_mml12,:tc_mml13,:tc_mml14,:tc_mml15,:tc_mml16,:tc_mml17,:tc_mml18,:tc_mml19,:tc_mml20,:tc_mml21,:tc_mml22,:tc_mml23,:tc_mml24,:tc_mml25,:tc_mml26) ";
+
+            //        OracleCommand Cmd_oracle = new OracleCommand(g_sql, myConn_oracle);
+
+            //        OracleTransaction oracle_transaction;
+
+            //        oracle_transaction = myConn_oracle.BeginTransaction(IsolationLevel.ReadCommitted);
+
+            //        Cmd_oracle.Transaction = oracle_transaction;
+
+            //        //設定ORACLE COMMAND Parameters 參數，並指定值
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml01", OracleType.NVarChar);//queueId
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml02", OracleType.NVarChar);//reducerModel
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml03", OracleType.NVarChar);//docNumber
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml04", OracleType.NVarChar);//partNo
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml05", OracleType.NVarChar);//motoCompany
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml06", OracleType.NVarChar);//motorModel
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml07", OracleType.Number);//LA
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml08", OracleType.Number);//LB
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml09", OracleType.Number);//LC
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml10", OracleType.Number);//S
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml11", OracleType.Number);//LZ
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml12", OracleType.Number);//LR
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml13", OracleType.Number);//LT
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml14", OracleType.Number);//LE
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml15", OracleType.Number);//LG
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml16", OracleType.NVarChar);//OrderCode
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml17", OracleType.NVarChar);//EMail
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml18", OracleType.NVarChar);//客戶編號
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml19", OracleType.NVarChar);//狀態
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml20", OracleType.NVarChar);//IP
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml21", OracleType.NVarChar);//時間
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml22", OracleType.NVarChar);//是否下單
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml23", OracleType.NVarChar);//是否圓形
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml24", OracleType.NVarChar);//是否反鎖
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml25", OracleType.NVarChar);//連接板前6碼
+
+            //        Cmd_oracle.Parameters.Add(":tc_mml26", OracleType.NVarChar);//反鎖馬達螺絲
+
+            //        Cmd_oracle.Parameters[":tc_mml01"].Value = Apex_class.get_tc_mml01();
+
+            //        Cmd_oracle.Parameters[":tc_mml02"].Value = Convert.ToString(ViewState["tc_mmd01"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml03"].Value = l_docNumber;
+
+            //        Cmd_oracle.Parameters[":tc_mml04"].Value = "";
+
+            //        Cmd_oracle.Parameters[":tc_mml05"].Value = lst_brand.SelectedItem.Text.Trim();     //馬達廠商            
+
+            //        Cmd_oracle.Parameters[":tc_mml06"].Value = lst_spec.SelectedItem.Text;      //馬達型號
+
+            //        Cmd_oracle.Parameters[":tc_mml07"].Value = LA;
+
+            //        Cmd_oracle.Parameters[":tc_mml08"].Value = LB;
+
+            //        Cmd_oracle.Parameters[":tc_mml09"].Value = LC;
+
+            //        Cmd_oracle.Parameters[":tc_mml10"].Value = C3;
+
+            //        Cmd_oracle.Parameters[":tc_mml11"].Value = l_LZ_temp;
+
+            //        Cmd_oracle.Parameters[":tc_mml12"].Value = LR;
+
+            //        Cmd_oracle.Parameters[":tc_mml13"].Value = LT;
+
+            //        Cmd_oracle.Parameters[":tc_mml14"].Value = LE;
+
+            //        Cmd_oracle.Parameters[":tc_mml15"].Value = FlangeWidth;
+
+            //        Cmd_oracle.Parameters[":tc_mml16"].Value = Convert.ToString(ViewState["OrderCode"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml17"].Value = Convert.ToString(Session["E_Mail"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml18"].Value = Session["user"];
+
+            //        Cmd_oracle.Parameters[":tc_mml19"].Value = "0";
+
+            //        Cmd_oracle.Parameters[":tc_mml20"].Value = "";
+
+            //        Cmd_oracle.Parameters[":tc_mml21"].Value = "";
+
+            //        Cmd_oracle.Parameters[":tc_mml22"].Value = "N";
+
+            //        Cmd_oracle.Parameters[":tc_mml23"].Value = Convert.ToString(ViewState["Motor_Interface"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml24"].Value = Convert.ToString(ViewState["Motor_Screw_orientation"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml25"].Value = Convert.ToString(ViewState["suitadapter"]);
+
+            //        Cmd_oracle.Parameters[":tc_mml26"].Value = l_LZ1_temp;
+
+            //        try
+            //        {
+            //            Cmd_oracle.ExecuteNonQuery();
+
+            //            oracle_transaction.Commit();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            oracle_transaction.Rollback();
+
+            //            //秀出錯誤訊息以供判斷
+            //            MessageBox("Error", ex.Message + "!!!");
+            //        }
+            //        finally
+            //        {
+            //            myConn_oracle.Close();
+            //        }
+
+            //        //將選配的數值填入自動開發連接板的佇列=====end
+
+            //    } //寫入tc_mml_file前判斷是否有同樣資料======end                
+
+            //    myDataReader_tc_mml.Close();
+            //}
+            //else
+            //{
+            //    //通知研發
+            //    //Fun_Mail_to_RD(Convert.ToString(ViewState["Reducer_No"]), l_docNumber, lst_brand.SelectedItem.Text + " / " + lst_spec.SelectedItem.Text, "3", Convert.ToString(Session["CustName"]));
+            //    sCode = "<SCRIPT LANGUAGE=javascript>";
+
+            //    sCode = sCode + "  alert('" + Resources.Resource.msg023 + "(6)' );";
+
+            //    //加購程式結合區段
+
+            //    this.btn_pdfadd.Visible = true;
+
+            //    sCode = sCode + "\n history.go(-1)";
+
+            //    sCode = sCode + "</SCRIPT>";
+
+            //    Response.Write(sCode);
+
+            //    Response.End();
+
+            //}
+
+
+            //if (addbuy == "false")
+            //{
+            //    //Wizard1.ActiveStepIndex = 1;
+
+            //    sCode = "<SCRIPT LANGUAGE=javascript>";
+
+            //    sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
+
+            //    //加購程式結合區段
+
+            //    this.btn_pdfadd.Visible = true;
+
+            //    sCode = sCode + "\n history.go(-1)";
+
+            //    sCode = sCode + "</SCRIPT>";
+
+            //    Response.Write(sCode);
+
+            //    Response.End();
+            //}
+            //else
+            //{
+            //    MessageBox("Error", Resources.Resource.msg_err2);
+
+            //    ViewState["addbuy_error"] = "true";
+
+            //    return;
+            //}
 
         }
     }
