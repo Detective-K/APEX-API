@@ -193,6 +193,23 @@ namespace APEX_API.Services
                 TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml15 == _tcMmlFileData.FirstOrDefault().TcMml15);
             }
             TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml16 ?? " " ) == (_tcMmlFileData.FirstOrDefault().TcMml16 ?? " "));
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml18)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml18 == _tcMmlFileData.FirstOrDefault().TcMml18);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml23)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml23 == _tcMmlFileData.FirstOrDefault().TcMml23);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml24)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml24 == _tcMmlFileData.FirstOrDefault().TcMml24);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml25)))
+            {
+                TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml25 == _tcMmlFileData.FirstOrDefault().TcMml25);
+            }
+            TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml26 ?? " ") == (_tcMmlFileData.FirstOrDefault().TcMml26 ?? " "));
             return TcMmlFileInfo.ToList();
         }
 
