@@ -1978,6 +1978,34 @@ namespace APEX_API.PublicServices
             return _tcMmiFileInfo;
 
         }
+
+        //取得連接板開發佇列號
+        //public static string GetTcMml01()
+        //{
+        //    string l_tc_mml01;
+
+        //    l_tc_mml01 = DateTime.Now.ToString("yyMMdd");
+
+        //    l_sql = "select tc_mml01 from tc_mml_file Where rownum = 1 and tc_mml01 like '" + l_tc_mml01 + "%' order by tc_mml01 desc";
+
+        //    OracleDataReader myDataReader1 = class_nana_ds1.ORACLE_RD(l_sql);
+
+        //    if (myDataReader1.Read())
+        //    {
+        //        string l_tmp_tc_mml01 = Convert.ToString(myDataReader1["tc_mml01"]);
+
+        //        l_tc_mml01 = l_tc_mml01 + Convert.ToString(Convert.ToSingle(l_tmp_tc_mml01.Substring(6, 6)) + 1).PadLeft(6, '0');
+        //    }
+        //    else
+        //    {
+        //        l_tc_mml01 = l_tc_mml01 + "000001";
+        //    }
+
+        //    myDataReader1.Close();
+
+        //    return l_tc_mml01;
+        //}
+
         #endregion
         public class TcMmiFileInfo
         {

@@ -1088,237 +1088,237 @@ namespace APEX_API.PublicServices
                     l_LZ_temp = LZ;
                     l_LZ1_temp = "";
                 }
-                if (tc_shw13 == "" || (tc_shw13 != "" && Convert.ToDouble(LB) >= Convert.ToDouble(tc_shw13)) || (tc_shw13 != "" && Convert.ToDouble(LB) == 0))
-                {
-                    List<TcMmlFile> TcMmlFileData = new List<TcMmlFile>();
-                    TcMmlFileData.Add(
-                        new TcMmlFile
-                        {
-                            TcMml02 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd01),
-                            TcMml03 = l_docNumber,
-                            TcMml05 = OData["Motor"]["Brand"],
-                            TcMml06 = OData["Motor"]["Spec"],
-                            TcMml07 = Convert.ToDecimal(LA) ,
-                            TcMml08 = Convert.ToDecimal(LB),
-                            TcMml09 = Convert.ToDecimal(LC),
-                            TcMml10 = Convert.ToDecimal(C3),
-                            TcMml11 = Convert.ToDecimal(l_LZ_temp),
-                            TcMml12 = Convert.ToDecimal(LR),
-                            TcMml13 = Convert.ToDecimal(LT),
-                            TcMml14 = Convert.ToDecimal(LE),
-                            TcMml15 = Convert.ToDecimal(FlangeWidth),
-                            TcMml16 = orderCode,
-                            TcMml18 = CustId,
-                            TcMml23 = Motor_Interface,
-                            TcMml24 = Motor_Screw_orientation,
-                            TcMml25 = suitadapter,
-                            TcMml26 = l_LZ1_temp
-                        });
-                    var TcMmlFileInfo = _orderService.GetService<OrderService>().GetTcMmlFileInfo(TcMmlFileData);                    
-                    if (TcMmlFileInfo.Count == 0)  //寫入tc_mml_file前判斷是否有同樣資料======begin
-                    {
+                //if (tc_shw13 == "" || (tc_shw13 != "" && Convert.ToDouble(LB) >= Convert.ToDouble(tc_shw13)) || (tc_shw13 != "" && Convert.ToDouble(LB) == 0))
+                //{
+                //    List<TcMmlFile> TcMmlFileData = new List<TcMmlFile>();
+                //    TcMmlFileData.Add(
+                //        new TcMmlFile
+                //        {
+                //            TcMml02 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd01),
+                //            TcMml03 = l_docNumber,
+                //            TcMml05 = OData["Motor"]["Brand"],
+                //            TcMml06 = OData["Motor"]["Spec"],
+                //            TcMml07 = Convert.ToDecimal(LA),
+                //            TcMml08 = Convert.ToDecimal(LB),
+                //            TcMml09 = Convert.ToDecimal(LC),
+                //            TcMml10 = Convert.ToDecimal(C3),
+                //            TcMml11 = Convert.ToDecimal(l_LZ_temp),
+                //            TcMml12 = Convert.ToDecimal(LR),
+                //            TcMml13 = Convert.ToDecimal(LT),
+                //            TcMml14 = Convert.ToDecimal(LE),
+                //            TcMml15 = Convert.ToDecimal(FlangeWidth),
+                //            TcMml16 = orderCode,
+                //            TcMml18 = CustId,
+                //            TcMml23 = Motor_Interface,
+                //            TcMml24 = Motor_Screw_orientation,
+                //            TcMml25 = suitadapter,
+                //            TcMml26 = l_LZ1_temp
+                //        });
+                //    var TcMmlFileInfo = _orderService.GetService<OrderService>().GetTcMmlFileInfo(TcMmlFileData);
+                //    if (TcMmlFileInfo.Count == 0)  //寫入tc_mml_file前判斷是否有同樣資料======begin
+                //    {
 
-                        //將選配的數值填入自動開發連接板的佇列=====begin                                              
+                //        //將選配的數值填入自動開發連接板的佇列=====begin                                              
 
-                        String StrCon_oracle = ConfigurationManager.ConnectionStrings["oracle"].ToString(); //web2共用連線字串於web.comfig設定
+                //        String StrCon_oracle = ConfigurationManager.ConnectionStrings["oracle"].ToString(); //web2共用連線字串於web.comfig設定
 
-                        OracleConnection myConn_oracle = new OracleConnection(StrCon_oracle);
+                //        OracleConnection myConn_oracle = new OracleConnection(StrCon_oracle);
 
-                        myConn_oracle.Open();
+                //        myConn_oracle.Open();
 
-                        g_sql = "Insert Into tc_mml_file (tc_mml01,tc_mml02,tc_mml03,tc_mml04,tc_mml05,tc_mml06,tc_mml07,tc_mml08,tc_mml09,tc_mml10,tc_mml11,tc_mml12,tc_mml13,tc_mml14,tc_mml15,tc_mml16,tc_mml17,tc_mml18,tc_mml19,tc_mml20,tc_mml21,tc_mml22,tc_mml23,tc_mml24,tc_mml25,tc_mml26) ";
+                //        g_sql = "Insert Into tc_mml_file (tc_mml01,tc_mml02,tc_mml03,tc_mml04,tc_mml05,tc_mml06,tc_mml07,tc_mml08,tc_mml09,tc_mml10,tc_mml11,tc_mml12,tc_mml13,tc_mml14,tc_mml15,tc_mml16,tc_mml17,tc_mml18,tc_mml19,tc_mml20,tc_mml21,tc_mml22,tc_mml23,tc_mml24,tc_mml25,tc_mml26) ";
 
-                        g_sql = g_sql + " Values (:tc_mml01,:tc_mml02,:tc_mml03,:tc_mml04,:tc_mml05,:tc_mml06,:tc_mml07,:tc_mml08,:tc_mml09,:tc_mml10,:tc_mml11,:tc_mml12,:tc_mml13,:tc_mml14,:tc_mml15,:tc_mml16,:tc_mml17,:tc_mml18,:tc_mml19,:tc_mml20,:tc_mml21,:tc_mml22,:tc_mml23,:tc_mml24,:tc_mml25,:tc_mml26) ";
+                //        g_sql = g_sql + " Values (:tc_mml01,:tc_mml02,:tc_mml03,:tc_mml04,:tc_mml05,:tc_mml06,:tc_mml07,:tc_mml08,:tc_mml09,:tc_mml10,:tc_mml11,:tc_mml12,:tc_mml13,:tc_mml14,:tc_mml15,:tc_mml16,:tc_mml17,:tc_mml18,:tc_mml19,:tc_mml20,:tc_mml21,:tc_mml22,:tc_mml23,:tc_mml24,:tc_mml25,:tc_mml26) ";
 
-                        OracleCommand Cmd_oracle = new OracleCommand(g_sql, myConn_oracle);
+                //        OracleCommand Cmd_oracle = new OracleCommand(g_sql, myConn_oracle);
 
-                        OracleTransaction oracle_transaction;
+                //        OracleTransaction oracle_transaction;
 
-                        oracle_transaction = myConn_oracle.BeginTransaction(IsolationLevel.ReadCommitted);
+                //        oracle_transaction = myConn_oracle.BeginTransaction(IsolationLevel.ReadCommitted);
 
-                        Cmd_oracle.Transaction = oracle_transaction;
+                //        Cmd_oracle.Transaction = oracle_transaction;
 
-                        //設定ORACLE COMMAND Parameters 參數，並指定值
+                //        //設定ORACLE COMMAND Parameters 參數，並指定值
 
-                        Cmd_oracle.Parameters.Add(":tc_mml01", OracleType.NVarChar);//queueId
+                //        Cmd_oracle.Parameters.Add(":tc_mml01", OracleType.NVarChar);//queueId
 
-                        Cmd_oracle.Parameters.Add(":tc_mml02", OracleType.NVarChar);//reducerModel
+                //        Cmd_oracle.Parameters.Add(":tc_mml02", OracleType.NVarChar);//reducerModel
 
-                        Cmd_oracle.Parameters.Add(":tc_mml03", OracleType.NVarChar);//docNumber
+                //        Cmd_oracle.Parameters.Add(":tc_mml03", OracleType.NVarChar);//docNumber
 
-                        Cmd_oracle.Parameters.Add(":tc_mml04", OracleType.NVarChar);//partNo
+                //        Cmd_oracle.Parameters.Add(":tc_mml04", OracleType.NVarChar);//partNo
 
-                        Cmd_oracle.Parameters.Add(":tc_mml05", OracleType.NVarChar);//motoCompany
+                //        Cmd_oracle.Parameters.Add(":tc_mml05", OracleType.NVarChar);//motoCompany
 
-                        Cmd_oracle.Parameters.Add(":tc_mml06", OracleType.NVarChar);//motorModel
+                //        Cmd_oracle.Parameters.Add(":tc_mml06", OracleType.NVarChar);//motorModel
 
-                        Cmd_oracle.Parameters.Add(":tc_mml07", OracleType.Number);//LA
+                //        Cmd_oracle.Parameters.Add(":tc_mml07", OracleType.Number);//LA
 
-                        Cmd_oracle.Parameters.Add(":tc_mml08", OracleType.Number);//LB
+                //        Cmd_oracle.Parameters.Add(":tc_mml08", OracleType.Number);//LB
 
-                        Cmd_oracle.Parameters.Add(":tc_mml09", OracleType.Number);//LC
+                //        Cmd_oracle.Parameters.Add(":tc_mml09", OracleType.Number);//LC
 
-                        Cmd_oracle.Parameters.Add(":tc_mml10", OracleType.Number);//S
+                //        Cmd_oracle.Parameters.Add(":tc_mml10", OracleType.Number);//S
 
-                        Cmd_oracle.Parameters.Add(":tc_mml11", OracleType.Number);//LZ
+                //        Cmd_oracle.Parameters.Add(":tc_mml11", OracleType.Number);//LZ
 
-                        Cmd_oracle.Parameters.Add(":tc_mml12", OracleType.Number);//LR
+                //        Cmd_oracle.Parameters.Add(":tc_mml12", OracleType.Number);//LR
 
-                        Cmd_oracle.Parameters.Add(":tc_mml13", OracleType.Number);//LT
+                //        Cmd_oracle.Parameters.Add(":tc_mml13", OracleType.Number);//LT
 
-                        Cmd_oracle.Parameters.Add(":tc_mml14", OracleType.Number);//LE
+                //        Cmd_oracle.Parameters.Add(":tc_mml14", OracleType.Number);//LE
 
-                        Cmd_oracle.Parameters.Add(":tc_mml15", OracleType.Number);//LG
+                //        Cmd_oracle.Parameters.Add(":tc_mml15", OracleType.Number);//LG
 
-                        Cmd_oracle.Parameters.Add(":tc_mml16", OracleType.NVarChar);//OrderCode
+                //        Cmd_oracle.Parameters.Add(":tc_mml16", OracleType.NVarChar);//OrderCode
 
-                        Cmd_oracle.Parameters.Add(":tc_mml17", OracleType.NVarChar);//EMail
+                //        Cmd_oracle.Parameters.Add(":tc_mml17", OracleType.NVarChar);//EMail
 
-                        Cmd_oracle.Parameters.Add(":tc_mml18", OracleType.NVarChar);//客戶編號
+                //        Cmd_oracle.Parameters.Add(":tc_mml18", OracleType.NVarChar);//客戶編號
 
-                        Cmd_oracle.Parameters.Add(":tc_mml19", OracleType.NVarChar);//狀態
+                //        Cmd_oracle.Parameters.Add(":tc_mml19", OracleType.NVarChar);//狀態
 
-                        Cmd_oracle.Parameters.Add(":tc_mml20", OracleType.NVarChar);//IP
+                //        Cmd_oracle.Parameters.Add(":tc_mml20", OracleType.NVarChar);//IP
 
-                        Cmd_oracle.Parameters.Add(":tc_mml21", OracleType.NVarChar);//時間
+                //        Cmd_oracle.Parameters.Add(":tc_mml21", OracleType.NVarChar);//時間
 
-                        Cmd_oracle.Parameters.Add(":tc_mml22", OracleType.NVarChar);//是否下單
+                //        Cmd_oracle.Parameters.Add(":tc_mml22", OracleType.NVarChar);//是否下單
 
-                        Cmd_oracle.Parameters.Add(":tc_mml23", OracleType.NVarChar);//是否圓形
+                //        Cmd_oracle.Parameters.Add(":tc_mml23", OracleType.NVarChar);//是否圓形
 
-                        Cmd_oracle.Parameters.Add(":tc_mml24", OracleType.NVarChar);//是否反鎖
+                //        Cmd_oracle.Parameters.Add(":tc_mml24", OracleType.NVarChar);//是否反鎖
 
-                        Cmd_oracle.Parameters.Add(":tc_mml25", OracleType.NVarChar);//連接板前6碼
+                //        Cmd_oracle.Parameters.Add(":tc_mml25", OracleType.NVarChar);//連接板前6碼
 
-                        Cmd_oracle.Parameters.Add(":tc_mml26", OracleType.NVarChar);//反鎖馬達螺絲
+                //        Cmd_oracle.Parameters.Add(":tc_mml26", OracleType.NVarChar);//反鎖馬達螺絲
 
-                        Cmd_oracle.Parameters[":tc_mml01"].Value = Apex_class.get_tc_mml01();
+                //        Cmd_oracle.Parameters[":tc_mml01"].Value = Apex_class.get_tc_mml01();
 
-                        Cmd_oracle.Parameters[":tc_mml02"].Value = Convert.ToString(ViewState["tc_mmd01"]);
+                //        Cmd_oracle.Parameters[":tc_mml02"].Value = Convert.ToString(ViewState["tc_mmd01"]);
 
-                        Cmd_oracle.Parameters[":tc_mml03"].Value = l_docNumber;
+                //        Cmd_oracle.Parameters[":tc_mml03"].Value = l_docNumber;
 
-                        Cmd_oracle.Parameters[":tc_mml04"].Value = "";
+                //        Cmd_oracle.Parameters[":tc_mml04"].Value = "";
 
-                        Cmd_oracle.Parameters[":tc_mml05"].Value = lst_brand.SelectedItem.Text.Trim();     //馬達廠商            
+                //        Cmd_oracle.Parameters[":tc_mml05"].Value = lst_brand.SelectedItem.Text.Trim();     //馬達廠商            
 
-                        Cmd_oracle.Parameters[":tc_mml06"].Value = lst_spec.SelectedItem.Text;      //馬達型號
+                //        Cmd_oracle.Parameters[":tc_mml06"].Value = lst_spec.SelectedItem.Text;      //馬達型號
 
-                        Cmd_oracle.Parameters[":tc_mml07"].Value = LA;
+                //        Cmd_oracle.Parameters[":tc_mml07"].Value = LA;
 
-                        Cmd_oracle.Parameters[":tc_mml08"].Value = LB;
+                //        Cmd_oracle.Parameters[":tc_mml08"].Value = LB;
 
-                        Cmd_oracle.Parameters[":tc_mml09"].Value = LC;
+                //        Cmd_oracle.Parameters[":tc_mml09"].Value = LC;
 
-                        Cmd_oracle.Parameters[":tc_mml10"].Value = C3;
+                //        Cmd_oracle.Parameters[":tc_mml10"].Value = C3;
 
-                        Cmd_oracle.Parameters[":tc_mml11"].Value = l_LZ_temp;
+                //        Cmd_oracle.Parameters[":tc_mml11"].Value = l_LZ_temp;
 
-                        Cmd_oracle.Parameters[":tc_mml12"].Value = LR;
+                //        Cmd_oracle.Parameters[":tc_mml12"].Value = LR;
 
-                        Cmd_oracle.Parameters[":tc_mml13"].Value = LT;
+                //        Cmd_oracle.Parameters[":tc_mml13"].Value = LT;
 
-                        Cmd_oracle.Parameters[":tc_mml14"].Value = LE;
+                //        Cmd_oracle.Parameters[":tc_mml14"].Value = LE;
 
-                        Cmd_oracle.Parameters[":tc_mml15"].Value = FlangeWidth;
+                //        Cmd_oracle.Parameters[":tc_mml15"].Value = FlangeWidth;
 
-                        Cmd_oracle.Parameters[":tc_mml16"].Value = Convert.ToString(ViewState["OrderCode"]);
+                //        Cmd_oracle.Parameters[":tc_mml16"].Value = Convert.ToString(ViewState["OrderCode"]);
 
-                        Cmd_oracle.Parameters[":tc_mml17"].Value = Convert.ToString(Session["E_Mail"]);
+                //        Cmd_oracle.Parameters[":tc_mml17"].Value = Convert.ToString(Session["E_Mail"]);
 
-                        Cmd_oracle.Parameters[":tc_mml18"].Value = Session["user"];
+                //        Cmd_oracle.Parameters[":tc_mml18"].Value = Session["user"];
 
-                        Cmd_oracle.Parameters[":tc_mml19"].Value = "0";
+                //        Cmd_oracle.Parameters[":tc_mml19"].Value = "0";
 
-                        Cmd_oracle.Parameters[":tc_mml20"].Value = "";
+                //        Cmd_oracle.Parameters[":tc_mml20"].Value = "";
 
-                        Cmd_oracle.Parameters[":tc_mml21"].Value = "";
+                //        Cmd_oracle.Parameters[":tc_mml21"].Value = "";
 
-                        Cmd_oracle.Parameters[":tc_mml22"].Value = "N";
+                //        Cmd_oracle.Parameters[":tc_mml22"].Value = "N";
 
-                        Cmd_oracle.Parameters[":tc_mml23"].Value = Convert.ToString(ViewState["Motor_Interface"]);
+                //        Cmd_oracle.Parameters[":tc_mml23"].Value = Convert.ToString(ViewState["Motor_Interface"]);
 
-                        Cmd_oracle.Parameters[":tc_mml24"].Value = Convert.ToString(ViewState["Motor_Screw_orientation"]);
+                //        Cmd_oracle.Parameters[":tc_mml24"].Value = Convert.ToString(ViewState["Motor_Screw_orientation"]);
 
-                        Cmd_oracle.Parameters[":tc_mml25"].Value = Convert.ToString(ViewState["suitadapter"]);
+                //        Cmd_oracle.Parameters[":tc_mml25"].Value = Convert.ToString(ViewState["suitadapter"]);
 
-                        Cmd_oracle.Parameters[":tc_mml26"].Value = l_LZ1_temp;
+                //        Cmd_oracle.Parameters[":tc_mml26"].Value = l_LZ1_temp;
 
-                        try
-                        {
-                            Cmd_oracle.ExecuteNonQuery();
+                //        try
+                //        {
+                //            Cmd_oracle.ExecuteNonQuery();
 
-                            oracle_transaction.Commit();
-                        }
-                        catch (Exception ex)
-                        {
-                            oracle_transaction.Rollback();
+                //            oracle_transaction.Commit();
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            oracle_transaction.Rollback();
 
-                            //秀出錯誤訊息以供判斷
-                            MessageBox("Error", ex.Message + "!!!");
-                        }
-                        finally
-                        {
-                            myConn_oracle.Close();
-                        }
+                //            //秀出錯誤訊息以供判斷
+                //            MessageBox("Error", ex.Message + "!!!");
+                //        }
+                //        finally
+                //        {
+                //            myConn_oracle.Close();
+                //        }
 
-                        //將選配的數值填入自動開發連接板的佇列=====end
+                //        //將選配的數值填入自動開發連接板的佇列=====end
 
-                    } //寫入tc_mml_file前判斷是否有同樣資料======end                
+                //    } //寫入tc_mml_file前判斷是否有同樣資料======end                
 
-                    myDataReader_tc_mml.Close();
-                }
-                else
-                {
-                    //通知研發
-                    //Fun_Mail_to_RD(Convert.ToString(ViewState["Reducer_No"]), l_docNumber, lst_brand.SelectedItem.Text + " / " + lst_spec.SelectedItem.Text, "3", Convert.ToString(Session["CustName"]));
-                    sCode = "<SCRIPT LANGUAGE=javascript>";
+                //    myDataReader_tc_mml.Close();
+                //}
+                //else
+                //{
+                //    //通知研發
+                //    //Fun_Mail_to_RD(Convert.ToString(ViewState["Reducer_No"]), l_docNumber, lst_brand.SelectedItem.Text + " / " + lst_spec.SelectedItem.Text, "3", Convert.ToString(Session["CustName"]));
+                //    sCode = "<SCRIPT LANGUAGE=javascript>";
 
-                    sCode = sCode + "  alert('" + Resources.Resource.msg023 + "(6)' );";
+                //    sCode = sCode + "  alert('" + Resources.Resource.msg023 + "(6)' );";
 
-                    //加購程式結合區段
+                //    //加購程式結合區段
 
-                    this.btn_pdfadd.Visible = true;
+                //    this.btn_pdfadd.Visible = true;
 
-                    sCode = sCode + "\n history.go(-1)";
+                //    sCode = sCode + "\n history.go(-1)";
 
-                    sCode = sCode + "</SCRIPT>";
+                //    sCode = sCode + "</SCRIPT>";
 
-                    Response.Write(sCode);
+                //    Response.Write(sCode);
 
-                    Response.End();
+                //    Response.End();
 
-                }
+                //}
 
 
-                if (addbuy == "false")
-                {
-                    //Wizard1.ActiveStepIndex = 1;
+                //if (addbuy == "false")
+                //{
+                //    //Wizard1.ActiveStepIndex = 1;
 
-                    sCode = "<SCRIPT LANGUAGE=javascript>";
+                //    sCode = "<SCRIPT LANGUAGE=javascript>";
 
-                    sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
+                //    sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
 
-                    //加購程式結合區段
+                //    //加購程式結合區段
 
-                    this.btn_pdfadd.Visible = true;
+                //    this.btn_pdfadd.Visible = true;
 
-                    sCode = sCode + "\n history.go(-1)";
+                //    sCode = sCode + "\n history.go(-1)";
 
-                    sCode = sCode + "</SCRIPT>";
+                //    sCode = sCode + "</SCRIPT>";
 
-                    Response.Write(sCode);
+                //    Response.Write(sCode);
 
-                    Response.End();
-                }
-                else
-                {
-                    MessageBox("Error", Resources.Resource.msg_err2);
+                //    Response.End();
+                //}
+                //else
+                //{
+                //    MessageBox("Error", Resources.Resource.msg_err2);
 
-                    ViewState["addbuy_error"] = "true";
+                //    ViewState["addbuy_error"] = "true";
 
-                    return;
-                }
+                //    return;
+                //}
             }
             
 

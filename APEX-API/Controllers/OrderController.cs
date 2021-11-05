@@ -115,7 +115,7 @@ namespace APEX_API.Controllers
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                   // _publicOrder.GBResult(OData, "3", "false");
+                    // _publicOrder.GBResult(OData, "3", "false");
                 }
                 //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
@@ -330,10 +330,25 @@ namespace APEX_API.Controllers
             List<PublicFunctions.TcMmiFileInfo> TcMmiFileInfo = new List<PublicFunctions.TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
             //var cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek03 == null);
             var cz = _DataContext.AdapClass1s.AsQueryable().Where(m => m.TcMma29 == null);
-            var aa = !DBNull.Value.Equals(cz.ToList().FirstOrDefault().TcMma29);
-            string cs = null;
-            var ax = cs ?? " ";
-        
+            int i = 1;
+            string  l_tc_mml01 = DateTime.Now.ToString("yyMMdd");
+
+            // l_sql = "select tc_mml01 from tc_mml_file Where rownum = 1 and tc_mml01 like '" + l_tc_mml01 + "%' order by tc_mml01 desc";
+
+
+            //var tmp = _DataContext.TcMmlFiles.AsEnumerable()
+            //                                 .Select(Tm => new { RowNum = i++, Tm.TcMml01 })
+            //                                 .Where(Tm => Tm.RowNum == 1 && EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"))
+            //                                 .OrderByDescending(Tm => Tm.TcMml01)
+            //                                 ;
+            var tmp = _DataContext.TcMmlFiles.AsEnumerable()
+                                            .Select(Tm => new { RowNum = i++, Tm.TcMml01 })
+                                            .Where(Tm => Tm.RowNum == 1 )
+                                            .OrderBy(Tm => Tm.TcMml01)
+                                            .OrderByDescending(Tm => Tm.TcMml01)
+                                            ;
+
+
 
         }
 

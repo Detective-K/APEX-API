@@ -89,6 +89,7 @@ namespace APEX_API.Services
             }
             return ReducerInfo.ToList();
         }
+
         public List<Resg> GetResgInfo(dynamic OData)
         {
             string _tc_mmd01 = Convert.ToString(OData["Ratio"]);
@@ -192,6 +193,7 @@ namespace APEX_API.Services
             {
                 TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml15 == _tcMmlFileData.FirstOrDefault().TcMml15);
             }
+
             TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml16 ?? " " ) == (_tcMmlFileData.FirstOrDefault().TcMml16 ?? " "));
             if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml18)))
             {
@@ -212,7 +214,15 @@ namespace APEX_API.Services
             TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml26 ?? " ") == (_tcMmlFileData.FirstOrDefault().TcMml26 ?? " "));
             return TcMmlFileInfo.ToList();
         }
+        //public string GetTcMml01ID(string l_tc_mml01)
+        //{
+        //    int i = 1;
+        //    var l_tmp_tc_mml01 = _DataContext.TcMmlFiles.AsEnumerable()
+        //                                     .Select(Tm => new { RowNum = i++, Tm.TcMml01 })
+        //                                     .Where(Tm => Tm.RowNum == 1 && EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"));
 
+        //    return TcMmlFileInfo.ToList();
+        //}
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
         {
@@ -5648,6 +5658,29 @@ namespace APEX_API.Services
             _web2Context.Orders.Add(Insert);
             _web2Context.SaveChanges();
         }
+
+        //public void InsertTcMmlFile(TcMmlFile Value)
+        //{
+        //    TcMmlFile Insert = new TcMmlFile
+        //    {
+        //        OrderId = TempOD,
+        //        CustId = Value.CustId,
+        //        Deliver = Value.Deliver,
+        //        Pono = Value.Pono,
+        //        DelivAddr = Value.DelivAddr,
+        //        Currency = Value.Currency,
+        //        DelivAddr2 = Value.DelivAddr2,
+        //        DelivWay = Value.DelivWay,
+        //        Attn = Value.Attn,
+        //        DelivTel = Value.DelivTel,
+        //        OrderDate = Convert.ToDateTime(Value.OrderDate),
+        //        DelivDate = Convert.ToDateTime(Value.DelivDate),
+        //        Ostatus = Value.Ostatus,
+        //        Remail = Value.Remail
+        //    };
+        //    _web2Context.Orders.Add(Insert);
+        //    _web2Context.SaveChanges();
+        //}
 
         public void UpdateOrderList(dynamic tempOrder, dynamic tempOrderDetail)
         {
