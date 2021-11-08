@@ -214,15 +214,15 @@ namespace APEX_API.Services
             TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml26 ?? " ") == (_tcMmlFileData.FirstOrDefault().TcMml26 ?? " "));
             return TcMmlFileInfo.ToList();
         }
-        //public string GetTcMml01ID(string l_tc_mml01)
-        //{
-        //    int i = 1;
-        //    var l_tmp_tc_mml01 = _DataContext.TcMmlFiles.AsEnumerable()
-        //                                     .Select(Tm => new { RowNum = i++, Tm.TcMml01 })
-        //                                     .Where(Tm => Tm.RowNum == 1 && EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"));
+        public string GetTcMml01ID(string l_tc_mml01)
+        {
+            var l_tmp_tc_mml01 = _DataContext.TcMmlFiles.Select(Tm => new { Tm.TcMml01 })
+                                            .Where(Tm => EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"))
+                                            .OrderByDescending(Tm => Tm.TcMml01)
+                                            ;
 
-        //    return TcMmlFileInfo.ToList();
-        //}
+            return l_tmp_tc_mml01.ToList().Count() >0 ? Convert.ToString(l_tmp_tc_mml01.ToList().FirstOrDefault().TcMml01) : "";
+        }
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)
         {

@@ -341,10 +341,8 @@ namespace APEX_API.Controllers
             //                                 .Where(Tm => Tm.RowNum == 1 && EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"))
             //                                 .OrderByDescending(Tm => Tm.TcMml01)
             //                                 ;
-            var tmp = _DataContext.TcMmlFiles.AsEnumerable()
-                                            .Select(Tm => new { RowNum = i++, Tm.TcMml01 })
-                                            .Where(Tm => Tm.RowNum == 1 )
-                                            .OrderBy(Tm => Tm.TcMml01)
+            var tmp = _DataContext.TcMmlFiles.Select(Tm => new {Tm.TcMml01 })
+                                            .Where(Tm => EF.Functions.Like(Tm.TcMml01, "211109" + "%"))
                                             .OrderByDescending(Tm => Tm.TcMml01)
                                             ;
 

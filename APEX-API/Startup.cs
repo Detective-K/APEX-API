@@ -44,7 +44,7 @@ namespace APEX_API
             services.AddDbContext<web2Context>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Web2Pro2")));
             services.AddDbContext<DataContext>(options =>
-                options.UseOracle(Configuration.GetConnectionString("OraTop")));
+                options.UseOracle(Configuration.GetConnectionString("OraTop") ));
             services.AddControllers();
 
             services.AddAuthentication(options =>
