@@ -5659,28 +5659,41 @@ namespace APEX_API.Services
             _web2Context.SaveChanges();
         }
 
-        //public void InsertTcMmlFile(TcMmlFile Value)
-        //{
-        //    TcMmlFile Insert = new TcMmlFile
-        //    {
-        //        OrderId = TempOD,
-        //        CustId = Value.CustId,
-        //        Deliver = Value.Deliver,
-        //        Pono = Value.Pono,
-        //        DelivAddr = Value.DelivAddr,
-        //        Currency = Value.Currency,
-        //        DelivAddr2 = Value.DelivAddr2,
-        //        DelivWay = Value.DelivWay,
-        //        Attn = Value.Attn,
-        //        DelivTel = Value.DelivTel,
-        //        OrderDate = Convert.ToDateTime(Value.OrderDate),
-        //        DelivDate = Convert.ToDateTime(Value.DelivDate),
-        //        Ostatus = Value.Ostatus,
-        //        Remail = Value.Remail
-        //    };
-        //    _web2Context.Orders.Add(Insert);
-        //    _web2Context.SaveChanges();
-        //}
+        public void InsertTcMmlFile(List<TcMmlFile> TcMmlFileData)
+        {
+            var Value = TcMmlFileData.ToList().FirstOrDefault();
+            TcMmlFile Insert = new TcMmlFile
+            {
+                TcMml01 = Value.TcMml01,
+                TcMml02 = Value.TcMml02,
+                TcMml03 = Value.TcMml03,
+                TcMml04 = Value.TcMml04,
+                TcMml05 = Value.TcMml05,
+                TcMml06 = Value.TcMml06,
+                TcMml07 = Value.TcMml07,
+                TcMml08 = Value.TcMml08,
+                TcMml09 = Value.TcMml09,
+                TcMml10 = Value.TcMml10,
+                TcMml11 = Value.TcMml11,
+                TcMml12 = Value.TcMml12,
+                TcMml13 = Value.TcMml13,
+                TcMml14 = Value.TcMml14,
+                TcMml15 = Value.TcMml15,
+                TcMml16 = Value.TcMml16,
+                TcMml17 = Value.TcMml17,
+                TcMml18 = Value.TcMml18,
+                TcMml19 = Value.TcMml19,
+                TcMml20 = Value.TcMml20,
+                TcMml21 = Value.TcMml21,
+                TcMml22 = Value.TcMml22,
+                TcMml23 = Value.TcMml23,
+                TcMml24 = Value.TcMml24,
+                TcMml25 = Value.TcMml25,
+                TcMml26 = Value.TcMml26
+            };
+            _DataContext.TcMmlFiles.Add(Insert);
+            _DataContext.SaveChanges();
+        }
 
         public void UpdateOrderList(dynamic tempOrder, dynamic tempOrderDetail)
         {

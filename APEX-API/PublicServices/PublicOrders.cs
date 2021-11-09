@@ -14,7 +14,7 @@ namespace APEX_API.PublicServices
         private readonly IServiceProvider _orderService = null;
         private readonly IServiceProvider _publicFunction = null;
 
-        public void GBResult(dynamic OData, string type, string addbuy , string orderCode)
+        public void GBResult(dynamic OData, string type, string addbuy, string orderCode)
         {
             Decimal S = 0;
             string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";
@@ -45,7 +45,7 @@ namespace APEX_API.PublicServices
             string l_suitadapter = string.Empty;
 
             DateTime g_begin, g_end;
-            string adaperNo, DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
+            string adaperNo = string.Empty, DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
             string adpter_tc_mmaa_file = string.Empty, addbuy_error = string.Empty;
 
             string errMsg = string.Empty;
@@ -1088,239 +1088,233 @@ namespace APEX_API.PublicServices
                     l_LZ_temp = LZ;
                     l_LZ1_temp = "";
                 }
-                //if (tc_shw13 == "" || (tc_shw13 != "" && Convert.ToDouble(LB) >= Convert.ToDouble(tc_shw13)) || (tc_shw13 != "" && Convert.ToDouble(LB) == 0))
-                //{
-                //    List<TcMmlFile> TcMmlFileData = new List<TcMmlFile>();
-                //    TcMmlFileData.Add(
-                //        new TcMmlFile
-                //        {
-                //            TcMml02 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd01),
-                //            TcMml03 = l_docNumber,
-                //            TcMml05 = OData["Motor"]["Brand"],
-                //            TcMml06 = OData["Motor"]["Spec"],
-                //            TcMml07 = Convert.ToDecimal(LA),
-                //            TcMml08 = Convert.ToDecimal(LB),
-                //            TcMml09 = Convert.ToDecimal(LC),
-                //            TcMml10 = Convert.ToDecimal(C3),
-                //            TcMml11 = Convert.ToDecimal(l_LZ_temp),
-                //            TcMml12 = Convert.ToDecimal(LR),
-                //            TcMml13 = Convert.ToDecimal(LT),
-                //            TcMml14 = Convert.ToDecimal(LE),
-                //            TcMml15 = Convert.ToDecimal(FlangeWidth),
-                //            TcMml16 = orderCode,
-                //            TcMml18 = CustId,
-                //            TcMml23 = Motor_Interface,
-                //            TcMml24 = Motor_Screw_orientation,
-                //            TcMml25 = suitadapter,
-                //            TcMml26 = l_LZ1_temp
-                //        });
-                //    var TcMmlFileInfo = _orderService.GetService<OrderService>().GetTcMmlFileInfo(TcMmlFileData);
-                //    if (TcMmlFileInfo.Count == 0)  //寫入tc_mml_file前判斷是否有同樣資料======begin
-                //    {
-
-                //        //將選配的數值填入自動開發連接板的佇列=====begin                                              
-
-                //        String StrCon_oracle = ConfigurationManager.ConnectionStrings["oracle"].ToString(); //web2共用連線字串於web.comfig設定
-
-                //        OracleConnection myConn_oracle = new OracleConnection(StrCon_oracle);
-
-                //        myConn_oracle.Open();
-
-                //        g_sql = "Insert Into tc_mml_file (tc_mml01,tc_mml02,tc_mml03,tc_mml04,tc_mml05,tc_mml06,tc_mml07,tc_mml08,tc_mml09,tc_mml10,tc_mml11,tc_mml12,tc_mml13,tc_mml14,tc_mml15,tc_mml16,tc_mml17,tc_mml18,tc_mml19,tc_mml20,tc_mml21,tc_mml22,tc_mml23,tc_mml24,tc_mml25,tc_mml26) ";
-
-                //        g_sql = g_sql + " Values (:tc_mml01,:tc_mml02,:tc_mml03,:tc_mml04,:tc_mml05,:tc_mml06,:tc_mml07,:tc_mml08,:tc_mml09,:tc_mml10,:tc_mml11,:tc_mml12,:tc_mml13,:tc_mml14,:tc_mml15,:tc_mml16,:tc_mml17,:tc_mml18,:tc_mml19,:tc_mml20,:tc_mml21,:tc_mml22,:tc_mml23,:tc_mml24,:tc_mml25,:tc_mml26) ";
-
-                //        OracleCommand Cmd_oracle = new OracleCommand(g_sql, myConn_oracle);
-
-                //        OracleTransaction oracle_transaction;
-
-                //        oracle_transaction = myConn_oracle.BeginTransaction(IsolationLevel.ReadCommitted);
-
-                //        Cmd_oracle.Transaction = oracle_transaction;
-
-                //        //設定ORACLE COMMAND Parameters 參數，並指定值
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml01", OracleType.NVarChar);//queueId
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml02", OracleType.NVarChar);//reducerModel
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml03", OracleType.NVarChar);//docNumber
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml04", OracleType.NVarChar);//partNo
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml05", OracleType.NVarChar);//motoCompany
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml06", OracleType.NVarChar);//motorModel
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml07", OracleType.Number);//LA
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml08", OracleType.Number);//LB
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml09", OracleType.Number);//LC
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml10", OracleType.Number);//S
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml11", OracleType.Number);//LZ
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml12", OracleType.Number);//LR
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml13", OracleType.Number);//LT
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml14", OracleType.Number);//LE
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml15", OracleType.Number);//LG
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml16", OracleType.NVarChar);//OrderCode
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml17", OracleType.NVarChar);//EMail
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml18", OracleType.NVarChar);//客戶編號
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml19", OracleType.NVarChar);//狀態
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml20", OracleType.NVarChar);//IP
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml21", OracleType.NVarChar);//時間
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml22", OracleType.NVarChar);//是否下單
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml23", OracleType.NVarChar);//是否圓形
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml24", OracleType.NVarChar);//是否反鎖
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml25", OracleType.NVarChar);//連接板前6碼
-
-                //        Cmd_oracle.Parameters.Add(":tc_mml26", OracleType.NVarChar);//反鎖馬達螺絲
-
-                //        Cmd_oracle.Parameters[":tc_mml01"].Value = Apex_class.get_tc_mml01();
-
-                //        Cmd_oracle.Parameters[":tc_mml02"].Value = Convert.ToString(ViewState["tc_mmd01"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml03"].Value = l_docNumber;
-
-                //        Cmd_oracle.Parameters[":tc_mml04"].Value = "";
-
-                //        Cmd_oracle.Parameters[":tc_mml05"].Value = lst_brand.SelectedItem.Text.Trim();     //馬達廠商            
-
-                //        Cmd_oracle.Parameters[":tc_mml06"].Value = lst_spec.SelectedItem.Text;      //馬達型號
-
-                //        Cmd_oracle.Parameters[":tc_mml07"].Value = LA;
-
-                //        Cmd_oracle.Parameters[":tc_mml08"].Value = LB;
-
-                //        Cmd_oracle.Parameters[":tc_mml09"].Value = LC;
-
-                //        Cmd_oracle.Parameters[":tc_mml10"].Value = C3;
-
-                //        Cmd_oracle.Parameters[":tc_mml11"].Value = l_LZ_temp;
-
-                //        Cmd_oracle.Parameters[":tc_mml12"].Value = LR;
-
-                //        Cmd_oracle.Parameters[":tc_mml13"].Value = LT;
-
-                //        Cmd_oracle.Parameters[":tc_mml14"].Value = LE;
-
-                //        Cmd_oracle.Parameters[":tc_mml15"].Value = FlangeWidth;
-
-                //        Cmd_oracle.Parameters[":tc_mml16"].Value = Convert.ToString(ViewState["OrderCode"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml17"].Value = Convert.ToString(Session["E_Mail"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml18"].Value = Session["user"];
-
-                //        Cmd_oracle.Parameters[":tc_mml19"].Value = "0";
-
-                //        Cmd_oracle.Parameters[":tc_mml20"].Value = "";
-
-                //        Cmd_oracle.Parameters[":tc_mml21"].Value = "";
-
-                //        Cmd_oracle.Parameters[":tc_mml22"].Value = "N";
-
-                //        Cmd_oracle.Parameters[":tc_mml23"].Value = Convert.ToString(ViewState["Motor_Interface"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml24"].Value = Convert.ToString(ViewState["Motor_Screw_orientation"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml25"].Value = Convert.ToString(ViewState["suitadapter"]);
-
-                //        Cmd_oracle.Parameters[":tc_mml26"].Value = l_LZ1_temp;
-
-                //        try
-                //        {
-                //            Cmd_oracle.ExecuteNonQuery();
-
-                //            oracle_transaction.Commit();
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            oracle_transaction.Rollback();
-
-                //            //秀出錯誤訊息以供判斷
-                //            MessageBox("Error", ex.Message + "!!!");
-                //        }
-                //        finally
-                //        {
-                //            myConn_oracle.Close();
-                //        }
-
-                //        //將選配的數值填入自動開發連接板的佇列=====end
-
-                //    } //寫入tc_mml_file前判斷是否有同樣資料======end                
-
-                //    myDataReader_tc_mml.Close();
-                //}
-                //else
-                //{
-                //    //通知研發
-                //    //Fun_Mail_to_RD(Convert.ToString(ViewState["Reducer_No"]), l_docNumber, lst_brand.SelectedItem.Text + " / " + lst_spec.SelectedItem.Text, "3", Convert.ToString(Session["CustName"]));
-                //    sCode = "<SCRIPT LANGUAGE=javascript>";
-
-                //    sCode = sCode + "  alert('" + Resources.Resource.msg023 + "(6)' );";
-
-                //    //加購程式結合區段
-
-                //    this.btn_pdfadd.Visible = true;
-
-                //    sCode = sCode + "\n history.go(-1)";
-
-                //    sCode = sCode + "</SCRIPT>";
-
-                //    Response.Write(sCode);
-
-                //    Response.End();
-
-                //}
-
-
-                //if (addbuy == "false")
-                //{
-                //    //Wizard1.ActiveStepIndex = 1;
-
-                //    sCode = "<SCRIPT LANGUAGE=javascript>";
-
-                //    sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
-
-                //    //加購程式結合區段
-
-                //    this.btn_pdfadd.Visible = true;
-
-                //    sCode = sCode + "\n history.go(-1)";
-
-                //    sCode = sCode + "</SCRIPT>";
-
-                //    Response.Write(sCode);
-
-                //    Response.End();
-                //}
-                //else
-                //{
-                //    MessageBox("Error", Resources.Resource.msg_err2);
-
-                //    ViewState["addbuy_error"] = "true";
-
-                //    return;
-                //}
+                if (tc_shw13 == "" || (tc_shw13 != "" && Convert.ToDouble(LB) >= Convert.ToDouble(tc_shw13)) || (tc_shw13 != "" && Convert.ToDouble(LB) == 0))
+                {
+                    List<TcMmlFile> TcMmlFileData = new List<TcMmlFile>();
+                    TcMmlFileData.Add(
+                        new TcMmlFile
+                        {
+                            TcMml02 = Convert.ToString(ReducerInfo.FirstOrDefault().TcMmd01),
+                            TcMml03 = l_docNumber,
+                            TcMml05 = Convert.ToString(OData["Motor"]["Brand"]),
+                            TcMml06 = Convert.ToString(OData["Motor"]["Spec"]),
+                            TcMml07 = Convert.ToDecimal(LA),
+                            TcMml08 = Convert.ToDecimal(LB),
+                            TcMml09 = Convert.ToDecimal(LC),
+                            TcMml10 = Convert.ToDecimal(C3),
+                            TcMml11 = Convert.ToDecimal(l_LZ_temp),
+                            TcMml12 = Convert.ToDecimal(LR),
+                            TcMml13 = Convert.ToDecimal(LT),
+                            TcMml14 = Convert.ToDecimal(LE),
+                            TcMml15 = Convert.ToDecimal(FlangeWidth),
+                            TcMml16 = orderCode,
+                            TcMml18 = CustId,
+                            TcMml23 = Motor_Interface,
+                            TcMml24 = Motor_Screw_orientation,
+                            TcMml25 = suitadapter,
+                            TcMml26 = l_LZ1_temp
+                        });
+                    var TcMmlFileInfo = _orderService.GetService<OrderService>().GetTcMmlFileInfo(TcMmlFileData);
+                    if (TcMmlFileInfo.Count == 0)  //寫入tc_mml_file前判斷是否有同樣資料======begin
+                    {
+                        TcMmlFileData.FirstOrDefault().TcMml01 = _publicFunction.GetService<PublicFunctions>().GetTcMml01();
+                        TcMmlFileData.FirstOrDefault().TcMml04 = "";
+                        TcMmlFileData.FirstOrDefault().TcMml07 = Convert.ToString(OData["email"]);
+                        TcMmlFileData.FirstOrDefault().TcMml19 = "0";
+                        TcMmlFileData.FirstOrDefault().TcMml20 = "";
+                        TcMmlFileData.FirstOrDefault().TcMml21 = "";
+                        TcMmlFileData.FirstOrDefault().TcMml22 = "N";
+                        _orderService.GetService<OrderService>().InsertTcMmlFile(TcMmlFileData);
+                    }
+                    else
+                    {
+                        errMsg = "Error !";//Resources.Resource.msg023
+                    }
+
+                    if (addbuy == "false")
+                    {
+                        errMsg = "Error !";//Resources.Resource.msg_err2
+                    }
+                    else
+                    {
+                        errMsg = "Error !";//Resources.Resource.msg_err2
+                        addbuy_error = "true";
+                    }
+                }
             }
-            
+            else
+            {
+                if (G_Reducer_One_piece_chenged == "Y")
+                {
+                    txtadaperNo =  _tcMmiFileInfo.ToList().FirstOrDefault().G_Reducer_One_piece_old_Adapter_No;
+                }
+                else
+                {
+                    txtadaperNo = adaperNo;
+                }
+
+                if (Convert.ToString(adpter_tc_mmaa_file) == "false")// true 代表在自動開發連接板暫存
+                {
+                    g_sql = "SELECT * FROM tc_mma_file where tc_mma01 ='" + txtadaperNo + "'";
+                }
+                else
+                {
+                    g_sql = "SELECT tc_mmaa01 \"TC_MMA01\",tc_mmaa02 \"TC_MMA02\" ,tc_mmaa03 \"TC_MMA03\",tc_mmaa05 \"TC_MMA05\",tc_mmaa06 \"TC_MMA06\",tc_mmaa15 \"TC_MMA15\" ,tc_mmaa18 \"TC_MMA18\",tc_mmaa19 \"TC_MMA19\",tc_mmaa20 \"TC_MMA20\",tc_mmaa21 \"TC_MMA21\",tc_mmaa22 \"TC_MMA22\",tc_mmaa25 \"TC_MMA25\",tc_mmaa26 \"TC_MMA26\",tc_mmaa27 \"TC_MMA27\",tc_mmaa35 \"TC_MMA35\" FROM tc_mmaa_file WHERE tc_mmaa01 ='" + txtadaperNo + "'";
+                }
+
+                OracleDataReader myDataReader_3 = class_nana_ds1.ORACLE_RD(g_sql);
+
+                if (myDataReader_3.Read())
+                {
+                    ViewState["Adaper_No"] = Convert.ToString(myDataReader_3["tc_mma01"]);
+
+                    ViewState["Adaper_Spec"] = Convert.ToString(myDataReader_3["tc_mma03"]);
+
+                    ViewState["Adaper_PicYN"] = Convert.ToString(myDataReader_3["tc_mma25"]);
+
+                    ViewState["g_Adapter_Cus"] = Convert.ToString(myDataReader_3["tc_mma35"]);
+
+                    DMpic = R1No + "_St" + ratio_x + "_tp" + Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma19"])) + ".gif";
+
+                    conjunction = Convert.ToString(myDataReader_3["tc_mma22"]);
+
+                    if (Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])) == "3")
+                    {
+                        adp7000 = "[" + Convert.ToString(myDataReader_3["tc_mma21"]) + " - " + conjunction + "]";
+                    }
+                    else
+                    {
+                        adp7000 = "None";
+                    }
+                }
+
+                ViewState["plate_1"] = null;
+
+                ViewState["plate_2"] = null;
+
+                //ViewState["plate_3"] = null;
+
+                if (Convert.ToString(type) == "1" || Convert.ToString(type) == "2" || Convert.ToString(type) == "5")
+                {
+                    ViewState["class"] = Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"]));
+
+                    ViewState["plate_1"] = Convert.ToString(myDataReader_3["tc_mma01"]); //料號
+
+                    ViewState["plate_2"] = Convert.ToString(myDataReader_3["tc_mma03"]); //規格
+
+                    //ViewState["plate_3"] = Convert.ToString(myDataReader_3["tc_mma02"]); //舊料號
+
+                    AdapterScrew = Convert.ToString(myDataReader_3["tc_mma05"]).Replace(".000", "");
+
+                    AdapterPitch = Convert.ToString(myDataReader_3["tc_mma06"]).Replace(".000", "");
+
+                    ViewState["C11"] = Convert.ToSingle(myDataReader_3["tc_mma20"]);
+                }
+
+                if (Convert.ToString(type) == "4")
+                {
+                    ViewState["C10"] = Convert.ToSingle(myDataReader_3["tc_mma15"]);
+
+                    ViewState["C21"] = Convert.ToSingle(myDataReader_3["tc_mma05"]);
+
+                    ViewState["C22"] = Convert.ToSingle(myDataReader_3["tc_mma06"]);
+
+                    AdapterPitch = Convert.ToString(myDataReader_3["tc_mma06"]).Replace(".000", "");
+
+                }
+
+                //換一體式連接板
+                if (Convert.ToString(ViewState["g_Reducer_One_piece"]) == "Y")
+                {
+                    if (Convert.ToString(ViewState["g_Reducer_One_piece_used"]) == "Y")
+                    {
+                        //先關閉等生管通知
+                        Fun_replace_one_piece(Convert.ToString(ViewState["Reducer_No"]), Convert.ToString(ViewState["Adaper_No"]));
+                    }
+                }
+                //
+
+                if (Convert.ToString(type) == "1" || Convert.ToString(type) == "5")
+                {
+                    if (GBType.Substring(0, 2) == "AD")
+                    {
+                        if (Ratio == "16" || Ratio == "21" || Ratio == "31" || Ratio == "61" || Ratio == "91")
+                        {
+                            file_ratio_x = "B2";
+                        }
+                    }
+
+                    if (Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])) == "3")
+                    {
+                        //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["adpter_really"]);
+                        sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["tc_mma21"]);
+                    }
+                    else
+                    {
+                        //2017040701 AB有S3 所以增加S3的檔名
+                        if (Shaft == "S3")
+                        {
+                            //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3-" + Convert.ToString(myDataReader_3["tc_mma01"]);
+                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3-" + Convert.ToString(ViewState["plate_1"]);
+                        }
+                        else
+                        {
+                            //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["tc_mma01"]);
+                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(ViewState["plate_1"]);
+                        }
+                    }
+                }
+
+                if (Convert.ToString(type) == "2")
+                {
+                    if (this.lst_series.SelectedValue == "RD1" || this.lst_series.SelectedValue == "RD2" || this.lst_series.SelectedValue == "RD3" || this.lst_series.SelectedValue == "RD4")
+                    {
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4) + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                    }
+                    else if (this.lst_series.SelectedValue == "RD5")
+                    {
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4).Replace("_", "") + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                    }
+                    else if (this.lst_series.SelectedValue == "RE1" || this.lst_series.SelectedValue == "RD9" || this.lst_series.SelectedValue == "RE2" || this.lst_series.SelectedValue == "RE9" || this.lst_series.SelectedValue == "R40" || this.lst_series.SelectedValue == "RF2" || this.lst_series.SelectedValue == "RB3" || this.lst_series.SelectedValue == "RA9" || this.lst_series.SelectedValue == "RB2" || this.lst_series.SelectedValue == "RB4" || this.lst_series.SelectedValue == "RF4" || this.lst_series.SelectedValue == "RE4" || this.lst_series.SelectedValue == "RE3" || this.lst_series.SelectedValue == "RJ5" || this.lst_series.SelectedValue == "RJ9" || this.lst_series.SelectedValue == "RK5" || this.lst_series.SelectedValue == "RK9" || this.lst_series.SelectedValue == "R53" || this.lst_series.SelectedValue == "R54" || this.lst_series.SelectedValue == "RF1"
+                                                                                                                                                                                                  || this.lst_series.SelectedValue == "RR1" || this.lst_series.SelectedValue == "RR2" || this.lst_series.SelectedValue == "RR3" || this.lst_series.SelectedValue == "RR4" || this.lst_series.SelectedValue == "RR5" || this.lst_series.SelectedValue == "RR6" || this.lst_series.SelectedValue == "RR8" || this.lst_series.SelectedValue == "RR9" || this.lst_series.SelectedValue == "RR7" || this.lst_series.SelectedValue == "RS4" || this.lst_series.SelectedValue == "RS3" || this.lst_series.SelectedValue == "RS2" || this.lst_series.SelectedValue == "RS1" || this.lst_series.SelectedValue == "RS5" || this.lst_series.SelectedValue == "RS6" || this.lst_series.SelectedValue == "RS7"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          || this.lst_series.SelectedValue == "R42")
+                    {
+                        if ((this.lst_series.SelectedValue == "R40" || this.lst_series.SelectedValue == "RB3" || this.lst_series.SelectedValue == "R53" || this.lst_series.SelectedValue == "R54"
+                          || this.lst_series.SelectedValue == "RR1" || this.lst_series.SelectedValue == "RR3" || this.lst_series.SelectedValue == "RS5" || this.lst_series.SelectedValue == "RS6") && (lst_Shaft.SelectedValue == "S3" || lst_Shaft.SelectedValue == "S4"))
+                        {
+                            sFile = GBType + "_" + lst_Shaft.SelectedValue + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        }
+                        else if (R1No == "RF2" || R1No == "RR2" || ((lst_series.SelectedValue == "RJ5" || lst_series.SelectedValue == "RK5" || lst_series.SelectedValue == "RS4" || lst_series.SelectedValue == "RS2") && (Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 5.5 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 11 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 4 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 8)))
+                        {
+                            sFile = GBType + "_" + ratio_x + "ST_SBG" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        }
+                        else
+                        {
+                            sFile = GBType + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        }
+                    }
+                    else
+                    {
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 3) + "-" + GBType.Replace("Ⅱ", "2").Substring(3) + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                    }
+
+                }
+
+                if (Convert.ToString(type) == "3")
+                {
+                    sFile = GBType.Replace("(Low friction)", "") + Convert.ToString(ratio_x);
+                }
+
+                if (Convert.ToString(type) == "4")
+                {
+                    sFile = Convert.ToString(GBType) + Convert.ToString(ratio_x) + "-" + Convert.ToString(txtadaperNo);
+                }
+
+                ViewState["sFile"] = Convert.ToString(sFile);
+
+                myDataReader_3.Close();
+            }
+
 
         }
     }
