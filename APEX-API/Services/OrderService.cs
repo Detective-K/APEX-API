@@ -138,6 +138,29 @@ namespace APEX_API.Services
             return TcMmiFileInfo.ToList();
         }
 
+
+        public List<TcMmaFile> GetTcMmaFileInfo(List<TcMmaFile> Value)
+        {
+            var _Value = Value.FirstOrDefault();
+            var TcMmaFileInfo = _DataContext.TcMmaFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_Value.TcMma01))
+            {
+                TcMmaFileInfo = TcMmaFileInfo.Where(tM => tM.TcMma01 == _Value.TcMma01);
+            }
+            return TcMmaFileInfo.ToList();
+        }
+
+        public List<TcMmaaFile> GetTcMmaaFileInfo(List<TcMmaaFile> Value)
+        {
+            var _Value = Value.FirstOrDefault();
+            var TcMmaaFileInfo = _DataContext.TcMmaaFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_Value.TcMmaa01))
+            {
+                TcMmaaFileInfo = TcMmaaFileInfo.Where(tM => tM.TcMmaa01 == _Value.TcMmaa01);
+            }
+            return TcMmaaFileInfo.ToList();
+        }
+
         public List<TcMmlFile> GetTcMmlFileInfo(List<TcMmlFile>_tcMmlFileData )
         {
             var TcMmlFileInfo = _DataContext.TcMmlFiles.AsQueryable();

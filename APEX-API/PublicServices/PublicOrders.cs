@@ -33,7 +33,7 @@ namespace APEX_API.PublicServices
             string AWidth1, AWidth2, ratio_x, file_ratio_x, R1No, PartNo, M3max, P_OuterDia, newrdeucer, l_AWidth1, suitadapter_c4;
             string C3, LR, LB, LE, LA, LC, ScrewDia = string.Empty, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth = string.Empty, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
             string M3maxWeb, suitadapter, AdapterNx = string.Empty;
-            string T, txtadaperNo, txtSUNGEAR;
+            string T, txtadaperNo = "", txtSUNGEAR;
             string LN = "0", LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
             string G_Reducer_One_piece = "N", G_Reducer_One_piece_chenged = "N";
             double Reducer_D7 = 0, Reducer_D9 = 0, Reducer_A1 = 0, Reducer_A2 = 0; //反鎖馬達用
@@ -45,7 +45,7 @@ namespace APEX_API.PublicServices
             string l_suitadapter = string.Empty;
 
             DateTime g_begin, g_end;
-            string adaperNo = string.Empty, DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
+            string adaperNo = string.Empty, Adaper_No =string.Empty , DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
             string adpter_tc_mmaa_file = string.Empty, addbuy_error = string.Empty;
 
             string errMsg = string.Empty;
@@ -589,14 +589,14 @@ namespace APEX_API.PublicServices
             if (Convert.ToString(type) == "1")
             {
                 _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
-                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 PartNo = !string.IsNullOrEmpty(_tcMmiFileInfo.FirstOrDefault().PartNo) ? _tcMmiFileInfo.FirstOrDefault().PartNo : PartNo;
                 G_Reducer_One_piece_chenged = _tcMmiFileInfo.FirstOrDefault().G_Reducer_One_piece_chenged;
+                Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
             }
             if (Convert.ToString(type) == "2")
             {
-
                 _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
             }
 
             if (Convert.ToString(type) == "3")
@@ -613,18 +613,21 @@ namespace APEX_API.PublicServices
             {
                 _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_type5(_adpDatas);
             }
+            adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 _adpDatas.FirstOrDefault().LBck = "LBmax";
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);  //LBmax=導正圓直徑加大
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);  //LBmax=導正圓直徑加大
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "4")
@@ -636,11 +639,12 @@ namespace APEX_API.PublicServices
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_type5(_adpDatas);
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
             if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
             {
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                if (adaperNo == "None")  //P41
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().LBck = "LBstd";
@@ -648,15 +652,18 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().LBck = "LBmax";
@@ -664,12 +671,15 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
             }
             //=================================================  
@@ -683,15 +693,18 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 AWidth1 = l_AWidth1;
                 _adpDatas.FirstOrDefault().TableName = AdapterData2;
@@ -699,17 +712,20 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
             if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
             {
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                if (adaperNo == "None")  //P41
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData2;
@@ -718,15 +734,18 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData2;
@@ -734,18 +753,21 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
             }
             //================================================= 
             // 7000系列如下    需加固定版
             //================================================= 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 AWidth1 = l_AWidth1;
                 _adpDatas.FirstOrDefault().TableName = AdapterData3;
@@ -754,15 +776,18 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 AWidth1 = l_AWidth1;
                 _adpDatas.FirstOrDefault().TableName = AdapterData3;
@@ -770,17 +795,20 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
             if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
             {
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                if (adaperNo == "None")  //P41
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData3;
@@ -788,15 +816,18 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData3;
@@ -804,12 +835,15 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
             }
 
@@ -817,7 +851,7 @@ namespace APEX_API.PublicServices
             // 9000系列如下    無庫存需全新設計
             //================================================= 
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 AWidth1 = l_AWidth1;
                 _adpDatas.FirstOrDefault().TableName = AdapterData4;
@@ -826,15 +860,18 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 AWidth1 = l_AWidth1;
                 _adpDatas.FirstOrDefault().TableName = AdapterData4;
@@ -843,18 +880,21 @@ namespace APEX_API.PublicServices
                 if (Convert.ToString(type) == "1")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
                     _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                    Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                 }
+                adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
             }
 
 
             if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04")
             {
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                if (adaperNo == "None")  //P41
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData4;
@@ -863,15 +903,18 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = AWidth2;
                     _adpDatas.FirstOrDefault().TableName = AdapterData4;
@@ -880,12 +923,15 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
             }
 
@@ -897,7 +943,7 @@ namespace APEX_API.PublicServices
 
             if (CustId != "D000482") //只有D00482測試===begin
             {
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = l_AWidth1;
                     _adpDatas.FirstOrDefault().TableName = AdapterData5;
@@ -906,11 +952,13 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "5")
@@ -923,9 +971,10 @@ namespace APEX_API.PublicServices
                     {
                         adpter_tc_mmaa_file = "true";
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
-                if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                if (adaperNo == "None")
                 {
                     AWidth1 = l_AWidth1;
                     _adpDatas.FirstOrDefault().TableName = AdapterData5;
@@ -934,11 +983,13 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(type) == "1")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "2")
                     {
                         _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                        Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                     }
 
                     if (Convert.ToString(type) == "5")
@@ -951,11 +1002,12 @@ namespace APEX_API.PublicServices
                     {
                         adpter_tc_mmaa_file = "true";
                     }
+                    adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                 }
 
                 if (R1No == "R01" || R1No == "R02" || R1No == "R03" || R1No == "R04") //先抓P0401 在抓P0403
                 {
-                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")  //P41
+                    if (adaperNo == "None")  //P41
                     {
                         AWidth1 = AWidth2;
                         _adpDatas.FirstOrDefault().TableName = AdapterData5;
@@ -1146,25 +1198,16 @@ namespace APEX_API.PublicServices
             {
                 if (G_Reducer_One_piece_chenged == "Y")
                 {
-                    txtadaperNo =  _tcMmiFileInfo.ToList().FirstOrDefault().G_Reducer_One_piece_old_Adapter_No;
+                    txtadaperNo = _tcMmiFileInfo.ToList().FirstOrDefault().G_Reducer_One_piece_old_Adapter_No;
                 }
                 else
                 {
                     txtadaperNo = adaperNo;
                 }
 
-                if (Convert.ToString(adpter_tc_mmaa_file) == "false")// true 代表在自動開發連接板暫存
-                {
-                    g_sql = "SELECT * FROM tc_mma_file where tc_mma01 ='" + txtadaperNo + "'";
-                }
-                else
-                {
-                    g_sql = "SELECT tc_mmaa01 \"TC_MMA01\",tc_mmaa02 \"TC_MMA02\" ,tc_mmaa03 \"TC_MMA03\",tc_mmaa05 \"TC_MMA05\",tc_mmaa06 \"TC_MMA06\",tc_mmaa15 \"TC_MMA15\" ,tc_mmaa18 \"TC_MMA18\",tc_mmaa19 \"TC_MMA19\",tc_mmaa20 \"TC_MMA20\",tc_mmaa21 \"TC_MMA21\",tc_mmaa22 \"TC_MMA22\",tc_mmaa25 \"TC_MMA25\",tc_mmaa26 \"TC_MMA26\",tc_mmaa27 \"TC_MMA27\",tc_mmaa35 \"TC_MMA35\" FROM tc_mmaa_file WHERE tc_mmaa01 ='" + txtadaperNo + "'";
-                }
-
-                OracleDataReader myDataReader_3 = class_nana_ds1.ORACLE_RD(g_sql);
-
-                if (myDataReader_3.Read())
+                var TcMaInfo = Convert.ToString(adpter_tc_mmaa_file) == "false" ? _orderService.GetService<OrderService>().GetTcMmaFileInfo(new List<TcMmaFile> { new TcMmaFile { TcMma01 = txtadaperNo } }).Select( Tm => new { TcMma01 = Tm.TcMma01, TcMma02 = Tm.TcMma02, TcMma03 = Tm.TcMma03, TcMma05 = Tm.TcMma05, TcMma06 = Tm.TcMma06, TcMma15 = Tm.TcMma15, TcMma18 = Tm.TcMma18, TcMma19 = Tm.TcMma19 , TcMma20 = Tm.TcMma20, TcMma21 = Tm.TcMma21, TcMma22 = Tm.TcMma22, TcMma25 = Tm.TcMma25, TcMma26 = Tm.TcMma26, TcMma27 = Tm.TcMma27, TcMma35 = Tm.TcMma35 } ) 
+                                                                                : _orderService.GetService<OrderService>().GetTcMmaaFileInfo(new List<TcMmaaFile> { new TcMmaaFile { TcMmaa01 = txtadaperNo } }).Select(Tm => new { TcMma01 = Tm.TcMmaa01, TcMma02 = Tm.TcMmaa02, TcMma03 = Tm.TcMmaa03, TcMma05 = Tm.TcMmaa05, TcMma06 = Tm.TcMmaa06, TcMma15 = Tm.TcMmaa15, TcMma18 = Tm.TcMmaa18, TcMma19 = Tm.TcMmaa19, TcMma20 = Tm.TcMmaa20, TcMma21 = Tm.TcMmaa21, TcMma22 = Tm.TcMmaa22, TcMma25 = Tm.TcMmaa25, TcMma26 = Tm.TcMmaa26, TcMma27 = Tm.TcMmaa27, TcMma35 = Tm.TcMmaa35 });
+                if (TcMaInfo.Count() >0 )
                 {
                     ViewState["Adaper_No"] = Convert.ToString(myDataReader_3["tc_mma01"]);
 
