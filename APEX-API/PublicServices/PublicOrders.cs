@@ -42,11 +42,13 @@ namespace APEX_API.PublicServices
             string tc_shw13 = string.Empty;
             Double tc_shw08 = 0;
             Double tc_shw03 = 0;
+            Double C11 = 0 , C10 = 0 , C21 = 0 , C22 = 0;
             string l_suitadapter = string.Empty;
 
             DateTime g_begin, g_end;
-            string adaperNo = string.Empty, Adaper_No =string.Empty , DMpic, conjunction, adp7000, sFile, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
+            string adaperNo = string.Empty, Adaper_No = string.Empty, DMpic, conjunction, adp7000, sFile = string.Empty, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
             string adpter_tc_mmaa_file = string.Empty, addbuy_error = string.Empty;
+            string Adaper_PicYN = "N", g_Adapter_Cus = "N" , plate_1 = string.Empty , plate_2 = string.Empty;
 
             string errMsg = string.Empty;
             List<TcOekFile> MortorInfo = _orderService.GetService<OrderService>().GetMotorInfoDetail(OData["Motor"]);
@@ -1015,11 +1017,13 @@ namespace APEX_API.PublicServices
                         if (Convert.ToString(type) == "1")
                         {
                             _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                            Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                         }
 
                         if (Convert.ToString(type) == "2")
                         {
                             _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                            Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                         }
 
                         //代表在自動開發連接板暫存
@@ -1027,9 +1031,10 @@ namespace APEX_API.PublicServices
                         {
                             adpter_tc_mmaa_file = "true";
                         }
+                        adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                     }
 
-                    if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+                    if (adaperNo == "None")
                     {
                         AWidth1 = AWidth2;
                         _adpDatas.FirstOrDefault().TableName = AdapterData5;
@@ -1037,11 +1042,13 @@ namespace APEX_API.PublicServices
                         if (Convert.ToString(type) == "1")
                         {
                             _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula(_adpDatas);
+                            Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                         }
 
                         if (Convert.ToString(type) == "2")
                         {
                             _tcMmiFileInfo = _publicFunction.GetService<PublicFunctions>().Formula_P2(_adpDatas, G_Reducer_One_piece_chenged);
+                            Adaper_No = _tcMmiFileInfo.FirstOrDefault().Adaper_No;
                         }
 
                         //代表在自動開發連接板暫存
@@ -1049,6 +1056,7 @@ namespace APEX_API.PublicServices
                         {
                             adpter_tc_mmaa_file = "true";
                         }
+                        adaperNo = _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo;
                     }
                 }
             }
@@ -1058,7 +1066,7 @@ namespace APEX_API.PublicServices
             //=======================================================================================  
             addbuy_error = "false";
 
-            if (_tcMmiFileInfo.FirstOrDefault().Adaper_No == "None")
+            if (adaperNo == "None")
             {
                 //配不到連接板,將相關資訊寫入柱列
                 //取文件名稱====================begin
@@ -1205,25 +1213,25 @@ namespace APEX_API.PublicServices
                     txtadaperNo = adaperNo;
                 }
 
-                var TcMaInfo = Convert.ToString(adpter_tc_mmaa_file) == "false" ? _orderService.GetService<OrderService>().GetTcMmaFileInfo(new List<TcMmaFile> { new TcMmaFile { TcMma01 = txtadaperNo } }).Select( Tm => new { TcMma01 = Tm.TcMma01, TcMma02 = Tm.TcMma02, TcMma03 = Tm.TcMma03, TcMma05 = Tm.TcMma05, TcMma06 = Tm.TcMma06, TcMma15 = Tm.TcMma15, TcMma18 = Tm.TcMma18, TcMma19 = Tm.TcMma19 , TcMma20 = Tm.TcMma20, TcMma21 = Tm.TcMma21, TcMma22 = Tm.TcMma22, TcMma25 = Tm.TcMma25, TcMma26 = Tm.TcMma26, TcMma27 = Tm.TcMma27, TcMma35 = Tm.TcMma35 } ) 
+                var TcMaInfo = Convert.ToString(adpter_tc_mmaa_file) == "false" ? _orderService.GetService<OrderService>().GetTcMmaFileInfo(new List<TcMmaFile> { new TcMmaFile { TcMma01 = txtadaperNo } }).Select(Tm => new { TcMma01 = Tm.TcMma01, TcMma02 = Tm.TcMma02, TcMma03 = Tm.TcMma03, TcMma05 = Tm.TcMma05, TcMma06 = Tm.TcMma06, TcMma15 = Tm.TcMma15, TcMma18 = Tm.TcMma18, TcMma19 = Tm.TcMma19, TcMma20 = Tm.TcMma20, TcMma21 = Tm.TcMma21, TcMma22 = Tm.TcMma22, TcMma25 = Tm.TcMma25, TcMma26 = Tm.TcMma26, TcMma27 = Tm.TcMma27, TcMma35 = Tm.TcMma35 })
                                                                                 : _orderService.GetService<OrderService>().GetTcMmaaFileInfo(new List<TcMmaaFile> { new TcMmaaFile { TcMmaa01 = txtadaperNo } }).Select(Tm => new { TcMma01 = Tm.TcMmaa01, TcMma02 = Tm.TcMmaa02, TcMma03 = Tm.TcMmaa03, TcMma05 = Tm.TcMmaa05, TcMma06 = Tm.TcMmaa06, TcMma15 = Tm.TcMmaa15, TcMma18 = Tm.TcMmaa18, TcMma19 = Tm.TcMmaa19, TcMma20 = Tm.TcMmaa20, TcMma21 = Tm.TcMmaa21, TcMma22 = Tm.TcMmaa22, TcMma25 = Tm.TcMmaa25, TcMma26 = Tm.TcMmaa26, TcMma27 = Tm.TcMmaa27, TcMma35 = Tm.TcMmaa35 });
-                if (TcMaInfo.Count() >0 )
+                if (TcMaInfo.Count() > 0)
                 {
-                    ViewState["Adaper_No"] = Convert.ToString(myDataReader_3["tc_mma01"]);
+                    Adaper_No = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma01);
 
-                    ViewState["Adaper_Spec"] = Convert.ToString(myDataReader_3["tc_mma03"]);
+                    //ViewState["Adaper_Spec"]  = Convert.ToString(myDataReader_3["tc_mma03"]); 目前無用到暫不翻
 
-                    ViewState["Adaper_PicYN"] = Convert.ToString(myDataReader_3["tc_mma25"]);
+                    Adaper_PicYN = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma25);
 
-                    ViewState["g_Adapter_Cus"] = Convert.ToString(myDataReader_3["tc_mma35"]);
+                    g_Adapter_Cus = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma35);
 
-                    DMpic = R1No + "_St" + ratio_x + "_tp" + Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma19"])) + ".gif";
+                    DMpic = R1No + "_St" + ratio_x + "_tp" + Convert.ToString(Convert.ToInt16(TcMaInfo.ToList().FirstOrDefault().TcMma19)) + ".gif";
 
-                    conjunction = Convert.ToString(myDataReader_3["tc_mma22"]);
+                    conjunction = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma22);
 
-                    if (Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])) == "3")
+                    if (Convert.ToString(Convert.ToInt16(TcMaInfo.ToList().FirstOrDefault().TcMma18)) == "3")
                     {
-                        adp7000 = "[" + Convert.ToString(myDataReader_3["tc_mma21"]) + " - " + conjunction + "]";
+                        adp7000 = "[" + Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma21) + " - " + conjunction + "]";
                     }
                     else
                     {
@@ -1231,51 +1239,44 @@ namespace APEX_API.PublicServices
                     }
                 }
 
-                ViewState["plate_1"] = null;
-
-                ViewState["plate_2"] = null;
-
-                //ViewState["plate_3"] = null;
-
                 if (Convert.ToString(type) == "1" || Convert.ToString(type) == "2" || Convert.ToString(type) == "5")
                 {
-                    ViewState["class"] = Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"]));
+                    //ViewState["class"] = Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])); 目前無用到暫不翻
 
-                    ViewState["plate_1"] = Convert.ToString(myDataReader_3["tc_mma01"]); //料號
+                    plate_1 = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma01); //料號
 
-                    ViewState["plate_2"] = Convert.ToString(myDataReader_3["tc_mma03"]); //規格
+                    plate_2 = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma03); //規格
 
                     //ViewState["plate_3"] = Convert.ToString(myDataReader_3["tc_mma02"]); //舊料號
 
-                    AdapterScrew = Convert.ToString(myDataReader_3["tc_mma05"]).Replace(".000", "");
+                    AdapterScrew = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma05).Replace(".000", "");
 
-                    AdapterPitch = Convert.ToString(myDataReader_3["tc_mma06"]).Replace(".000", "");
+                    AdapterPitch = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma06).Replace(".000", "");
 
-                    ViewState["C11"] = Convert.ToSingle(myDataReader_3["tc_mma20"]);
+                    C11 = Convert.ToSingle(TcMaInfo.ToList().FirstOrDefault().TcMma06);
                 }
 
                 if (Convert.ToString(type) == "4")
                 {
-                    ViewState["C10"] = Convert.ToSingle(myDataReader_3["tc_mma15"]);
+                    C10 = Convert.ToSingle(TcMaInfo.ToList().FirstOrDefault().TcMma15);
 
-                    ViewState["C21"] = Convert.ToSingle(myDataReader_3["tc_mma05"]);
+                    C21 = Convert.ToSingle(TcMaInfo.ToList().FirstOrDefault().TcMma05);
 
-                    ViewState["C22"] = Convert.ToSingle(myDataReader_3["tc_mma06"]);
+                    C22 = Convert.ToSingle(TcMaInfo.ToList().FirstOrDefault().TcMma06);
 
-                    AdapterPitch = Convert.ToString(myDataReader_3["tc_mma06"]).Replace(".000", "");
+                    AdapterPitch = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma06).Replace(".000", "");
 
                 }
 
                 //換一體式連接板
-                if (Convert.ToString(ViewState["g_Reducer_One_piece"]) == "Y")
+                if (Convert.ToString(G_Reducer_One_piece) == "Y")
                 {
-                    if (Convert.ToString(ViewState["g_Reducer_One_piece_used"]) == "Y")
+                    if (Convert.ToString(_adpDatas.FirstOrDefault().G_Reducer_One_piece_used) == "Y")
                     {
                         //先關閉等生管通知
-                        Fun_replace_one_piece(Convert.ToString(ViewState["Reducer_No"]), Convert.ToString(ViewState["Adaper_No"]));
+                        _publicFunction.GetService<PublicFunctions>().Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, _adpDatas.FirstOrDefault().Tmp_newPartNo);
                     }
-                }
-                //
+                }                
 
                 if (Convert.ToString(type) == "1" || Convert.ToString(type) == "5")
                 {
@@ -1287,58 +1288,52 @@ namespace APEX_API.PublicServices
                         }
                     }
 
-                    if (Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])) == "3")
+                    if (Convert.ToString(Convert.ToInt16(TcMaInfo.ToList().FirstOrDefault().TcMma18)) == "3")
                     {
-                        //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["adpter_really"]);
-                        sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["tc_mma21"]);
+                        sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma21);
                     }
                     else
                     {
                         //2017040701 AB有S3 所以增加S3的檔名
                         if (Shaft == "S3")
                         {
-                            //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3-" + Convert.ToString(myDataReader_3["tc_mma01"]);
-                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3-" + Convert.ToString(ViewState["plate_1"]);
+                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "_S3-" + Convert.ToString(plate_1);
                         }
                         else
                         {
-                            //sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(myDataReader_3["tc_mma01"]);
-                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(ViewState["plate_1"]);
+                            sFile = (GBType.Replace("(Low friction)", "")).Replace("M1", "").Replace("M2", "") + file_ratio_x + "-" + Convert.ToString(plate_1);
                         }
                     }
                 }
 
                 if (Convert.ToString(type) == "2")
                 {
-                    if (this.lst_series.SelectedValue == "RD1" || this.lst_series.SelectedValue == "RD2" || this.lst_series.SelectedValue == "RD3" || this.lst_series.SelectedValue == "RD4")
+                    if ("RD1,RD2,RD3,RD4".Contains(GBSeries))
                     {
-                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4) + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4) + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                     }
-                    else if (this.lst_series.SelectedValue == "RD5")
+                    else if (GBSeries == "RD5")
                     {
-                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4).Replace("_", "") + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 4) + "-" + GBType.Replace("Ⅱ", "2").Substring(4).Replace("_", "") + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                     }
-                    else if (this.lst_series.SelectedValue == "RE1" || this.lst_series.SelectedValue == "RD9" || this.lst_series.SelectedValue == "RE2" || this.lst_series.SelectedValue == "RE9" || this.lst_series.SelectedValue == "R40" || this.lst_series.SelectedValue == "RF2" || this.lst_series.SelectedValue == "RB3" || this.lst_series.SelectedValue == "RA9" || this.lst_series.SelectedValue == "RB2" || this.lst_series.SelectedValue == "RB4" || this.lst_series.SelectedValue == "RF4" || this.lst_series.SelectedValue == "RE4" || this.lst_series.SelectedValue == "RE3" || this.lst_series.SelectedValue == "RJ5" || this.lst_series.SelectedValue == "RJ9" || this.lst_series.SelectedValue == "RK5" || this.lst_series.SelectedValue == "RK9" || this.lst_series.SelectedValue == "R53" || this.lst_series.SelectedValue == "R54" || this.lst_series.SelectedValue == "RF1"
-                                                                                                                                                                                                  || this.lst_series.SelectedValue == "RR1" || this.lst_series.SelectedValue == "RR2" || this.lst_series.SelectedValue == "RR3" || this.lst_series.SelectedValue == "RR4" || this.lst_series.SelectedValue == "RR5" || this.lst_series.SelectedValue == "RR6" || this.lst_series.SelectedValue == "RR8" || this.lst_series.SelectedValue == "RR9" || this.lst_series.SelectedValue == "RR7" || this.lst_series.SelectedValue == "RS4" || this.lst_series.SelectedValue == "RS3" || this.lst_series.SelectedValue == "RS2" || this.lst_series.SelectedValue == "RS1" || this.lst_series.SelectedValue == "RS5" || this.lst_series.SelectedValue == "RS6" || this.lst_series.SelectedValue == "RS7"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          || this.lst_series.SelectedValue == "R42")
+                    else if ("RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE4,RE3,RJ5,RJ9,RK5,RK9,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR8,RR9,RR7,RS4,RS3,RS2,RS1,RS5,RS6,RS7,R42".Contains(GBSeries))
                     {
-                        if ((this.lst_series.SelectedValue == "R40" || this.lst_series.SelectedValue == "RB3" || this.lst_series.SelectedValue == "R53" || this.lst_series.SelectedValue == "R54"
-                          || this.lst_series.SelectedValue == "RR1" || this.lst_series.SelectedValue == "RR3" || this.lst_series.SelectedValue == "RS5" || this.lst_series.SelectedValue == "RS6") && (lst_Shaft.SelectedValue == "S3" || lst_Shaft.SelectedValue == "S4"))
+                        if (("R40,RB3,R53,R54,RR1,RR3,RS5,RS6".Contains(GBSeries)) && ("S3,S4".Contains(GBSeries)))
                         {
-                            sFile = GBType + "_" + lst_Shaft.SelectedValue + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                            sFile = GBType + "_" + Shaft + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                         }
-                        else if (R1No == "RF2" || R1No == "RR2" || ((lst_series.SelectedValue == "RJ5" || lst_series.SelectedValue == "RK5" || lst_series.SelectedValue == "RS4" || lst_series.SelectedValue == "RS2") && (Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 5.5 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 11 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 4 || Convert.ToDouble(lst_ratio.SelectedValue.Replace("*", "")) == 8)))
+                        else if ("RF2,RR2".Contains(R1No) || (("RJ5,RK5,RS4,RS2".Contains(GBSeries)) && (Convert.ToDouble(Ratio.Replace("*", "")) == 5.5 || Convert.ToDouble(Ratio.Replace("*", "")) == 11 || Convert.ToDouble(Ratio.Replace("*", "")) == 4 || Convert.ToDouble(Ratio.Replace("*", "")) == 8)))
                         {
-                            sFile = GBType + "_" + ratio_x + "ST_SBG" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                            sFile = GBType + "_" + ratio_x + "ST_SBG" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                         }
                         else
                         {
-                            sFile = GBType + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                            sFile = GBType + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                         }
                     }
                     else
                     {
-                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 3) + "-" + GBType.Replace("Ⅱ", "2").Substring(3) + "_" + ratio_x + "ST" + "_" + get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(ViewState["plate_1"]);
+                        sFile = GBType.Replace("Ⅱ", "2").Substring(0, 3) + "-" + GBType.Replace("Ⅱ", "2").Substring(3) + "_" + ratio_x + "ST" + "_" + _publicFunction.GetService<PublicFunctions>().Get_NO(Convert.ToSingle(M3maxWeb)) + "-" + Convert.ToString(plate_1);
                     }
 
                 }
@@ -1352,12 +1347,180 @@ namespace APEX_API.PublicServices
                 {
                     sFile = Convert.ToString(GBType) + Convert.ToString(ratio_x) + "-" + Convert.ToString(txtadaperNo);
                 }
-
-                ViewState["sFile"] = Convert.ToString(sFile);
-
-                myDataReader_3.Close();
             }
 
+            //========================================================================
+            // SUNGEAR
+            //========================================================================
+
+            var TcMmgFileInfo = _orderService.GetService<OrderService>().GetTcMmgFileInfo(new List<TcMmgFile> { new TcMmgFile { TcMmg03 = GBType, TcMmg04 = Convert.ToDecimal(T), TcMmg05 = Convert.ToDecimal(C3) } });
+            if (TcMmgFileInfo.Count() > 0)
+            {
+                txtSUNGEAR = Convert.ToString(TcMmgFileInfo.ToList().FirstOrDefault().TcMmg01) + " / " + Convert.ToString(TcMmgFileInfo.ToList().FirstOrDefault().TcMmg02);
+                //ViewState["Sungear_No"] = Convert.ToString(myDataReader_7["tc_mmg01"]);
+                //ViewState["Sungear_Spec"] = Convert.ToString(myDataReader_7["tc_mmg02"]);
+                //目前無使用到先不翻
+            }
+            else
+            {
+                txtSUNGEAR = "需SUNGEAR，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",齒輪數:" + T;
+                //ViewState["Sungear_No"] = "";
+                //ViewState["Sungear_Spec"] = "";
+                //目前無使用到先不翻
+            }
+
+            //=======================================================================================  
+            //Download 下載圖檔案名
+            //由 馬達馬達型號MODEL_NO  + 約化減速比 + 對應連接板料號adapter
+            //=======================================================================================  
+            if (GBType.Substring(0, 2) == "AD")
+            {
+                if (Ratio == "16" || Ratio == "21" || Ratio == "31" || Ratio == "61" || Ratio == "91")
+                {
+                    file_ratio_x = "B2";
+                }
+            }
+
+            //========================================================================  
+            //bushing and BOM 選擇
+            //========================================================================  
+
+            txtBushing = " ";
+
+            if ("R21,R22,R23,R24,R64".Contains(R1No) || (R1No == "R27" && ratio_x != "1") || (R1No == "R29" && ratio_x != "1") || (R1No == "R31" && ratio_x != "1") || (R1No == "R33" && ratio_x != "1") || (R1No == "R61" && ratio_x != "1") || (R1No == "RB7" && ratio_x != "1") || (R1No == "RB9" && ratio_x != "1") || (R1No == "RC2" && ratio_x != "1") || (R1No == "RC4" && ratio_x != "1") || (R1No == "RC6" && ratio_x != "1"))
+            {
+                g_sql = "SELECT * FROM tc_mmb_file WHERE tc_mmb01 like 'P0606%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + P_OuterDia;
+
+                OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+                var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmg03 = GBType, TcMmg04 = Convert.ToDecimal(T), TcMmg05 = Convert.ToDecimal(C3) } });
+
+
+                if (myDataReader_4.Read())
+                {
+                    txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
+                    ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+                    ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+                }
+                else
+                {
+                    txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
+                    txtBushing = "Bushing not available, please contact APEX sales!!";
+                    ViewState["Bushing_No"] = "";
+                    ViewState["Bushing_Spec"] = "";
+                }
+
+                myDataReader_4.Close();
+
+            }
+            //20141022 加P2IIR
+            //20150724 加PD PDR PL PLR
+            //20150904 加KF KH
+            //20170302 加KF 單節(RF2) 
+            //20170920 加AH
+            //20180703 加AFH及AFHK
+            //20190223 加紅色機種
+            else if (R1No == "R65" || R1No == "R66" || R1No == "R67" || R1No == "R69" || R1No == "R86" || R1No == "RD1" || R1No == "RD2" || R1No == "RD3" || R1No == "RD4" || R1No == "RD5" || R1No == "RE1" || R1No == "RD9" || R1No == "RE2" || R1No == "RE9" || R1No == "R40" || R1No == "RF2" || R1No == "RB3" || R1No == "RA9" || R1No == "RB4" || R1No == "RB2" || R1No == "RE3" || R1No == "RF4" || R1No == "RE4" || R1No == "RK9" || R1No == "RK5" || R1No == "RJ9" || R1No == "RJ5" || R1No == "R53" || R1No == "R54" || R1No == "RF1"
+                                                                                                                                                                                                                                                                || R1No == "RR1" || R1No == "RR2" || R1No == "RR3" || R1No == "RR4" || R1No == "RR6" || R1No == "RR5" || R1No == "RR7" || R1No == "RR8" || R1No == "RR9" || R1No == "RS1" || R1No == "RS2" || R1No == "RS3" || R1No == "RS4" || R1No == "RS5" || R1No == "RS6" || R1No == "RS7" || R1No == "R42")
+            {
+                if (M3max != M3maxWeb || M3max != MS)
+                {
+                    if (M3max != M3maxWeb)
+                    {
+                        ViewState["Bushing_Bom_flag"] = "true";//表示原本BOM有架bushing,選配後的bushing就不要匯入,避免兩個bushing
+                    }
+
+                    g_sql = "Select * from tc_mmb_file where (tc_mmb01 like 'P0607%' or tc_mmb01 like 'O0607%') and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3maxWeb;
+
+                    OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+
+                    if (myDataReader_4.Read())
+                    {
+                        txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
+                        ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+                        ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+                    }
+                    else
+                    {
+                        txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",減速機輸入軸徑(P_OuterDia):" + P_OuterDia;
+                        txtBushing = "Bushing not available, please contact APEX sales!!";
+                        ViewState["Bushing_No"] = "";
+                        ViewState["Bushing_Spec"] = "";
+
+                        //myDataReader_4.Close(); //20190122 close conn
+
+                        //sCode = "<SCRIPT LANGUAGE=javascript>";
+
+                        //sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
+
+                        //sCode = sCode + "\n history.go(-1)";
+
+                        //sCode = sCode + "</SCRIPT>";
+
+                        //Response.Write(sCode);
+
+                        //Response.End();
+                    }
+
+                    myDataReader_4.Close();
+                }
+                else
+                {
+                    txtBushing = "無需軸襯套";
+                    ViewState["Bushing_No"] = "No Need";
+                    ViewState["Bushing_Spec"] = "";
+                }
+
+            }
+            else
+            {
+                if (C3 == M3max)
+                {
+                    txtBushing = "無需軸襯套";
+
+                    if (Convert.ToString(type) == "4")
+                    {
+                        txtBushing = " ";
+                        ViewState["Bushing_No"] = "No Need";
+                        ViewState["Bushing_Spec"] = "";
+                    }
+                }
+                else
+                {
+                    if (Convert.ToString(type) == "3")
+                    {
+                        txtBushing = " ";
+                        ViewState["Bushing_No"] = "No Need";
+                        ViewState["Bushing_Spec"] = "";
+                    }
+                    else
+                    {
+                        g_sql = "Select * from tc_mmb_file where tc_mmb01 like 'P0601%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3max;
+
+                        OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+
+                        if (myDataReader_4.Read())
+                        {
+                            txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
+                            ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+                            ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+                        }
+                        else
+                        {
+                            txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
+                            txtBushing = "Bushing not available, please contact APEX sales!!";
+                            ViewState["Bushing_No"] = "";
+                            ViewState["Bushing_Spec"] = "";
+                        }
+
+                        myDataReader_4.Close();
+                    }
+                }
+            }
+
+
+            //========================================================================  
+            //Washer彈簧墊圈
+            //======================================================================== 
 
         }
     }

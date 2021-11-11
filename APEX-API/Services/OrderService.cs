@@ -161,6 +161,44 @@ namespace APEX_API.Services
             return TcMmaaFileInfo.ToList();
         }
 
+        public List<TcMmgFile> GetTcMmgFileInfo(List<TcMmgFile> Value)
+        {
+            var _Value = Value.FirstOrDefault();
+            var TcMmgFileInfo = _DataContext.TcMmgFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_Value.TcMmg03))
+            {
+                TcMmgFileInfo = TcMmgFileInfo.Where(tM => tM.TcMmg03 == _Value.TcMmg03);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmg04)))
+            {
+                TcMmgFileInfo = TcMmgFileInfo.Where(tM => tM.TcMmg04 == _Value.TcMmg04);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmg05)))
+            {
+                TcMmgFileInfo = TcMmgFileInfo.Where(tM => tM.TcMmg05 == _Value.TcMmg05);
+            }
+            return TcMmgFileInfo.ToList();
+        }
+
+        public List<TcMmbFile> GetTcMmbFileInfo(List<TcMmbFile> Value)
+        {
+            var _Value = Value.FirstOrDefault();
+            var TcMmbFileInfo = _DataContext.TcMmbFiles.AsQueryable();
+            if (!string.IsNullOrEmpty(_Value.TcMmb01))
+            {
+                TcMmbFileInfo = TcMmbFileInfo.Where(tM => tM.TcMmb01 == _Value.TcMmb01);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmb04)))
+            {
+                TcMmbFileInfo = TcMmbFileInfo.Where(tM => tM.TcMmb04 == _Value.TcMmb04);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmb05)))
+            {
+                TcMmbFileInfo = TcMmbFileInfo.Where(tM => tM.TcMmb05 == _Value.TcMmb05);
+            }
+            return TcMmbFileInfo.ToList();
+        }
+
         public List<TcMmlFile> GetTcMmlFileInfo(List<TcMmlFile>_tcMmlFileData )
         {
             var TcMmlFileInfo = _DataContext.TcMmlFiles.AsQueryable();
