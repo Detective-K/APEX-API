@@ -186,7 +186,7 @@ namespace APEX_API.Services
             var TcMmbFileInfo = _DataContext.TcMmbFiles.AsQueryable();
             if (!string.IsNullOrEmpty(_Value.TcMmb01))
             {
-                TcMmbFileInfo = TcMmbFileInfo.Where(tM => tM.TcMmb01 == _Value.TcMmb01);
+                TcMmbFileInfo = TcMmbFileInfo.Where(tM => EF.Functions.Like(tM.TcMmb01 , _Value.TcMmb01 + "%"));
             }
             if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmb04)))
             {

@@ -345,7 +345,11 @@ namespace APEX_API.Controllers
                                             .Where(Tm => EF.Functions.Like(Tm.TcMml01, "211109" + "%"))
                                             .OrderByDescending(Tm => Tm.TcMml01)
                                             ;
-            var g_sql = "SELECT tc_mmaa01 \"TC_MMA01\",tc_mmaa02 \"TC_MMA02\" ,tc_mmaa03 \"TC_MMA03\",tc_mmaa05 \"TC_MMA05\",tc_mmaa06 \"TC_MMA06\",tc_mmaa15 \"TC_MMA15\" ,tc_mmaa18 \"TC_MMA18\",tc_mmaa19 \"TC_MMA19\",tc_mmaa20 \"TC_MMA20\",tc_mmaa21 \"TC_MMA21\",tc_mmaa22 \"TC_MMA22\",tc_mmaa25 \"TC_MMA25\",tc_mmaa26 \"TC_MMA26\",tc_mmaa27 \"TC_MMA27\",tc_mmaa35 \"TC_MMA35\" FROM tc_mmaa_file WHERE tc_mmaa01 =''";
+
+            List<string> aa = new ();
+            aa.Add("bb");
+
+           
 
 
 

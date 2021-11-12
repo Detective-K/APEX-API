@@ -1389,28 +1389,22 @@ namespace APEX_API.PublicServices
 
             if ("R21,R22,R23,R24,R64".Contains(R1No) || (R1No == "R27" && ratio_x != "1") || (R1No == "R29" && ratio_x != "1") || (R1No == "R31" && ratio_x != "1") || (R1No == "R33" && ratio_x != "1") || (R1No == "R61" && ratio_x != "1") || (R1No == "RB7" && ratio_x != "1") || (R1No == "RB9" && ratio_x != "1") || (R1No == "RC2" && ratio_x != "1") || (R1No == "RC4" && ratio_x != "1") || (R1No == "RC6" && ratio_x != "1"))
             {
-                g_sql = "SELECT * FROM tc_mmb_file WHERE tc_mmb01 like 'P0606%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + P_OuterDia;
-
-                OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
-                var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmg03 = GBType, TcMmg04 = Convert.ToDecimal(T), TcMmg05 = Convert.ToDecimal(C3) } });
-
-
-                if (myDataReader_4.Read())
+                var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0606", TcMmb04 = Convert.ToDecimal(P_OuterDia), TcMmb05 = Convert.ToDecimal(C3) } });
+                if (TcMmbFileInfo.Count() >0)
                 {
-                    txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
-                    ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-                    ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+                    txtBushing = Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb01) + " / " + Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb03);
+                    //ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+                    //ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+                    //目前無使用到先不翻
                 }
                 else
                 {
                     txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
                     txtBushing = "Bushing not available, please contact APEX sales!!";
-                    ViewState["Bushing_No"] = "";
-                    ViewState["Bushing_Spec"] = "";
+                    //ViewState["Bushing_No"] = "";
+                    //ViewState["Bushing_Spec"] = "";
+                    //目前無使用到先不翻
                 }
-
-                myDataReader_4.Close();
-
             }
             //20141022 加P2IIR
             //20150724 加PD PDR PL PLR
@@ -1419,103 +1413,105 @@ namespace APEX_API.PublicServices
             //20170920 加AH
             //20180703 加AFH及AFHK
             //20190223 加紅色機種
-            else if (R1No == "R65" || R1No == "R66" || R1No == "R67" || R1No == "R69" || R1No == "R86" || R1No == "RD1" || R1No == "RD2" || R1No == "RD3" || R1No == "RD4" || R1No == "RD5" || R1No == "RE1" || R1No == "RD9" || R1No == "RE2" || R1No == "RE9" || R1No == "R40" || R1No == "RF2" || R1No == "RB3" || R1No == "RA9" || R1No == "RB4" || R1No == "RB2" || R1No == "RE3" || R1No == "RF4" || R1No == "RE4" || R1No == "RK9" || R1No == "RK5" || R1No == "RJ9" || R1No == "RJ5" || R1No == "R53" || R1No == "R54" || R1No == "RF1"
-                                                                                                                                                                                                                                                                || R1No == "RR1" || R1No == "RR2" || R1No == "RR3" || R1No == "RR4" || R1No == "RR6" || R1No == "RR5" || R1No == "RR7" || R1No == "RR8" || R1No == "RR9" || R1No == "RS1" || R1No == "RS2" || R1No == "RS3" || R1No == "RS4" || R1No == "RS5" || R1No == "RS6" || R1No == "RS7" || R1No == "R42")
-            {
-                if (M3max != M3maxWeb || M3max != MS)
-                {
-                    if (M3max != M3maxWeb)
-                    {
-                        ViewState["Bushing_Bom_flag"] = "true";//表示原本BOM有架bushing,選配後的bushing就不要匯入,避免兩個bushing
-                    }
+            //else if ("R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RB2,RE3,RF4,RE4,RK9,RK5,RJ9,RJ5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR6,RR5,RR7,RR8,RR9,RS1,RS2,RS3,RS4,RS5,RS6,RS7,R42".Contains(R1No))
+            //{
+            //    if (M3max != M3maxWeb || M3max != Convert.ToString(S))
+            //    {
+            //        //if (M3max != M3maxWeb)
+            //        //{
+            //        //    ViewState["Bushing_Bom_flag"] = "true";//表示原本BOM有架bushing,選配後的bushing就不要匯入,避免兩個bushing
+            //        //}
+            //        //目前無使用到先不翻
 
-                    g_sql = "Select * from tc_mmb_file where (tc_mmb01 like 'P0607%' or tc_mmb01 like 'O0607%') and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3maxWeb;
+            //        var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0607", TcMmb04 = Convert.ToDecimal(P_OuterDia), TcMmb05 = Convert.ToDecimal(C3) } });
 
-                    OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+            //        g_sql = "Select * from tc_mmb_file where (tc_mmb01 like 'P0607%' or tc_mmb01 like 'O0607%') and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3maxWeb;
 
-                    if (myDataReader_4.Read())
-                    {
-                        txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
-                        ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-                        ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
-                    }
-                    else
-                    {
-                        txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",減速機輸入軸徑(P_OuterDia):" + P_OuterDia;
-                        txtBushing = "Bushing not available, please contact APEX sales!!";
-                        ViewState["Bushing_No"] = "";
-                        ViewState["Bushing_Spec"] = "";
+            //        OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
 
-                        //myDataReader_4.Close(); //20190122 close conn
+            //        if (myDataReader_4.Read())
+            //        {
+            //            txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
+            //            ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+            //            ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+            //        }
+            //        else
+            //        {
+            //            txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",減速機輸入軸徑(P_OuterDia):" + P_OuterDia;
+            //            txtBushing = "Bushing not available, please contact APEX sales!!";
+            //            ViewState["Bushing_No"] = "";
+            //            ViewState["Bushing_Spec"] = "";
 
-                        //sCode = "<SCRIPT LANGUAGE=javascript>";
+            //            //myDataReader_4.Close(); //20190122 close conn
 
-                        //sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
+            //            //sCode = "<SCRIPT LANGUAGE=javascript>";
 
-                        //sCode = sCode + "\n history.go(-1)";
+            //            //sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
 
-                        //sCode = sCode + "</SCRIPT>";
+            //            //sCode = sCode + "\n history.go(-1)";
 
-                        //Response.Write(sCode);
+            //            //sCode = sCode + "</SCRIPT>";
 
-                        //Response.End();
-                    }
+            //            //Response.Write(sCode);
 
-                    myDataReader_4.Close();
-                }
-                else
-                {
-                    txtBushing = "無需軸襯套";
-                    ViewState["Bushing_No"] = "No Need";
-                    ViewState["Bushing_Spec"] = "";
-                }
+            //            //Response.End();
+            //        }
 
-            }
-            else
-            {
-                if (C3 == M3max)
-                {
-                    txtBushing = "無需軸襯套";
+            //        myDataReader_4.Close();
+            //    }
+            //    else
+            //    {
+            //        txtBushing = "無需軸襯套";
+            //        ViewState["Bushing_No"] = "No Need";
+            //        ViewState["Bushing_Spec"] = "";
+            //    }
 
-                    if (Convert.ToString(type) == "4")
-                    {
-                        txtBushing = " ";
-                        ViewState["Bushing_No"] = "No Need";
-                        ViewState["Bushing_Spec"] = "";
-                    }
-                }
-                else
-                {
-                    if (Convert.ToString(type) == "3")
-                    {
-                        txtBushing = " ";
-                        ViewState["Bushing_No"] = "No Need";
-                        ViewState["Bushing_Spec"] = "";
-                    }
-                    else
-                    {
-                        g_sql = "Select * from tc_mmb_file where tc_mmb01 like 'P0601%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3max;
+            //}
+            //else
+            //{
+            //    if (C3 == M3max)
+            //    {
+            //        txtBushing = "無需軸襯套";
 
-                        OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+            //        if (Convert.ToString(type) == "4")
+            //        {
+            //            txtBushing = " ";
+            //            ViewState["Bushing_No"] = "No Need";
+            //            ViewState["Bushing_Spec"] = "";
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (Convert.ToString(type) == "3")
+            //        {
+            //            txtBushing = " ";
+            //            ViewState["Bushing_No"] = "No Need";
+            //            ViewState["Bushing_Spec"] = "";
+            //        }
+            //        else
+            //        {
+            //            g_sql = "Select * from tc_mmb_file where tc_mmb01 like 'P0601%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3max;
 
-                        if (myDataReader_4.Read())
-                        {
-                            txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
-                            ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-                            ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
-                        }
-                        else
-                        {
-                            txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
-                            txtBushing = "Bushing not available, please contact APEX sales!!";
-                            ViewState["Bushing_No"] = "";
-                            ViewState["Bushing_Spec"] = "";
-                        }
+            //            OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
 
-                        myDataReader_4.Close();
-                    }
-                }
-            }
+            //            if (myDataReader_4.Read())
+            //            {
+            //                txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
+            //                ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
+            //                ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
+            //            }
+            //            else
+            //            {
+            //                txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
+            //                txtBushing = "Bushing not available, please contact APEX sales!!";
+            //                ViewState["Bushing_No"] = "";
+            //                ViewState["Bushing_Spec"] = "";
+            //            }
+
+            //            myDataReader_4.Close();
+            //        }
+            //    }
+            //}
 
 
             //========================================================================  
