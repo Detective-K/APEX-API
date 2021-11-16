@@ -186,7 +186,16 @@ namespace APEX_API.Services
             var TcMmbFileInfo = _DataContext.TcMmbFiles.AsQueryable();
             if (!string.IsNullOrEmpty(_Value.TcMmb01))
             {
-                TcMmbFileInfo = TcMmbFileInfo.Where(tM => EF.Functions.Like(tM.TcMmb01 , _Value.TcMmb01 + "%"));
+                var _TcMmb01 = _Value.TcMmb01.Split(",");
+                switch (_TcMmb01.Length.ToString())
+                {
+                    case "1":
+                        TcMmbFileInfo = TcMmbFileInfo.Where(tM => EF.Functions.Like(tM.TcMmb01, _TcMmb01[0] + "%"));
+                        break;
+                    case "2":
+                        TcMmbFileInfo = TcMmbFileInfo.Where(tM => EF.Functions.Like(tM.TcMmb01, _TcMmb01[0] + "%") || EF.Functions.Like(tM.TcMmb01, _TcMmb01[1] + "%"));
+                        break;
+                };
             }
             if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmb04)))
             {
@@ -199,7 +208,53 @@ namespace APEX_API.Services
             return TcMmbFileInfo.ToList();
         }
 
-        public List<TcMmlFile> GetTcMmlFileInfo(List<TcMmlFile>_tcMmlFileData )
+        public List<TcMmhFile> GetTcMmhFileInfo(List<TcMmhFile> Value)
+        {
+            var _Value = Value.FirstOrDefault();
+            var TcMmhFileInfo = _DataContext.TcMmhFiles.AsQueryable();
+
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmh01)))
+            {
+                TcMmhFileInfo = TcMmhFileInfo.Where(tM => EF.Functions.Like(tM.TcMmh01, _Value.TcMmh01 + "%"));
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmh04)))
+            {
+                TcMmhFileInfo = TcMmhFileInfo.Where(tM => tM.TcMmh04 == _Value.TcMmh04);
+            }
+            return TcMmhFileInfo.ToList();
+        }
+
+        public List<TcMmfFile> GetTcMmfFileInfo(List<TcMmfFile> Value , string JsonValue)
+        {
+            var _Value = Value.FirstOrDefault();
+            var _JsonValue = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(JsonValue);
+            var TcMmfFileInfo = _DataContext.TcMmfFiles.AsQueryable();
+
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmf01)))
+            {
+                TcMmfFileInfo = TcMmfFileInfo.Where(tM => EF.Functions.Like(tM.TcMmf01, _Value.TcMmf01 + "%"));
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmf04)))
+            {
+                TcMmfFileInfo = TcMmfFileInfo.Where(tM => tM.TcMmf04 == _Value.TcMmf04);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmf06)))
+            {
+                TcMmfFileInfo = TcMmfFileInfo.Where(tM => tM.TcMmf06 == _Value.TcMmf06);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(_Value.TcMmf07)))
+            {
+                TcMmfFileInfo = TcMmfFileInfo.Where(tM => tM.TcMmf07 == _Value.TcMmf07);
+            }
+            if (!string.IsNullOrEmpty(Convert.ToString(JsonValue)))
+            {                
+                TcMmfFileInfo = TcMmfFileInfo.Where(tM => tM.TcMmf08 >= Convert.ToDecimal(_JsonValue["TcMmf08"])&& tM.TcMmf08 <= Convert.ToDecimal(_JsonValue["TcMmf08_2"]));
+                TcMmfFileInfo = TcMmfFileInfo.OrderByDescending(Tm => Tm.TcMmf08);
+            }
+            return TcMmfFileInfo.ToList();
+        }
+
+        public List<TcMmlFile> GetTcMmlFileInfo(List<TcMmlFile> _tcMmlFileData)
         {
             var TcMmlFileInfo = _DataContext.TcMmlFiles.AsQueryable();
             if (!string.IsNullOrEmpty(_tcMmlFileData.FirstOrDefault().TcMml02))
@@ -255,7 +310,7 @@ namespace APEX_API.Services
                 TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml15 == _tcMmlFileData.FirstOrDefault().TcMml15);
             }
 
-            TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml16 ?? " " ) == (_tcMmlFileData.FirstOrDefault().TcMml16 ?? " "));
+            TcMmlFileInfo = TcMmlFileInfo.Where(tM => (tM.TcMml16 ?? " ") == (_tcMmlFileData.FirstOrDefault().TcMml16 ?? " "));
             if (!string.IsNullOrEmpty(Convert.ToString(_tcMmlFileData.FirstOrDefault().TcMml18)))
             {
                 TcMmlFileInfo = TcMmlFileInfo.Where(tM => tM.TcMml18 == _tcMmlFileData.FirstOrDefault().TcMml18);
@@ -282,7 +337,7 @@ namespace APEX_API.Services
                                             .OrderByDescending(Tm => Tm.TcMml01)
                                             ;
 
-            return l_tmp_tc_mml01.ToList().Count() >0 ? Convert.ToString(l_tmp_tc_mml01.ToList().FirstOrDefault().TcMml01) : "";
+            return l_tmp_tc_mml01.ToList().Count() > 0 ? Convert.ToString(l_tmp_tc_mml01.ToList().FirstOrDefault().TcMml01) : "";
         }
         // Gearbox Model & Ratio
         public List<Reducer1Order> GetReducer(dynamic OData, Decimal T1N, Decimal T1B, Decimal Inertia, Decimal S, string item, string _TcMmd03, string MotorScrewOrientation)

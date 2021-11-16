@@ -115,7 +115,7 @@ namespace APEX_API.Controllers
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    // _publicOrder.GBResult(OData, "3", "false");
+                     _publicOrder.GBResult(OData, "3", "false" , "");
                 }
                 //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
@@ -331,7 +331,7 @@ namespace APEX_API.Controllers
             //var cz = _DataContext.TcOekFiles.AsQueryable().Where(m => m.TcOek03 == null);
             var cz = _DataContext.AdapClass1s.AsQueryable().Where(m => m.TcMma29 == null);
             int i = 1;
-            string  l_tc_mml01 = DateTime.Now.ToString("yyMMdd");
+            string l_tc_mml01 = DateTime.Now.ToString("yyMMdd");
 
             // l_sql = "select tc_mml01 from tc_mml_file Where rownum = 1 and tc_mml01 like '" + l_tc_mml01 + "%' order by tc_mml01 desc";
 
@@ -341,15 +341,39 @@ namespace APEX_API.Controllers
             //                                 .Where(Tm => Tm.RowNum == 1 && EF.Functions.Like(Tm.TcMml01, l_tc_mml01 + "%"))
             //                                 .OrderByDescending(Tm => Tm.TcMml01)
             //                                 ;
-            var tmp = _DataContext.TcMmlFiles.Select(Tm => new {Tm.TcMml01 })
+
+            List<string> aa = new();
+            aa.Add("bb");
+            aa.Add("cc");
+            List<TcMmbFile> TM = new List<TcMmbFile> { new TcMmbFile { } };
+            TM.FirstOrDefault().TcMmb01 = "bb,cc";
+            var ac = TM.FirstOrDefault().TcMmb01.Split(",");
+            var tmp = _DataContext.TcMmlFiles.Select(Tm => new { Tm.TcMml01 })
                                             .Where(Tm => EF.Functions.Like(Tm.TcMml01, "211109" + "%"))
                                             .OrderByDescending(Tm => Tm.TcMml01)
                                             ;
 
-            List<string> aa = new ();
-            aa.Add("bb");
+            var json = @"
+                 {
+                   ""Max"": 9487,
+ 
+                   ""Min"": ""One Piece Comic - 934""
+ 
+                        }
+                    ";
+            using (JsonDocument document = JsonDocument.Parse(json))
+            {
+                var sumOfAllTemperatures = 0;
 
-           
+            }
+
+            var jsonString = @"{ ""id"":""48e86841-f62c-42c9-ae20-b54ba8c35d6d"",""Max"": ""9487""}";
+            var cs = "bad";
+            var jsonString1 = "{ \"TcMmf08\": \""+ cs + "\",\"Max\": \"9487\"}";
+            var book = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString1);
+
+
+
 
 
 

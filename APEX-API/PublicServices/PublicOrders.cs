@@ -33,8 +33,8 @@ namespace APEX_API.PublicServices
             string AWidth1, AWidth2, ratio_x, file_ratio_x, R1No, PartNo, M3max, P_OuterDia, newrdeucer, l_AWidth1, suitadapter_c4;
             string C3, LR, LB, LE, LA, LC, ScrewDia = string.Empty, MT1N, MT1B, Mpower, MN1N, MN1B, MInertia, LT, FixPlate, FlangeWidth = string.Empty, Motor_Interface = string.Empty, Motor_Screw_orientation = string.Empty;
             string M3maxWeb, suitadapter, AdapterNx = string.Empty;
-            string T, txtadaperNo = "", txtSUNGEAR;
-            string LN = "0", LD, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
+            string T = string.Empty, txtadaperNo = "", txtSUNGEAR;
+            string LN = "0", LD = string.Empty, LZ, LA2 = "0", LD2 = "0", LZ2 = "0", LN2 = "0", LZ1 = "";
             string G_Reducer_One_piece = "N", G_Reducer_One_piece_chenged = "N";
             double Reducer_D7 = 0, Reducer_D9 = 0, Reducer_A1 = 0, Reducer_A2 = 0; //反鎖馬達用
 
@@ -42,13 +42,17 @@ namespace APEX_API.PublicServices
             string tc_shw13 = string.Empty;
             Double tc_shw08 = 0;
             Double tc_shw03 = 0;
-            Double C11 = 0 , C10 = 0 , C21 = 0 , C22 = 0;
+            Double C11 = 0, C10 = 0, C21 = 0, C22 = 0;
             string l_suitadapter = string.Empty;
 
             DateTime g_begin, g_end;
-            string adaperNo = string.Empty, Adaper_No = string.Empty, DMpic, conjunction, adp7000, sFile = string.Empty, txtBushing, AdapterScrew, txtWasher, WasherT, AdapterPitch;
+            string adaperNo = string.Empty, Adaper_No = string.Empty, DMpic, conjunction, adp7000, sFile = string.Empty, txtBushing, AdapterScrew = string.Empty, txtWasher, WasherT = string.Empty, AdapterPitch = string.Empty;
             string adpter_tc_mmaa_file = string.Empty, addbuy_error = string.Empty;
-            string Adaper_PicYN = "N", g_Adapter_Cus = "N" , plate_1 = string.Empty , plate_2 = string.Empty;
+            string Adaper_PicYN = "N", g_Adapter_Cus = "N", plate_1 = string.Empty, plate_2 = string.Empty;
+
+            string Bushing_No = string.Empty, Bushing_Spec = string.Empty, Washer_No = string.Empty, Washer_Spec = string.Empty, Screw_No = string.Empty, Screw_Spec = string.Empty;
+            string txtScrew_conj = string.Empty, txtScrew = string.Empty;
+            Double ScrewLen_conj_min, ScrewLen_conj_max, ScrewLen_max, ScrewLen_min;
 
             string errMsg = string.Empty;
             List<TcOekFile> MortorInfo = _orderService.GetService<OrderService>().GetMotorInfoDetail(OData["Motor"]);
@@ -1274,9 +1278,9 @@ namespace APEX_API.PublicServices
                     if (Convert.ToString(_adpDatas.FirstOrDefault().G_Reducer_One_piece_used) == "Y")
                     {
                         //先關閉等生管通知
-                        _publicFunction.GetService<PublicFunctions>().Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, _adpDatas.FirstOrDefault().Tmp_newPartNo);
+                        _publicFunction.GetService<PublicFunctions>().Fun_replace_one_piece(_adpDatas.FirstOrDefault().Reducer_No, _tcMmiFileInfo.FirstOrDefault().Tmp_newPartNo);
                     }
-                }                
+                }
 
                 if (Convert.ToString(type) == "1" || Convert.ToString(type) == "5")
                 {
@@ -1390,20 +1394,18 @@ namespace APEX_API.PublicServices
             if ("R21,R22,R23,R24,R64".Contains(R1No) || (R1No == "R27" && ratio_x != "1") || (R1No == "R29" && ratio_x != "1") || (R1No == "R31" && ratio_x != "1") || (R1No == "R33" && ratio_x != "1") || (R1No == "R61" && ratio_x != "1") || (R1No == "RB7" && ratio_x != "1") || (R1No == "RB9" && ratio_x != "1") || (R1No == "RC2" && ratio_x != "1") || (R1No == "RC4" && ratio_x != "1") || (R1No == "RC6" && ratio_x != "1"))
             {
                 var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0606", TcMmb04 = Convert.ToDecimal(P_OuterDia), TcMmb05 = Convert.ToDecimal(C3) } });
-                if (TcMmbFileInfo.Count() >0)
+                if (TcMmbFileInfo.Count() > 0)
                 {
                     txtBushing = Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb01) + " / " + Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb03);
-                    //ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-                    //ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
-                    //目前無使用到先不翻
+                    Bushing_No = Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb01);
+                    Bushing_Spec = Convert.ToString(TcMmbFileInfo.ToList().FirstOrDefault().TcMmb03);
                 }
                 else
                 {
                     txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
                     txtBushing = "Bushing not available, please contact APEX sales!!";
-                    //ViewState["Bushing_No"] = "";
-                    //ViewState["Bushing_Spec"] = "";
-                    //目前無使用到先不翻
+                    Bushing_No = "";
+                    Bushing_Spec = "";
                 }
             }
             //20141022 加P2IIR
@@ -1413,110 +1415,228 @@ namespace APEX_API.PublicServices
             //20170920 加AH
             //20180703 加AFH及AFHK
             //20190223 加紅色機種
-            //else if ("R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RB2,RE3,RF4,RE4,RK9,RK5,RJ9,RJ5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR6,RR5,RR7,RR8,RR9,RS1,RS2,RS3,RS4,RS5,RS6,RS7,R42".Contains(R1No))
-            //{
-            //    if (M3max != M3maxWeb || M3max != Convert.ToString(S))
-            //    {
-            //        //if (M3max != M3maxWeb)
-            //        //{
-            //        //    ViewState["Bushing_Bom_flag"] = "true";//表示原本BOM有架bushing,選配後的bushing就不要匯入,避免兩個bushing
-            //        //}
-            //        //目前無使用到先不翻
+            else if ("R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB4,RB2,RE3,RF4,RE4,RK9,RK5,RJ9,RJ5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR6,RR5,RR7,RR8,RR9,RS1,RS2,RS3,RS4,RS5,RS6,RS7,R42".Contains(R1No))
+            {
+                if (M3max != M3maxWeb || M3max != Convert.ToString(S))
+                {
+                    //if (M3max != M3maxWeb)
+                    //{
+                    //    ViewState["Bushing_Bom_flag"] = "true";//表示原本BOM有架bushing,選配後的bushing就不要匯入,避免兩個bushing
+                    //}
+                    //目前無使用到先不翻
 
-            //        var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0607", TcMmb04 = Convert.ToDecimal(P_OuterDia), TcMmb05 = Convert.ToDecimal(C3) } });
+                    var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0607,O0607", TcMmb04 = Convert.ToDecimal(M3maxWeb), TcMmb05 = Convert.ToDecimal(C3) } });
 
-            //        g_sql = "Select * from tc_mmb_file where (tc_mmb01 like 'P0607%' or tc_mmb01 like 'O0607%') and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3maxWeb;
 
-            //        OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
+                    if (TcMmbFileInfo.Count() > 0)
+                    {
+                        txtBushing = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb01) + " / " + Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb03);
+                        Bushing_No = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb01);
+                        Bushing_Spec = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb03);
+                    }
+                    else
+                    {
+                        txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",減速機輸入軸徑(P_OuterDia):" + P_OuterDia;
+                        txtBushing = "Bushing not available, please contact APEX sales!!";
+                        Bushing_No = "";
+                        Bushing_Spec = "";
+                    }
+                }
+                else
+                {
+                    txtBushing = "無需軸襯套";
+                    Bushing_No = "No Need";
+                    Bushing_Spec = "";
+                }
 
-            //        if (myDataReader_4.Read())
-            //        {
-            //            txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
-            //            ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-            //            ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
-            //        }
-            //        else
-            //        {
-            //            txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3 + ",減速機輸入軸徑(P_OuterDia):" + P_OuterDia;
-            //            txtBushing = "Bushing not available, please contact APEX sales!!";
-            //            ViewState["Bushing_No"] = "";
-            //            ViewState["Bushing_Spec"] = "";
+            }
+            else
+            {
+                if (C3 == M3max)
+                {
+                    txtBushing = "無需軸襯套";
 
-            //            //myDataReader_4.Close(); //20190122 close conn
+                    if (Convert.ToString(type) == "4")
+                    {
+                        txtBushing = " ";
+                        Bushing_No = "No Need";
+                        Bushing_Spec = "";
+                    }
+                }
+                else
+                {
+                    if (Convert.ToString(type) == "3")
+                    {
+                        txtBushing = " ";
+                        Bushing_No = "No Need";
+                        Bushing_Spec = "";
+                    }
+                    else
+                    {
+                        var TcMmbFileInfo = _orderService.GetService<OrderService>().GetTcMmbFileInfo(new List<TcMmbFile> { new TcMmbFile { TcMmb01 = "P0607", TcMmb04 = Convert.ToDecimal(M3max), TcMmb05 = Convert.ToDecimal(C3) } });
 
-            //            //sCode = "<SCRIPT LANGUAGE=javascript>";
 
-            //            //sCode = sCode + "  alert('" + Resources.Resource.msg_err2 + " ' );";
-
-            //            //sCode = sCode + "\n history.go(-1)";
-
-            //            //sCode = sCode + "</SCRIPT>";
-
-            //            //Response.Write(sCode);
-
-            //            //Response.End();
-            //        }
-
-            //        myDataReader_4.Close();
-            //    }
-            //    else
-            //    {
-            //        txtBushing = "無需軸襯套";
-            //        ViewState["Bushing_No"] = "No Need";
-            //        ViewState["Bushing_Spec"] = "";
-            //    }
-
-            //}
-            //else
-            //{
-            //    if (C3 == M3max)
-            //    {
-            //        txtBushing = "無需軸襯套";
-
-            //        if (Convert.ToString(type) == "4")
-            //        {
-            //            txtBushing = " ";
-            //            ViewState["Bushing_No"] = "No Need";
-            //            ViewState["Bushing_Spec"] = "";
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Convert.ToString(type) == "3")
-            //        {
-            //            txtBushing = " ";
-            //            ViewState["Bushing_No"] = "No Need";
-            //            ViewState["Bushing_Spec"] = "";
-            //        }
-            //        else
-            //        {
-            //            g_sql = "Select * from tc_mmb_file where tc_mmb01 like 'P0601%' and tc_mmb05 =" + C3 + " and tc_mmb04 =" + M3max;
-
-            //            OracleDataReader myDataReader_4 = class_nana_ds1.ORACLE_RD(g_sql);
-
-            //            if (myDataReader_4.Read())
-            //            {
-            //                txtBushing = Convert.ToString(myDataReader_4[0]) + " / " + Convert.ToString(myDataReader_4[2]);
-            //                ViewState["Bushing_No"] = Convert.ToString(myDataReader_4[0]);
-            //                ViewState["Bushing_Spec"] = Convert.ToString(myDataReader_4[2]);
-            //            }
-            //            else
-            //            {
-            //                txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
-            //                txtBushing = "Bushing not available, please contact APEX sales!!";
-            //                ViewState["Bushing_No"] = "";
-            //                ViewState["Bushing_Spec"] = "";
-            //            }
-
-            //            myDataReader_4.Close();
-            //        }
-            //    }
-            //}
+                        if (TcMmbFileInfo.Count() > 0)
+                        {
+                            txtBushing = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb01) + " / " + Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb03);
+                            Bushing_No = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb01);
+                            Bushing_Spec = Convert.ToString(TcMmbFileInfo.FirstOrDefault().TcMmb03);
+                        }
+                        else
+                        {
+                            txtBushing = "需軸襯套，但找不到適合尺寸，請連絡研發!!<br>「馬達」輸出軸直徑(S):" + C3;
+                            txtBushing = "Bushing not available, please contact APEX sales!!";
+                            Bushing_No = "";
+                            Bushing_Spec = "";
+                        }
+                    }
+                }
+            }
 
 
             //========================================================================  
             //Washer彈簧墊圈
             //======================================================================== 
+            if (Convert.ToString(type) == "3" || Convert.ToString(type) == "4")
+            {
+                txtWasher = " ";
+                WasherT = "0";
+            }
+            else if (Convert.ToString(type) == "5" && Motor_Screw_orientation == "Y")
+            {
+                txtWasher = "Without Washer";
+                WasherT = "0";
+            }
+            else if (Convert.ToString(type) == "5" && Motor_Screw_orientation == "N")
+            {
+
+                var TcMmhFileInfo = _orderService.GetService<OrderService>().GetTcMmhFileInfo(new List<TcMmhFile> { new TcMmhFile { TcMmh01 = "261", TcMmh04 = Convert.ToDecimal(AdapterScrew) } });
+
+                if (TcMmhFileInfo.Count() > 0)
+                {
+                    txtWasher = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh01) + " / " + Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh03) + "<br> 舊： " + Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh02);
+                    Washer_No = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh01);
+                    Washer_Spec = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh03);
+                    WasherT = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh06); //壓縮高度
+                }
+                else
+                {
+                    txtWasher = "需彈簧墊圈，但找不到適合尺寸，請連絡研發!!";
+                    Washer_No = "";
+                    Washer_Spec = "";
+                }
+            }
+            else
+            {
+
+                var TcMmhFileInfo = _orderService.GetService<OrderService>().GetTcMmhFileInfo(new List<TcMmhFile> { new TcMmhFile { TcMmh01 = "221", TcMmh04 = Convert.ToDecimal(AdapterScrew) } });//因不鏽鋼加221
+
+                if (TcMmhFileInfo.Count() > 0)
+                {
+                    txtWasher = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh01) + " / " + Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh03) + "<br> 舊： " + Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh02);
+                    Washer_No = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh01);
+                    Washer_Spec = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh03);
+                    WasherT = Convert.ToString(TcMmhFileInfo.FirstOrDefault().TcMmh06); //壓縮高度
+                }
+                else
+                {
+                    txtWasher = "需彈簧墊圈，但找不到適合尺寸，請連絡研發!!";
+                    Washer_No = "";
+                    Washer_Spec = "";
+                }
+            }
+
+            //======================================================================== 
+            //Screw內六角螺絲
+            //========================================================================  
+            if (Convert.ToString(type) == "3")
+            {
+                txtScrew_conj = " ";
+            }
+            else
+            {
+                if (Convert.ToString(type) == "1" || Convert.ToString(type) == "2")
+                {
+                    ScrewLen_conj_min = 6.8 * Convert.ToSingle(AdapterPitch) + Convert.ToSingle(WasherT) + Convert.ToSingle(FlangeWidth) + Convert.ToSingle(C11);   //FlangeWidth馬達.肩部寬度 + conj
+
+                    ScrewLen_conj_max = Convert.ToSingle(_publicFunction.GetService<PublicFunctions>().GetScrewT(AdapterScrew)) + Convert.ToSingle(WasherT) + Convert.ToSingle(FlangeWidth) + Convert.ToSingle(C11);    //FlangeWidth馬達.肩部寬度 + conj
+                    var TcMmfFileInfo = _orderService.GetService<OrderService>().GetTcMmfFileInfo(new List<TcMmfFile> { new TcMmfFile { TcMmf01 = "21", TcMmf04 = "A0"
+                                                                                                                                      , TcMmf06 = Convert.ToDecimal(AdapterScrew), TcMmf07 = Convert.ToDecimal(AdapterPitch)
+                                                                                                                                      } }, "{\"TcMmf08\":\"" + ScrewLen_conj_min + "\",\"TcMmf08_2\":\"" + ScrewLen_conj_max + "\" }");
+
+                    if (TcMmfFileInfo.Count() > 0)
+                    {
+                        txtScrew_conj = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01) + " / " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05) + "<br> 舊： " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf02) + " or " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf03);
+                        Screw_No = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01);
+                        Screw_Spec = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05);
+                    }
+                    else
+                    {
+                        txtScrew_conj = "需內六角螺絲，但找不到適合尺寸，請連絡研發!!";
+                        Screw_No = "";
+                        Screw_Spec = "";
+                    }
+                }
+                else if (Convert.ToString(type) == "5" && Motor_Screw_orientation == "N")
+                {
+                    ScrewLen_conj_min = 6.8 * Convert.ToSingle(AdapterPitch) + Convert.ToSingle(WasherT) + Convert.ToSingle(FlangeWidth) + Convert.ToSingle(C11);   //FlangeWidth馬達.肩部寬度 + conj
+
+                    ScrewLen_conj_max = Convert.ToSingle(_publicFunction.GetService<PublicFunctions>().GetScrewT(AdapterScrew)) + Convert.ToSingle(WasherT) + Convert.ToSingle(FlangeWidth) + Convert.ToSingle(C11);    //FlangeWidth馬達.肩部寬度 + conj
+                    var TcMmfFileInfo = _orderService.GetService<OrderService>().GetTcMmfFileInfo(new List<TcMmfFile> { new TcMmfFile { TcMmf01 = "251"
+                                                                                                                                      , TcMmf06 = Convert.ToDecimal(AdapterScrew), TcMmf07 = Convert.ToDecimal(AdapterPitch)
+                                                                                                                                      } }, "{\"TcMmf08\":\"" + ScrewLen_conj_min + "\",\"TcMmf08_2\":\"" + ScrewLen_conj_max + "\" }");
+                    if (TcMmfFileInfo.Count() > 0)
+                    {
+                        txtScrew_conj = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01) + " / " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05) + "<br> 舊： " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf02) + " or " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf03);
+                        Screw_No = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01);
+                        Screw_Spec = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05);
+                    }
+                    else
+                    {
+                        txtScrew_conj = "需內六角螺絲，但找不到適合尺寸，請連絡研發!!";
+                        Screw_No = "";
+                        Screw_Spec = "";
+                    }
+                }
+                else if (Convert.ToString(type) == "5" && Motor_Screw_orientation == "Y")
+                {
+                    txtScrew_conj = "Without Screws";
+                    Screw_No = "";
+                    Screw_Spec = "";
+                }
+                else
+                {
+                    ScrewLen_max = Convert.ToSingle(LD) + Convert.ToSingle(C10);  //adapterC10 + 馬達深度
+
+                    AdapterScrew = Convert.ToString(C21);
+
+                    if (Convert.ToSingle(AdapterScrew) < 2)
+                    {
+                        ScrewLen_min = Convert.ToSingle(C10) + (Convert.ToSingle(LZ) * 0.8) - 0.5;
+                    }
+                    else
+                    {
+                        ScrewLen_min = Convert.ToSingle(C10) + (Convert.ToSingle(LZ) * 0.8) - 0.7;
+                    }
+
+                    var TcMmfFileInfo = _orderService.GetService<OrderService>().GetTcMmfFileInfo(new List<TcMmfFile> { new TcMmfFile { TcMmf01 = "2116B"
+                                                                                                                                      , TcMmf06 = Convert.ToDecimal(AdapterScrew)
+                                                                                                                                      } }, "{\"TcMmf08\":\"" + ScrewLen_conj_min + "\",\"TcMmf08_2\":\"" + ScrewLen_conj_max + "\" }");
+                    if (TcMmfFileInfo.Count() > 0)
+                    {
+                        txtScrew = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01) + " / " + Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05) + "  X  " + Convert.ToString(LN) + "(PCS)";
+                        Screw_No = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf01);
+                        Screw_Spec = Convert.ToString(TcMmfFileInfo.FirstOrDefault().TcMmf05);
+                    }
+                    else
+                    {
+                        txtScrew = "需螺絲，但找不到適合尺寸，請連絡研發!!";
+                        Screw_No = "";
+                        Screw_Spec = "";
+                    }
+                }
+            }
+
 
         }
     }
