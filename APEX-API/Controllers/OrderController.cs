@@ -112,11 +112,124 @@ namespace APEX_API.Controllers
                 string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";//tmp_type 3,
                 string R25Groups = "R25";
                 string RG4Groups = "RG4,RG5";
+                string Cprod = string.Empty;
+                String orderCode = string.Empty;
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                     _publicOrder.GBResult(OData, "3", "false" , "");
+                    _publicOrder.GBResult(OData, "3", "false", "");
                 }
+                else if (R25Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
+                {
+                    _publicOrder.GBResult(OData, "4", "false", "");
+                }
+                else if (R65Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
+                {
+                    _publicOrder.GBResult(OData, "2", "false", "");
+                }
+                else if (RG4Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
+                {
+                    _publicOrder.GBResult(OData, "5", "false", "");
+                }
+                else
+                {
+                    _publicOrder.GBResult(OData, "1", "false", "");
+                }
+
+                //------------------------------------判斷 orderCode 
+                if (Convert.ToString(OData["GearBox"]["Ratio"]).IndexOf(".") >= 0)
+                {
+                    String temp1 = Convert.ToString(Convert.ToSingle(Convert.ToString(OData["GearBox"]["Ratio"]).Replace("*", "")) + 10000);
+
+                    if (temp1.Length > 5)
+                    {
+                        Cprod = Convert.ToString(OData["GearBox"]["GBModel"]) + " - " + temp1.Substring(temp1.Length - 5);
+                    }
+                    else
+                    {
+                        Cprod = Convert.ToString(OData["GearBox"]["GBModel"]) + " - " + temp1;
+                    }
+                }
+                else
+                {
+                    String temp1 = Convert.ToString(Convert.ToSingle(OData["GearBox"]["Ratio"]).Replace("*", "")) + 10000);
+
+                    if (Convert.ToSingle(Convert.ToSingle(OData["GearBox"]["Ratio"]).Replace("*", "")) < 1000)
+                    {
+                        Cprod = Convert.ToString(OData["GearBox"]["GBModel"]) + " - " + temp1.Substring(temp1.Length - 3);
+                    }
+                    else
+                    {
+                        Cprod = Convert.ToString(OData["GearBox"]["GBModel"]) + " - " + temp1.Substring(temp1.Length - 4);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(Convert.ToString(OData["GearBox"]["Shaft"])))
+                {
+                    if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S1")
+                    {
+                        reducerNO = PartNo + "1";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S1
+                    }
+                    else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S2")
+                    {
+                        reducerNO = PartNo + "2";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S2
+                    }
+                    else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S3")
+                    {
+                        reducerNO = PartNo + "3";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S3
+                    }
+                    else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S4")
+                    {
+                        reducerNO = PartNo + "4";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S4
+                    }
+                    else
+                    {
+                        reducerNO = PartNo + "X";
+                    }
+                }
+                else
+                {
+                    reducerNO = PartNo + "X";
+                }
+
+                if (!string.IsNullOrEmpty(Convert.ToString(OData["GearBox"]["Backlash"])))
+                {
+                    if (Convert.ToString(OData["GearBox"]["Backlash"]) == "P0")
+                    {
+                        reducerNO = reducerNO + "0";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Backlash"]);   //P0
+                    }
+
+                    if (Convert.ToString(OData["GearBox"]["Backlash"]) == "P1")
+                    {
+                        reducerNO = reducerNO + "1";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Backlash"]);   //P1
+                    }
+
+                    if (Convert.ToString(OData["GearBox"]["Backlash"]) == "P2")
+                    {
+                        reducerNO = reducerNO + "2";
+
+                        Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Backlash"]);   //P2
+                    }
+                }
+                else
+                {
+                    reducerNO = reducerNO + "X";
+                }
+
+                orderCode = Cprod + " / " + Convert.ToString(OData["Motor"]["Brand"]) + " " + Convert.ToString(OData["Motor"]["Spec"]);
+
                 //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
                 //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
                 //List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };

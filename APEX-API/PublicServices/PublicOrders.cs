@@ -52,7 +52,7 @@ namespace APEX_API.PublicServices
 
             string Bushing_No = string.Empty, Bushing_Spec = string.Empty, Washer_No = string.Empty, Washer_Spec = string.Empty, Screw_No = string.Empty, Screw_Spec = string.Empty;
             string txtScrew_conj = string.Empty, txtScrew = string.Empty;
-            Double ScrewLen_conj_min, ScrewLen_conj_max, ScrewLen_max, ScrewLen_min;
+            Double ScrewLen_conj_min = 0, ScrewLen_conj_max = 0, ScrewLen_max, ScrewLen_min;
 
             string errMsg = string.Empty;
             List<TcOekFile> MortorInfo = _orderService.GetService<OrderService>().GetMotorInfoDetail(OData["Motor"]);
