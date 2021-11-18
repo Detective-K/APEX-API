@@ -1630,7 +1630,7 @@ namespace APEX_API.PublicServices
 
             int g_count = 0;
 
-            string[] l_adpter_type = { "P", "O" };    
+            string[] l_adpter_type = { "P", "O" };
 
             List<OrderService.AdpDatas> _adpDatas = adpDatas;
             List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
@@ -1760,7 +1760,7 @@ namespace APEX_API.PublicServices
         }
 
         public List<TcMmiFileInfo> Formula2(List<OrderService.AdpDatas> adpDatas)
-        {            
+        {
             List<OrderService.AdpDatas> _adpDatas = adpDatas;
             List<TcMmiFileInfo> _TcMmiFileInfo = new List<TcMmiFileInfo>() { new PublicFunctions.TcMmiFileInfo { } };
 
@@ -1781,7 +1781,7 @@ namespace APEX_API.PublicServices
                     {
                         _TcMmiFileInfo.FirstOrDefault().AdapterNx += Convert.ToString(item.TcMma01) + " ,";
                     }
-                    
+
                     tmp = 100; //離開迴圈
 
                 }
@@ -1980,9 +1980,9 @@ namespace APEX_API.PublicServices
         }
 
         //取得連接板開發佇列號
-        public  string GetTcMml01()
+        public string GetTcMml01()
         {
-            string l_tc_mml01 = string.Empty , l_tmp_tc_mml01 = string.Empty ;
+            string l_tc_mml01 = string.Empty, l_tmp_tc_mml01 = string.Empty;
 
             l_tc_mml01 = DateTime.Now.ToString("yyMMdd");
 
@@ -2000,6 +2000,11 @@ namespace APEX_API.PublicServices
         }
 
         #endregion
+
+        #region Public Tool
+       
+        #endregion
+
         public class TcMmiFileInfo
         {
             public string PartNo { get; set; }

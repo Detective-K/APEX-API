@@ -14,7 +14,7 @@ namespace APEX_API.PublicServices
         private readonly IServiceProvider _orderService = null;
         private readonly IServiceProvider _publicFunction = null;
 
-        public void GBResult(dynamic OData, string type, string addbuy, string orderCode)
+        public string GBResult(dynamic OData, string type, string addbuy, string orderCode)
         {
             Decimal S = 0;
             string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";
@@ -53,8 +53,10 @@ namespace APEX_API.PublicServices
             string Bushing_No = string.Empty, Bushing_Spec = string.Empty, Washer_No = string.Empty, Washer_Spec = string.Empty, Screw_No = string.Empty, Screw_Spec = string.Empty;
             string txtScrew_conj = string.Empty, txtScrew = string.Empty;
             Double ScrewLen_conj_min = 0, ScrewLen_conj_max = 0, ScrewLen_max, ScrewLen_min;
+            string TcMma18 = string.Empty;
 
             string errMsg = string.Empty;
+            string reData = string.Empty;
             List<TcOekFile> MortorInfo = _orderService.GetService<OrderService>().GetMotorInfoDetail(OData["Motor"]);
             List<Reducer1Order> ReducerInfo = _orderService.GetService<OrderService>().GetReducerInfo(OData["GearBox"]);
             List<Resg> ResgInfo = _orderService.GetService<OrderService>().GetResgInfo(OData["GearBox"]);
@@ -1245,7 +1247,8 @@ namespace APEX_API.PublicServices
 
                 if (Convert.ToString(type) == "1" || Convert.ToString(type) == "2" || Convert.ToString(type) == "5")
                 {
-                    //ViewState["class"] = Convert.ToString(Convert.ToInt16(myDataReader_3["tc_mma18"])); 目前無用到暫不翻
+                    //TcMma18 = ViewState["class"]
+                    TcMma18 = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma18);
 
                     plate_1 = Convert.ToString(TcMaInfo.ToList().FirstOrDefault().TcMma01); //料號
 
@@ -1636,7 +1639,8 @@ namespace APEX_API.PublicServices
                     }
                 }
             }
-
+            reData = "{\"sFile\":\"" + sFile + "\",\"PartNo\":\"" + PartNo + "\",\"R1No\":\"" + R1No + "\",\"class\":\"" + TcMma18 + "\" }";
+            return reData;
 
         }
     }

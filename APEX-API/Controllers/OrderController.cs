@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Cors;
 using APEX_API.PublicServices;
 using APEX_API.TopprodModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace APEX_API.Controllers
@@ -28,14 +29,16 @@ namespace APEX_API.Controllers
         private readonly OrderService _orderService;
         private readonly PublicFunctions _publicFunction;
         private readonly PublicOrders _publicOrder;
+        private IWebHostEnvironment _hostEnvironment;
 
-        public OrderController(web2Context context, DataContext oracontext, OrderService orderService, PublicFunctions publicFunctions, PublicOrders publicOrders)
+        public OrderController(web2Context context, DataContext oracontext, OrderService orderService, PublicFunctions publicFunctions, PublicOrders publicOrders , IWebHostEnvironment environment)
         {
             _web2Context = context;
             _DataContext = oracontext;
             _orderService = orderService;
             _publicFunction = publicFunctions;
             _publicOrder = publicOrders;
+            _hostEnvironment = environment;
         }
 
         // GET: api/<OrderController>
@@ -112,28 +115,35 @@ namespace APEX_API.Controllers
                 string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";//tmp_type 3,
                 string R25Groups = "R25";
                 string RG4Groups = "RG4,RG5";
-                string Cprod = string.Empty;
-                String orderCode = string.Empty;
+                string Cprod = string.Empty, orderCode = string.Empty , reducerNO = string.Empty,tmp_file = string.Empty;
+                string ReJsonData = string.Empty ;
+                string tmp_flag = string.Empty;
+                Dictionary<string, string> ResultInfo = new();
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    _publicOrder.GBResult(OData, "3", "false", "");
+                    ResultInfo =System.Text.Json.JsonSerializer.Deserialize<Dictionary<string,string>>( _publicOrder.GBResult(OData, "3", "false", ""));
+                    tmp_flag = "3";
                 }
                 else if (R25Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    _publicOrder.GBResult(OData, "4", "false", "");
+                    ResultInfo = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(_publicOrder.GBResult(OData, "4", "false", ""));
+                    tmp_flag = "4";
                 }
                 else if (R65Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    _publicOrder.GBResult(OData, "2", "false", "");
+                    ResultInfo = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(_publicOrder.GBResult(OData, "2", "false", ""));
+                    tmp_flag = "2";
                 }
                 else if (RG4Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    _publicOrder.GBResult(OData, "5", "false", "");
+                    ResultInfo = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(_publicOrder.GBResult(OData, "5", "false", ""));
+                    tmp_flag = "5";
                 }
                 else
                 {
-                    _publicOrder.GBResult(OData, "1", "false", "");
+                    ResultInfo = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(_publicOrder.GBResult(OData, "1", "false", ""));
+                    tmp_flag = "1";
                 }
 
                 //------------------------------------判斷 orderCode 
@@ -168,36 +178,36 @@ namespace APEX_API.Controllers
                 {
                     if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S1")
                     {
-                        reducerNO = PartNo + "1";
+                        reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "1";
 
                         Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S1
                     }
                     else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S2")
                     {
-                        reducerNO = PartNo + "2";
+                        reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "2";
 
                         Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S2
                     }
                     else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S3")
                     {
-                        reducerNO = PartNo + "3";
+                        reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "3";
 
                         Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S3
                     }
                     else if (Convert.ToString(OData["GearBox"]["Shaft"]) == "S4")
                     {
-                        reducerNO = PartNo + "4";
+                        reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "4";
 
                         Cprod = Cprod + " - " + Convert.ToString(OData["GearBox"]["Shaft"]);   //S4
                     }
                     else
                     {
-                        reducerNO = PartNo + "X";
+                        reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "X";
                     }
                 }
                 else
                 {
-                    reducerNO = PartNo + "X";
+                    reducerNO = Convert.ToString(ResultInfo["PartNo"]) + "X";
                 }
 
                 if (!string.IsNullOrEmpty(Convert.ToString(OData["GearBox"]["Backlash"])))
@@ -229,17 +239,52 @@ namespace APEX_API.Controllers
                 }
 
                 orderCode = Cprod + " / " + Convert.ToString(OData["Motor"]["Brand"]) + " " + Convert.ToString(OData["Motor"]["Spec"]);
+                tmp_file = _hostEnvironment.WebRootPath + "/image/prod/" + Convert.ToString(ResultInfo["R1No"]) + ".png";
+                tmp_file = System.IO.File.Exists(tmp_file) ? tmp_file : _hostEnvironment.WebRootPath + "image/ComingSoon.gif";
+                //判斷下載檔案是否顯示
+                //20160617 Lysee 將8000 9000也開放下載
+                if ("1,3,2,4".Contains(Convert.ToString(ResultInfo["class"])) || "3,4".Contains(tmp_flag))
+                {
+                    lbl_x3.Visible = true;
 
-                //List<TcOekFile> MortorInfo = _orderService.GetMotorInfoDetail(OData);
-                //List<Reducer1Order> ReducerInfo = new List<Reducer1Order> { };
-                //List<Reducer1Order> RatioInfo = new List<Reducer1Order> { };
-                //List<Reducer1Order> BacklashShaft = new List<Reducer1Order> { };
+                    btn_pdf.Visible = true;
+
+                    btn_dxf.Visible = true;
+
+                    btn_igs.Visible = true;
+
+                    btn_stp.Visible = true;
+
+                    lbl_x3.Text = Resources.Resource.x3;
+
+                    btn_pdf.Text = Resources.Resource.x4;
+
+                    btn_dxf.Text = Resources.Resource.x5;
+
+                    btn_igs.Text = Resources.Resource.x6;
+
+                    btn_stp.Text = Resources.Resource.x7;
+
+                }
+                else
+                {
+                    lbl_x3.Visible = false;
+
+                    btn_pdf.Visible = false;
+
+                    btn_dxf.Visible = false;
+
+                    btn_igs.Visible = false;
+
+                    btn_stp.Visible = false;
+                }
 
 
-                //ReducerInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "", "", "");
-                //RatioInfo = _orderService.GetReducer(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek05), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek04), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek08), Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), "Ratio", (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), MortorInfo.FirstOrDefault().TcOek27);
-                //BacklashShaft = _orderService.GetReducerSB(OData, Convert.ToDecimal(MortorInfo.FirstOrDefault().TcOek09), (!string.IsNullOrEmpty(Convert.ToString(OData["GBModel"])) ? Convert.ToString(OData["GBModel"]) : ReducerInfo.FirstOrDefault().TcMmd03), (!string.IsNullOrEmpty(Convert.ToString(OData["Ratio"])) ? Convert.ToDecimal(OData["Ratio"]) : Convert.ToDecimal(RatioInfo.FirstOrDefault().TcMmd04)));
+
+
                 //return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo, BacklashShaft = BacklashShaft });
+
+                ReJsonData = "{\"PicPath\" :\""+ tmp_file+ "\",\"orderCode\" :\"" + orderCode + "\",\"sFile\" :\"" + Convert.ToString(ResultInfo["sFile"]) + "\"}";
                 return Ok(new { code = 200, Message = "" });
             }
 
