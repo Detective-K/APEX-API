@@ -29,9 +29,10 @@ namespace APEX_API.Controllers
         private readonly OrderService _orderService;
         private readonly PublicFunctions _publicFunction;
         private readonly PublicOrders _publicOrder;
-        private IWebHostEnvironment _hostEnvironment;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public OrderController(web2Context context, DataContext oracontext, OrderService orderService, PublicFunctions publicFunctions, PublicOrders publicOrders , IWebHostEnvironment environment)
+
+        public OrderController(web2Context context, DataContext oracontext, OrderService orderService, PublicFunctions publicFunctions, PublicOrders publicOrders, IWebHostEnvironment environment)
         {
             _web2Context = context;
             _DataContext = oracontext;
@@ -115,14 +116,15 @@ namespace APEX_API.Controllers
                 string R65Groups = "R65,R66,R67,R69,R86,RD1,RD2,RD3,RD4,RD5,RE1,RD9,RE2,RE9,R40,RF2,RB3,RA9,RB2,RB4,RF4,RE3,RE4,RJ9,RJ5,RK9,RK5,R53,R54,RF1,RR1,RR2,RR3,RR4,RR5,RR6,RR7,RR8,RR9,RS3,RS4,RS1,RS2,RS5,RS6,RS7,R42";//tmp_type 3,
                 string R25Groups = "R25";
                 string RG4Groups = "RG4,RG5";
-                string Cprod = string.Empty, orderCode = string.Empty , reducerNO = string.Empty,tmp_file = string.Empty;
-                string ReJsonData = string.Empty ;
+                string Cprod = string.Empty, orderCode = string.Empty, reducerNO = string.Empty, tmp_file = string.Empty;
+                string ReJsonData = string.Empty;
                 string tmp_flag = string.Empty;
+                string bomList = string.Empty;
                 Dictionary<string, string> ResultInfo = new();
 
                 if (R14Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
                 {
-                    ResultInfo =System.Text.Json.JsonSerializer.Deserialize<Dictionary<string,string>>( _publicOrder.GBResult(OData, "3", "false", ""));
+                    ResultInfo = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(_publicOrder.GBResult(OData, "3", "false", ""));
                     tmp_flag = "3";
                 }
                 else if (R25Groups.Contains(Convert.ToString(OData["GearBox"]["GBSeries"])))
@@ -162,7 +164,7 @@ namespace APEX_API.Controllers
                 }
                 else
                 {
-                    String temp1 = Convert.ToString(Convert.ToSingle(OData["GearBox"]["Ratio"]).Replace("*", "")) + 10000);
+                    String temp1 = Convert.ToString(Convert.ToSingle(OData["GearBox"]["Ratio"].Replace("*", "")) + 10000);
 
                     if (Convert.ToSingle(Convert.ToSingle(OData["GearBox"]["Ratio"]).Replace("*", "")) < 1000)
                     {
@@ -241,50 +243,281 @@ namespace APEX_API.Controllers
                 orderCode = Cprod + " / " + Convert.ToString(OData["Motor"]["Brand"]) + " " + Convert.ToString(OData["Motor"]["Spec"]);
                 tmp_file = _hostEnvironment.WebRootPath + "/image/prod/" + Convert.ToString(ResultInfo["R1No"]) + ".png";
                 tmp_file = System.IO.File.Exists(tmp_file) ? tmp_file : _hostEnvironment.WebRootPath + "image/ComingSoon.gif";
-                //判斷下載檔案是否顯示
-                //20160617 Lysee 將8000 9000也開放下載
-                if ("1,3,2,4".Contains(Convert.ToString(ResultInfo["class"])) || "3,4".Contains(tmp_flag))
+
+                if (tmp_flag == "3")  //ADS
                 {
-                    lbl_x3.Visible = true;
+                    //減速機
+                    lbl_x32.Text = Resources.Resource.x32 + "<BR><font color=red>(Gearbox only)</font>";
+                    //lbl_x33.Text = Convert.ToString(ViewState["Reducer_Spec"]) + " / " + reducerNO.Replace("R", "A");
+                    lbl_x33.Text = Convert.ToString(ViewState["Reducer_Spec"]) + " / " + Apex_class.Fun_Str_Replace(reducerNO, "R", "A");
+                    lbl_Gearbox_Stock.Text = l_Gearbox_stock + "<sup><font color=red>(2)</font></sup><BR><font color=red>(Gearbox only)</font>";
 
-                    btn_pdf.Visible = true;
+                    //馬達連接板
+                    tr_x34.Visible = false;
+                    lbl_x34.Text = "";
+                    lbl_x35.Text = "";
 
-                    btn_dxf.Visible = true;
+                    //固定板
+                    tr_x37.Visible = false;
+                    lbl_x37.Text = "";
+                    lbl_x38.Text = "";
 
-                    btn_igs.Visible = true;
+                    //軸襯套
+                    tr_x39.Visible = false;
+                    lbl_x39.Text = "";
+                    lbl_x40.Text = "";
 
-                    btn_stp.Visible = true;
+                    //內六角螺絲
+                    tr_x41.Visible = false;
+                    lbl_x41.Text = "";
+                    lbl_x42.Text = "";
 
-                    lbl_x3.Text = Resources.Resource.x3;
+                    //墊圈
+                    tr_x43.Visible = false;
+                    lbl_x43.Text = "";
+                    lbl_x44.Text = "";
 
-                    btn_pdf.Text = Resources.Resource.x4;
+                    tr_x45.Visible = false;
+                    //SUNGEAR
+                    lbl_x45.Text = "";
+                    lbl_x46.Text = "";
 
-                    btn_dxf.Text = Resources.Resource.x5;
-
-                    btn_igs.Text = Resources.Resource.x6;
-
-                    btn_stp.Text = Resources.Resource.x7;
+                    tr_x47.Visible = false;
+                    //螺絲
+                    lbl_x47.Text = "";
+                    lbl_x48.Text = "";
 
                 }
-                else
+                else if (tmp_flag == "4") //AM
                 {
-                    lbl_x3.Visible = false;
+                    //減速機
+                    lbl_x32.Text = Resources.Resource.x32 + "<BR><font color=red>(Gearbox only)</font>";
+                    //lbl_x33.Text = Convert.ToString(ViewState["Reducer_Spec"]) + " / " + newrdeucer.Replace("R", "A");
+                    lbl_x33.Text = Convert.ToString(ViewState["Reducer_Spec"]) + " / " + Apex_class.Fun_Str_Replace(newrdeucer, "R", "A");
+                    lbl_Gearbox_Stock.Text = l_Gearbox_stock + "<sup><font color=red>(2)</font></sup><BR><font color=red>(Gearbox only)</font>";
 
-                    btn_pdf.Visible = false;
+                    //馬達連接板
+                    tr_x34.Visible = true;
+                    lbl_x34.Text = Resources.Resource.x34;
+                    lbl_x35.Text = Convert.ToString(txtadaperNo).Replace("P", "S");
+                    lbl_adaper_stock.Text = get_stock_msg(txtadaperNo);
+                    //其它順位連接板
+                    //if (string.IsNullOrEmpty(adapterNx) == false)
+                    //{
+                    //    lbl_x35.Text = lbl_x35.Text + "<br>" + Resources.Resource.oth_adapter + "：" + adapterNx;
+                    //}
 
-                    btn_dxf.Visible = false;
+                    //固定板
+                    tr_x37.Visible = false;
+                    lbl_x37.Text = "";
+                    lbl_x38.Text = "";
 
-                    btn_igs.Visible = false;
+                    //軸襯套
+                    tr_x39.Visible = false;
+                    lbl_x39.Text = "";
+                    lbl_x40.Text = "";
 
-                    btn_stp.Visible = false;
+                    //內六角螺絲
+                    tr_x41.Visible = false;
+                    lbl_x41.Text = "";
+                    lbl_x42.Text = "";
+
+                    //墊圈
+                    tr_x43.Visible = false;
+                    lbl_x43.Text = "";
+                    lbl_x44.Text = "";
+
+                    tr_x45.Visible = true;
+                    //SUNGEAR
+                    lbl_x45.Text = Resources.Resource.x45;
+                    lbl_x46.Text = txtSUNGEAR.Replace("P", "S");
+
+                    tr_x47.Visible = true;
+                    //螺絲
+                    lbl_x47.Text = Resources.Resource.x47;
+                    lbl_x48.Text = txtScrew;
+
                 }
+                else   //  AB P2
+                {
+                    //減速機
+                    lbl_x32.Text = Resources.Resource.x32 + "<BR><font color=red>(Gearbox only)</font>";
+                    //lbl_x33.Text = Cprod + " / " + reducerNO.Replace("R", "A");
+                    lbl_x33.Text = Cprod + " / " + Apex_class.Fun_Str_Replace(reducerNO, "R", "A");
+                    //New 1-Piece Design, combining 
+                    //Gearbox rear-cover and motor adapter in one, 
+                    //Fully compatible to the separated version. 
+                    lbl_Gearbox_Stock.Text = l_Gearbox_stock + "<sup><font color=red>(2)</font></sup><BR><font color=red>(Gearbox only)</font>";
 
+                    //馬達連接板
+                    tr_x34.Visible = true;
+                    lbl_x34.Text = Resources.Resource.x34;
+                    if (Convert.ToString(ViewState["plate_1"]).Length >= 5)
+                    {
+                        if (Convert.ToString(ViewState["plate_1"]).Substring(0, 5) == "P0405")
+                        {
+                            lbl_x35.Text = Convert.ToString(ViewState["plate_2"]) + " / " + Convert.ToString(ViewState["plate_1"]);
+                            lbl_adaper_stock.Text = get_stock_msg(Convert.ToString(ViewState["plate_1"]));
+                        }
+                        else
+                        {
+                            lbl_x35.Text = Convert.ToString(ViewState["plate_2"]) + " / " + Convert.ToString(ViewState["plate_1"]).Replace("P", "S").Replace("O", "U");
+                            lbl_adaper_stock.Text = get_stock_msg(Convert.ToString(ViewState["plate_1"]));
+                        }
+                    }
+                    else
+                    {
+                        lbl_x35.Text = Convert.ToString(ViewState["plate_2"]) + " / " + Convert.ToString(ViewState["plate_1"]).Replace("P", "S").Replace("O", "U");
+                        lbl_adaper_stock.Text = get_stock_msg(Convert.ToString(ViewState["plate_1"]));
+                    }
+
+                    //固定板
+                    tr_x37.Visible = true;
+                    lbl_x37.Text = Resources.Resource.x37;
+
+                    if (adp7000 != "None")
+                    {
+                        if (tmp_flag != "3")
+                        {
+                            //lbl_x38.Text = Convert.ToString(Session["plate_1"]) + " = " + adp7000;
+                            lbl_x38.Text = Convert.ToString(ViewState["plate_1"]) + " = " + adp7000;
+                        }
+                    }
+
+                    FixPlate = FixPlate.Trim();
+
+                    if (FixPlate != "")
+                    {
+                        lbl_x38.Text = FixPlate;
+                        lbl_fixplate_stock.Text = get_stock_msg(FixPlate);
+                    }
+                    else
+                    {
+                        lbl_x38.Text = "（No need）";
+                        lbl_fixplate_stock.Text = "";
+                    }
+
+                    //軸襯套
+                    tr_x39.Visible = true;
+                    lbl_x39.Text = Resources.Resource.x39;
+
+                    if (txtBushing == "無需軸襯套" || txtBushing == " ")
+                    {
+                        lbl_x40.Text = "（No need）";
+                        lbl_bushing_stock.Text = "";
+                    }
+                    else if (txtBushing == "Bushing not available, please contact APEX sales!!")
+                    {
+                        lbl_x40.Text = txtBushing;
+                        lbl_bushing_stock.Text = "";
+                    }
+                    else
+                    {
+                        //消除中文 20141106
+                        if (txtBushing.IndexOf("(") >= 0)
+                        {
+                            lbl_x40.Text = txtBushing.Substring(0, txtBushing.IndexOf("("));
+                            lbl_bushing_stock.Text = get_stock_msg(txtBushing.Substring(0, 11));
+                            if (Convert.ToString(ViewState["Bushing_Spec"]).Length > 0)
+                            {
+                                lbl_x40.Text = Convert.ToString(ViewState["Bushing_Spec"]).Substring(0, Convert.ToString(ViewState["Bushing_Spec"]).IndexOf("(")) + " / " + Convert.ToString(ViewState["Bushing_No"]);
+                            }
+                        }
+                        else
+                        {
+                            if (txtBushing.IndexOf("舊") >= 0)
+                            {
+                                lbl_x40.Text = txtBushing.Substring(0, txtBushing.IndexOf("舊"));
+                                lbl_bushing_stock.Text = get_stock_msg(txtBushing.Substring(0, 11));
+                                lbl_x40.Text = Convert.ToString(ViewState["Bushing_Spec"]).Substring(0, Convert.ToString(ViewState["Bushing_Spec"]).IndexOf("舊")) + " / " + Convert.ToString(ViewState["Bushing_No"]);
+                            }
+                            else
+                            {
+                                lbl_x40.Text = txtBushing.Replace("舊", "Old Part Number");
+                                lbl_bushing_stock.Text = get_stock_msg(txtBushing.Substring(0, 11));
+                                lbl_x40.Text = Convert.ToString(ViewState["Bushing_Spec"]).Replace("舊", "Old Part Number") + " / " + Convert.ToString(ViewState["Bushing_No"]);
+                            }
+                        }
+                    }
+
+                    //內六角螺絲Screw
+                    tr_x41.Visible = true;
+                    lbl_x41.Text = Resources.Resource.x41;
+
+                    //消除中文 20141106
+                    if (txtScrew_conj == "Without Screws")
+                    {
+                        lbl_x42.Text = "（Without Screws）";
+                    }
+                    else
+                    {
+                        if (txtScrew_conj.IndexOf("(") >= 0)
+                        {
+                            lbl_x42.Text = txtScrew_conj.Substring(0, txtScrew_conj.IndexOf("("));
+                            lbl_x42.Text = Convert.ToString(ViewState["Screw_Spec"]).Substring(0, Convert.ToString(ViewState["Screw_Spec"]).IndexOf("(")) + " / " + Convert.ToString(ViewState["Screw_No"]);
+                        }
+                        else
+                        {
+                            if (txtScrew_conj.IndexOf("舊") >= 0)
+                            {
+                                lbl_x42.Text = txtScrew_conj.Substring(0, txtScrew_conj.IndexOf("舊"));
+                                lbl_x42.Text = Convert.ToString(ViewState["Screw_Spec"]).Substring(0, Convert.ToString(ViewState["Screw_Spec"]).IndexOf("舊")) + " / " + Convert.ToString(ViewState["Screw_No"]);
+                            }
+                            else
+                            {
+                                lbl_x42.Text = txtScrew_conj.Replace("舊", "Old Part Number").Replace("全牙", " full thread");
+                                lbl_x42.Text = Convert.ToString(ViewState["Screw_Spec"]).Replace("舊", "Old Part Number").Replace("全牙", " full thread") + " / " + Convert.ToString(ViewState["Screw_No"]);
+                            }
+                        }
+                    }
+
+                    //彈簧墊圈Washer
+                    tr_x43.Visible = true;
+                    lbl_x43.Text = Resources.Resource.x43;
+
+                    //消除中文 20141106
+                    if (txtWasher == "Without Washer")
+                    {
+                        lbl_x44.Text = "（Without Washer）";
+                    }
+                    else
+                    {
+                        if (txtWasher.IndexOf("(") >= 0)
+                        {
+                            lbl_x44.Text = txtWasher.Substring(0, txtWasher.IndexOf("("));
+                            lbl_x44.Text = Convert.ToString(ViewState["Washer_Spec"]).Substring(0, Convert.ToString(ViewState["Washer_Spec"]).IndexOf("(")) + " / " + Convert.ToString(ViewState["Washer_No"]);
+                        }
+                        else
+                        {
+                            if (txtWasher.IndexOf("舊") >= 0)
+                            {
+                                lbl_x44.Text = txtWasher.Substring(0, txtWasher.IndexOf("舊"));
+                                lbl_x44.Text = Convert.ToString(ViewState["Washer_Spec"]).Substring(0, Convert.ToString(ViewState["Washer_Spec"]).IndexOf("舊")) + " / " + Convert.ToString(ViewState["Washer_No"]);
+                            }
+                            else
+                            {
+                                lbl_x44.Text = txtWasher.Replace("舊", "Old Part Number").Replace("染黑", "BLACK OXIDIXING");
+                                lbl_x44.Text = Convert.ToString(ViewState["Washer_Spec"]).Replace("舊", "Old Part Number").Replace("染黑", "BLACK OXIDIXING") + " / " + Convert.ToString(ViewState["Washer_No"]);
+                            }
+                        }
+                    }
+
+                    tr_x45.Visible = false;
+                    //SUNGEAR
+                    lbl_x45.Text = "";
+                    lbl_x46.Text = "";
+
+                    tr_x47.Visible = false;
+                    //螺絲
+                    lbl_x47.Text = "";
+                    lbl_x48.Text = "";
+                }
 
 
 
                 //return Ok(new { code = 200, ReducerInfo = ReducerInfo, RatioInfo = RatioInfo, BacklashShaft = BacklashShaft });
 
-                ReJsonData = "{\"PicPath\" :\""+ tmp_file+ "\",\"orderCode\" :\"" + orderCode + "\",\"sFile\" :\"" + Convert.ToString(ResultInfo["sFile"]) + "\"}";
+                ReJsonData = "{\"PicPath\" :\"" + tmp_file + "\",\"orderCode\" :\"" + orderCode + "\",\"sFile\" :\"" + Convert.ToString(ResultInfo["sFile"]) + "\" ,\"class\" :\"" + Convert.ToString(ResultInfo["class"]) + "\"}";
                 return Ok(new { code = 200, Message = "" });
             }
 
@@ -527,12 +760,16 @@ namespace APEX_API.Controllers
 
             var jsonString = @"{ ""id"":""48e86841-f62c-42c9-ae20-b54ba8c35d6d"",""Max"": ""9487""}";
             var cs = "bad";
-            var jsonString1 = "{ \"TcMmf08\": \""+ cs + "\",\"Max\": \"9487\"}";
+            var jsonString1 = $@"{{ ""TcMmf08"": ""{cs}"",
+                                    ""Max"": ""9487""}}";
             var book = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString1);
 
+            var i1 = 100;
+            var i2 = 99;
+            string s1 = @$"{i1}\{i2}";
 
-
-
+            var ck = _hostEnvironment.ContentRootPath;
+            var aka = _hostEnvironment.WebRootPath;
 
 
         }

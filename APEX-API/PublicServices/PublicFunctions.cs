@@ -1999,10 +1999,23 @@ namespace APEX_API.PublicServices
             return l_tc_mml01;
         }
 
+        public  string Fun_Str_Replace(string p_replace_string, string p_old_value, string p_new_value)
+        {
+            string l_return_string = "";
+
+            if (p_replace_string != "")
+            {
+                l_return_string = p_replace_string.Substring(0, 1).Replace(p_old_value, p_new_value) + p_replace_string.Substring(1, p_replace_string.Length - 1);
+            }
+
+            return l_return_string;
+
+        }
+
         #endregion
 
         #region Public Tool
-       
+
         #endregion
 
         public class TcMmiFileInfo
